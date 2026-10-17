@@ -183,8 +183,18 @@ async function cmdAuto(code, { dispute = false, once = false } = {}) {
   console.log(`${bots.length} bots connected to ${code}. ${once ? '' : 'Ctrl+C to stop.'}`)
   for (;;) {
     for (const bot of bots) {
-      const { game, players } = await snapshot(bot)
-      if (!game) continue
+      let { game, players } = await snapshot(bot)
+      if (!game) {
+        // Another bots command (hunt, kill…) took the seat over with the PIN. Take it back.
+        const res = await call(bot.sb, 'reclaim_player', {
+          p_code: code,
+          p_name: bot.name,
+          p_pin: bot.pin,
+        })
+        if (!res.ok) continue
+        ;({ game, players } = await snapshot(bot))
+        if (!game) continue
+      }
       const me = players.find((p) => p.id === bot.playerId)
       if (!me) continue
 

@@ -413,3 +413,29 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# Hosted project. `supabase config push` applies these over the local values
+# above, so production only differs from Supabase's defaults where we mean it.
+[remotes.production]
+project_id = "wikbcchkpkiyczxnlvcx"
+
+[remotes.production.auth]
+site_url = "https://last-alive.vercel.app"
+additional_redirect_urls = []
+enable_anonymous_sign_ins = true
+
+[remotes.production.auth.rate_limit]
+# Per IP per hour. Friends on the same wifi share an IP, so a little above the default.
+anonymous_users = 60
+
+[remotes.production.auth.email]
+enable_confirmations = true
+max_frequency = "1m0s"
+otp_length = 8
+
+[remotes.production.auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[remotes.production.storage.vector]
+enabled = false

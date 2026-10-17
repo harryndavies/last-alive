@@ -7,3 +7,6 @@ dist
 supabase/.temp
 supabase/.branches
 scripts/.bots.json
+supabase/.db-password
+.vercel
+.env*
