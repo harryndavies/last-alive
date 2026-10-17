@@ -11,3 +11,4 @@ supabase/.db-password
 .vercel
 .env*
 .claude/hooks/.logs/
+supabase/.cron-secret
