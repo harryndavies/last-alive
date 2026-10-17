@@ -20,7 +20,7 @@ export function DisputeCard({ gameId, killId }: { gameId: string; killId: string
       <ul className="space-y-1 label-mono">
         <li>Weapon: {claim.weapon}</li>
         <li>Place: {claim.place}</li>
-        <li>Object in shot: {claim.used_object ? claim.object : 'no'}</li>
+        <li>Phrase: “{claim.phrase}”</li>
       </ul>
       {claim.note && <p className="font-medium">&ldquo;{claim.note}&rdquo;</p>}
       {resolve.isError && (

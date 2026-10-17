@@ -57,10 +57,19 @@ export interface GameContext {
 }
 
 /** Game + players + your seat. Only for use under /g/$code, where the guard guarantees them. */
+/** Safety net in case a Realtime message is missed (flaky network, sleeping phone). */
+const BACKGROUND_REFRESH_MS = 20_000
+
 export function useGameContext(code: string, userId: string): GameContext {
-  const { data: game } = useSuspenseQuery(gameQuery(code))
+  const { data: game } = useSuspenseQuery({
+    ...gameQuery(code),
+    refetchInterval: BACKGROUND_REFRESH_MS,
+  })
   if (!game) throw new Error('Game not found')
-  const { data: players } = useSuspenseQuery(playersQuery(game.id))
+  const { data: players } = useSuspenseQuery({
+    ...playersQuery(game.id),
+    refetchInterval: BACKGROUND_REFRESH_MS,
+  })
   const me = players.find((p) => p.user_id === userId)
   if (!me) throw new Error('You are not in this game')
   return { game, players, me }

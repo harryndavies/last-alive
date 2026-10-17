@@ -14,7 +14,6 @@ export const KillSchema = z.object({
   killer_id: z.uuid(),
   victim_id: z.uuid(),
   status: KillStatus,
-  used_object: z.boolean(),
   note: z.string().nullable(),
   created_at: z.string(),
   resolved_at: z.string().nullable(),
@@ -32,8 +31,7 @@ export const ClaimSchema = z.object({
   victim: Who,
   weapon: z.string(),
   place: z.string(),
-  object: z.string(),
-  used_object: z.boolean(),
+  phrase: z.string(),
   note: z.string().nullable(),
   created_at: z.string(),
   auto_confirm_at: z.string(),
@@ -95,11 +93,10 @@ function useKillAction<TArgs>(gameId: string, run: (args: TArgs) => Promise<unkn
 }
 
 export const useReportKill = (gameId: string) =>
-  useKillAction(gameId, (input: { victimId: string; usedObject: boolean; note: string }) =>
+  useKillAction(gameId, (input: { victimId: string; note: string }) =>
     rpc('report_kill', {
       p_game_id: gameId,
       p_victim_id: input.victimId,
-      p_used_object: input.usedObject,
       p_note: input.note.trim() || undefined,
     }),
   )

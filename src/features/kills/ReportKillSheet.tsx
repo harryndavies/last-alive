@@ -20,14 +20,12 @@ function Tick({
   label,
   value,
   tone,
-  optional,
 }: {
   checked: boolean
   onChange: (v: boolean) => void
   label: string
   value: string
   tone: string
-  optional?: boolean
 }) {
   return (
     <label
@@ -43,10 +41,7 @@ function Tick({
         className="size-6 shrink-0 accent-ink"
       />
       <span className="min-w-0 flex-1">
-        <span className="block label-mono">
-          {label}
-          {optional && ' · optional bonus'}
-        </span>
+        <span className="block label-mono">{label}</span>
         <span className="font-display text-lg leading-tight uppercase">{value}</span>
       </span>
     </label>
@@ -57,20 +52,20 @@ export function ReportKillSheet({ open, onClose, gameId, mission, target }: Repo
   const report = useReportKill(gameId)
   const [weapon, setWeapon] = useState(false)
   const [place, setPlace] = useState(false)
-  const [object, setObject] = useState(false)
+  const [phrase, setPhrase] = useState(false)
   const [note, setNote] = useState('')
 
   function onSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!weapon || !place) return
+    if (!weapon || !place || !phrase) return
     report.mutate(
-      { victimId: target.id, usedObject: object, note },
+      { victimId: target.id, note },
       {
         onSuccess: () => {
           onClose()
           setWeapon(false)
           setPlace(false)
-          setObject(false)
+          setPhrase(false)
           setNote('')
         },
       },
@@ -101,12 +96,11 @@ export function ReportKillSheet({ open, onClose, gameId, mission, target }: Repo
           tone="bg-blue"
         />
         <Tick
-          checked={object}
-          onChange={setObject}
-          label="Object in shot"
-          value={mission.object.text}
+          checked={phrase}
+          onChange={setPhrase}
+          label="Said the phrase"
+          value={`“${mission.phrase.text}”`}
           tone="bg-mint"
-          optional
         />
         <label className="flex flex-col gap-1.5">
           <span className="label-mono">Note (optional)</span>
@@ -129,13 +123,15 @@ export function ReportKillSheet({ open, onClose, gameId, mission, target }: Repo
           variant="red"
           size="lg"
           block
-          disabled={!weapon || !place}
+          disabled={!weapon || !place || !phrase}
           loading={report.isPending}
         >
           Confirm the kill
         </Button>
         <p className="text-center label-mono text-muted">
-          {weapon && place ? `${target.name} has 12h to answer` : 'Tick the weapon and place'}
+          {weapon && place && phrase
+            ? `${target.name} has 12h to answer`
+            : 'Tick all three to confirm'}
         </p>
       </form>
     </Sheet>

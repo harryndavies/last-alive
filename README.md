@@ -4,10 +4,11 @@ A mobile-first web app for playing a real-life assassin game with friends. No ac
 with a code, a name and a colour.
 
 1. The host creates a game and shares the code (e.g. `CLUE-7Q`).
-2. Everyone joins, then submits one **weapon**, one **place** and one **object** card.
+2. Everyone joins, then submits one **weapon** (an everyday object), one **place** and one
+   **phrase** card.
 3. The server secretly deals a hunting ring. Each hunter gets a target plus one weapon, place and
-   object card, never their own.
-4. Get your target with the weapon, in the place (object in shot is a bonus), then tap
+   phrase card, never their own.
+4. Get your target with the weapon, in the place, then say the phrase to them. Tap
    **I got them**. The victim confirms or disputes. No answer within 12 hours counts as a yes.
    The host settles disputes.
 5. The killer inherits the victim's mission. The last player alive wins.
@@ -88,7 +89,7 @@ src/
     join.$code.tsx         /join/$code  join, or reclaim a seat with a PIN
     g/$code/route.tsx      game layout: loads game + you, route guard, realtime, tab bar, victim alert
     g/$code/lobby.tsx      code + share, players, host "Start picking cards"
-    g/$code/cards.tsx      weapon/place/object with suggestion chips, "n / m locked", host "Start the game"
+    g/$code/cards.tsx      weapon/place/phrase with suggestion chips, "n / m locked", host "Start the game"
     g/$code/index.tsx      Home: stats, target, "I got them!", claim status, host disputes, latest news
     g/$code/mission.tsx    top-secret mission with hide/reveal
     g/$code/new-mission.tsx  "You inherit X's mission" with NEW badges

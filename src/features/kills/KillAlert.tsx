@@ -65,9 +65,7 @@ function ConfirmDeath({ gameId, killId }: { gameId: string; killId: string }) {
             <div className="grid gap-3">
               <PlayingCard kind="weapon" text={claim.weapon} tilt={1} />
               <PlayingCard kind="place" text={claim.place} tilt={-1} />
-              {claim.used_object && (
-                <PlayingCard kind="object" text={claim.object} tilt={1} badge="In shot" />
-              )}
+              <PlayingCard kind="phrase" text={claim.phrase} tilt={1} />
             </div>
             {claim.note && (
               <p className="rounded-xl brut bg-paper p-3 font-medium shadow-hard-sm">

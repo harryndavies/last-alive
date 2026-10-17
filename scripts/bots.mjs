@@ -62,16 +62,16 @@ const PLACES = [
   'Sofa',
   'Front door',
 ]
-const OBJECTS = [
-  'Mug',
-  'Umbrella',
-  'Phone charger',
-  'Plant',
-  'Hat',
-  'Book',
-  'Remote control',
-  'Biscuit',
-  'Shoe',
+const PHRASES = [
+  'The eagle has landed',
+  'Nothing personal',
+  'Sweet dreams',
+  'Checkmate',
+  'I’ll be back',
+  'Tag, you’re it',
+  'You never saw me',
+  'Bon voyage',
+  'Hasta la vista',
 ]
 
 const pick = (list, i) => list[i % list.length]
@@ -203,7 +203,7 @@ async function cmdAuto(code, { dispute = false, once = false } = {}) {
           p_game_id: game.id,
           p_weapon: pick(WEAPONS, bot.index + 3),
           p_place: pick(PLACES, bot.index + 5),
-          p_object: pick(OBJECTS, bot.index + 7),
+          p_phrase: pick(PHRASES, bot.index + 7),
         })
         console.log(`  ${bot.name} locked in cards`)
       }
@@ -265,7 +265,6 @@ async function cmdHunt(code) {
       await call(bot.sb, 'report_kill', {
         p_game_id: bot.gameId,
         p_victim_id: m.target_id,
-        p_used_object: true,
         p_note: 'Got you by the kettle!',
       })
       console.log(`${bot.name} claims they got you. Check your phone.`)

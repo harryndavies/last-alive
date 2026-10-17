@@ -42,7 +42,7 @@ function MissionScreen() {
           <div className="flex flex-col gap-4" aria-label="Mission cards">
             <PlayingCard kind="weapon" text={mission.weapon.text} tilt={1} hidden={hidden} />
             <PlayingCard kind="place" text={mission.place.text} tilt={-1} hidden={hidden} />
-            <PlayingCard kind="object" text={mission.object.text} tilt={2} hidden={hidden} />
+            <PlayingCard kind="phrase" text={mission.phrase.text} tilt={2} hidden={hidden} />
           </div>
 
           <Card tone="paper" className="mt-1">
@@ -55,7 +55,7 @@ function MissionScreen() {
                 It has to happen in the <strong>place</strong>.
               </li>
               <li>
-                Get the <strong>object</strong> in shot for a bonus.
+                Then say the <strong>phrase</strong> to them.
               </li>
               <li>Then tap &ldquo;I got them&rdquo; on Home.</li>
             </ol>

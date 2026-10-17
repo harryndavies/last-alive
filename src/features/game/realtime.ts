@@ -17,8 +17,10 @@ export function useGameRealtime(gameId: string, code: string): void {
       for (const queryKey of keys) void qc.invalidateQueries({ queryKey })
     }
 
+    // A unique topic per mount: React may mount twice in dev, and reusing a topic
+    // that is still being torn down can silently drop the new subscription.
     const channel = supabase
-      .channel(`game:${gameId}`)
+      .channel(`game:${gameId}:${crypto.randomUUID()}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'players', filter }, () =>
         invalidate(gameKeys.players(gameId)),
       )

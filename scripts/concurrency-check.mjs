@@ -52,7 +52,7 @@ await Promise.all(
       p_game_id: game.game_id,
       p_weapon: `W${p.name}`,
       p_place: `P${p.name}`,
-      p_object: `O${p.name}`,
+      p_phrase: `Phrase ${p.name}`,
     }),
   ),
 )

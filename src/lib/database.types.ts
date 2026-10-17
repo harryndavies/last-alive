@@ -97,14 +97,14 @@ isOneToOne: false
                   ]
                 },"kills": {
                   Row: {
-                    "created_at": string,"game_id": string,"id": string,"killer_id": string,"mission_id": string,"note": string | null,"resolved_at": string | null,"resolved_by": string | null,"status": Database["public"]['Enums']["kill_status"],"used_object": boolean,"victim_id": string
+                    "created_at": string,"game_id": string,"id": string,"killer_id": string,"mission_id": string,"note": string | null,"resolved_at": string | null,"resolved_by": string | null,"status": Database["public"]['Enums']["kill_status"],"victim_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"game_id": string,"id"?: string,"killer_id": string,"mission_id": string,"note"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["kill_status"],"used_object"?: boolean,"victim_id": string
+                    "created_at"?: string,"game_id": string,"id"?: string,"killer_id": string,"mission_id": string,"note"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["kill_status"],"victim_id": string
                   }
                   Update: {
-                    "created_at"?: string,"game_id"?: string,"id"?: string,"killer_id"?: string,"mission_id"?: string,"note"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["kill_status"],"used_object"?: boolean,"victim_id"?: string
+                    "created_at"?: string,"game_id"?: string,"id"?: string,"killer_id"?: string,"mission_id"?: string,"note"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["kill_status"],"victim_id"?: string
                   }
                   Relationships: [
                     {
@@ -135,14 +135,14 @@ isOneToOne: false
                   ]
                 },"missions": {
                   Row: {
-                    "created_at": string,"ended_at": string | null,"game_id": string,"hunter_id": string,"id": string,"inherited_from": string | null,"is_active": boolean,"object_card_id": string,"place_card_id": string,"target_id": string,"weapon_card_id": string
+                    "created_at": string,"ended_at": string | null,"game_id": string,"hunter_id": string,"id": string,"inherited_from": string | null,"is_active": boolean,"phrase_card_id": string,"place_card_id": string,"target_id": string,"weapon_card_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"ended_at"?: string | null,"game_id": string,"hunter_id": string,"id"?: string,"inherited_from"?: string | null,"is_active"?: boolean,"object_card_id": string,"place_card_id": string,"target_id": string,"weapon_card_id": string
+                    "created_at"?: string,"ended_at"?: string | null,"game_id": string,"hunter_id": string,"id"?: string,"inherited_from"?: string | null,"is_active"?: boolean,"phrase_card_id": string,"place_card_id": string,"target_id": string,"weapon_card_id": string
                   }
                   Update: {
-                    "created_at"?: string,"ended_at"?: string | null,"game_id"?: string,"hunter_id"?: string,"id"?: string,"inherited_from"?: string | null,"is_active"?: boolean,"object_card_id"?: string,"place_card_id"?: string,"target_id"?: string,"weapon_card_id"?: string
+                    "created_at"?: string,"ended_at"?: string | null,"game_id"?: string,"hunter_id"?: string,"id"?: string,"inherited_from"?: string | null,"is_active"?: boolean,"phrase_card_id"?: string,"place_card_id"?: string,"target_id"?: string,"weapon_card_id"?: string
                   }
                   Relationships: [
                     {
@@ -164,8 +164,8 @@ isOneToOne: false
       referencedRelation: "missions"
       referencedColumns: ["id"]
     },{
-      foreignKeyName: "missions_object_card_id_fkey"
-      columns: ["object_card_id"]
+      foreignKeyName: "missions_phrase_card_id_fkey"
+      columns: ["phrase_card_id"]
 isOneToOne: false
       referencedRelation: "cards"
       referencedColumns: ["id"]
@@ -243,7 +243,7 @@ isOneToOne: false
 { Args: { "p_game_id": string,"p_player_id": string }; Returns: undefined
                            },
 "report_kill":
-{ Args: { "p_game_id": string,"p_note"?: string,"p_used_object"?: boolean,"p_victim_id": string }; Returns: string
+{ Args: { "p_game_id": string,"p_note"?: string,"p_victim_id": string }; Returns: string
                            },
 "resolve_dispute":
 { Args: { "p_confirm": boolean,"p_kill_id": string }; Returns: Database["public"]['Enums']["kill_status"]
@@ -258,11 +258,11 @@ isOneToOne: false
 { Args: { "p_game_id": string }; Returns: undefined
                            },
 "submit_cards":
-{ Args: { "p_game_id": string,"p_object": string,"p_place": string,"p_weapon": string }; Returns: undefined
+{ Args: { "p_game_id": string,"p_phrase": string,"p_place": string,"p_weapon": string }; Returns: undefined
                            }
           }
           Enums: {
-            "card_kind": "weapon"|"place"|"object","game_status": "lobby"|"picking"|"active"|"finished","kill_status": "pending"|"confirmed"|"disputed"|"rejected","player_status": "alive"|"dead"
+            "card_kind": "weapon"|"place"|"phrase","game_status": "lobby"|"picking"|"active"|"finished","kill_status": "pending"|"confirmed"|"disputed"|"rejected","player_status": "alive"|"dead"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -382,7 +382,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "card_kind": ["weapon", "place", "object"],"game_status": ["lobby", "picking", "active", "finished"],"kill_status": ["pending", "confirmed", "disputed", "rejected"],"player_status": ["alive", "dead"]
+            "card_kind": ["weapon", "place", "phrase"],"game_status": ["lobby", "picking", "active", "finished"],"kill_status": ["pending", "confirmed", "disputed", "rejected"],"player_status": ["alive", "dead"]
           }
         }
 } as const

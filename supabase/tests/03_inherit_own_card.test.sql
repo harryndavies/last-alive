@@ -62,10 +62,10 @@ select is((select weapon_card_id from public.missions where hunter_id = pg_temp.
 select ok((
   select m.target_id = v.target_id
     and (m.place_card_id = v.place_card_id or vp.submitted_by = pg_temp.v('ana')::uuid)
-    and (m.object_card_id = v.object_card_id or vo.submitted_by = pg_temp.v('ana')::uuid)
+    and (m.phrase_card_id = v.phrase_card_id or vo.submitted_by = pg_temp.v('ana')::uuid)
   from public.missions m, public.missions v
   join public.cards vp on vp.id = v.place_card_id
-  join public.cards vo on vo.id = v.object_card_id
+  join public.cards vo on vo.id = v.phrase_card_id
   where m.hunter_id = pg_temp.v('ana')::uuid and m.is_active and v.id = pg_temp.v('victim_m')::uuid
 ), 'the target and other cards are inherited (unless also the killer''s own)');
 

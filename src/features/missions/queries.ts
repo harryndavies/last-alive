@@ -16,14 +16,14 @@ export const MissionSchema = z.object({
   created_at: z.string(),
   weapon: CardText,
   place: CardText,
-  object: CardText,
+  phrase: CardText,
 })
 export type Mission = z.infer<typeof MissionSchema>
 
 const SELECT = `id, hunter_id, target_id, is_active, inherited_from, created_at,
   weapon:cards!missions_weapon_card_id_fkey(text),
   place:cards!missions_place_card_id_fkey(text),
-  object:cards!missions_object_card_id_fkey(text)`
+  phrase:cards!missions_phrase_card_id_fkey(text)`
 
 /** Your missions, newest first. RLS only ever returns missions where you are the hunter. */
 export const missionHistoryQuery = (gameId: string) =>
@@ -71,6 +71,6 @@ export function missionChanges(next: Mission, previous: Mission | undefined) {
     target: !previous || previous.target_id !== next.target_id,
     weapon: !previous || previous.weapon.text !== next.weapon.text,
     place: !previous || previous.place.text !== next.place.text,
-    object: !previous || previous.object.text !== next.object.text,
+    phrase: !previous || previous.phrase.text !== next.phrase.text,
   }
 }

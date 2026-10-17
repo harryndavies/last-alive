@@ -17,7 +17,7 @@ export type Card = z.infer<typeof CardSchema>
 export const CardsForm = z.object({
   weapon: z.string().trim().min(2, 'At least 2 characters').max(60, 'Up to 60 characters'),
   place: z.string().trim().min(2, 'At least 2 characters').max(60, 'Up to 60 characters'),
-  object: z.string().trim().min(2, 'At least 2 characters').max(60, 'Up to 60 characters'),
+  phrase: z.string().trim().min(2, 'At least 2 characters').max(80, 'Up to 80 characters'),
 })
 export type CardsForm = z.infer<typeof CardsForm>
 
@@ -44,7 +44,7 @@ export function useSubmitCards(gameId: string) {
         p_game_id: gameId,
         p_weapon: cards.weapon,
         p_place: cards.place,
-        p_object: cards.object,
+        p_phrase: cards.phrase,
       }),
     onSettled: () =>
       Promise.all([

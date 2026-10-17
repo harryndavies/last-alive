@@ -112,7 +112,7 @@ function CardsFormView({ gameId }: { gameId: string }) {
   const [values, setValues] = useState<Record<CardKind, string>>({
     weapon: '',
     place: '',
-    object: '',
+    phrase: '',
   })
   const [errors, setErrors] = useState<Partial<Record<CardKind, string>>>({})
 
@@ -128,7 +128,7 @@ function CardsFormView({ gameId }: { gameId: string }) {
       const next: Partial<Record<CardKind, string>> = {}
       for (const issue of parsed.error.issues) {
         const key = issue.path[0]
-        if (key === 'weapon' || key === 'place' || key === 'object') next[key] = issue.message
+        if (key === 'weapon' || key === 'place' || key === 'phrase') next[key] = issue.message
       }
       setErrors(next)
       return
@@ -144,7 +144,7 @@ function CardsFormView({ gameId }: { gameId: string }) {
             label={CARD_COPY[kind].label}
             placeholder={CARD_COPY[kind].placeholder}
             hint={CARD_COPY[kind].hint}
-            maxLength={60}
+            maxLength={CARD_COPY[kind].maxLength}
             value={values[kind]}
             onChange={(e) => set(kind, e.target.value)}
             error={errors[kind]}

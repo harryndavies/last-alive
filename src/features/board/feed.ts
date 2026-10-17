@@ -60,7 +60,7 @@ export function describeEvent(e: GameEvent): FeedItem | null {
         ...base,
         icon: '✕',
         tone: 'red',
-        text: `${str(p.killer_name)} got ${str(p.victim_name)}${p.used_object ? ' (+ object bonus)' : ''}`,
+        text: `${str(p.killer_name)} got ${str(p.victim_name)}`,
         detail: [note, how].filter(Boolean).join(' ') || undefined,
       }
     }

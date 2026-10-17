@@ -67,10 +67,10 @@ function NewMission() {
           badge={changed.place ? 'New' : undefined}
         />
         <PlayingCard
-          kind="object"
-          text={current.object.text}
+          kind="phrase"
+          text={current.phrase.text}
           tilt={2}
-          badge={changed.object ? 'New' : undefined}
+          badge={changed.phrase ? 'New' : undefined}
         />
       </div>
 

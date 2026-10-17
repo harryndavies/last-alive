@@ -101,23 +101,23 @@ select is((
   select count(*)::int from public.missions m
   join public.cards w on w.id = m.weapon_card_id
   join public.cards p on p.id = m.place_card_id
-  join public.cards o on o.id = m.object_card_id
+  join public.cards o on o.id = m.phrase_card_id
   where m.game_id = pg_temp.v('game')::uuid
     and m.hunter_id in (w.submitted_by, p.submitted_by, o.submitted_by)
 ), 0, 'nobody gets their own cards');
 select is((
   select count(distinct weapon_card_id)::int + count(distinct place_card_id)::int
-    + count(distinct object_card_id)::int
+    + count(distinct phrase_card_id)::int
   from public.missions where game_id = pg_temp.v('game')::uuid
 ), 15, 'no card is reused across missions');
 select is((
   select count(*)::int from public.missions m
   join public.cards w on w.id = m.weapon_card_id
   join public.cards p on p.id = m.place_card_id
-  join public.cards o on o.id = m.object_card_id
+  join public.cards o on o.id = m.phrase_card_id
   where m.game_id = pg_temp.v('game')::uuid
-    and (w.kind, p.kind, o.kind) <> ('weapon', 'place', 'object')
-), 0, 'each mission has one weapon, one place and one object');
+    and (w.kind, p.kind, o.kind) <> ('weapon', 'place', 'phrase')
+), 0, 'each mission has one weapon, one place and one phrase');
 
 -- --- Secrecy (RLS) ------------------------------------------------------
 select pg_temp.login(pg_temp.uid('a'));
@@ -157,7 +157,7 @@ select pg_temp.login(pg_temp.uid('a'));
 select throws_ok($$ select public.report_kill(pg_temp.v('game')::uuid, pg_temp.v('notarget')::uuid) $$,
   'not_your_target', 'cannot report a kill on someone who is not your target');
 
-insert into ctx select 'k1', public.report_kill(pg_temp.v('game')::uuid, pg_temp.v('t1')::uuid, true, 'gotcha');
+insert into ctx select 'k1', public.report_kill(pg_temp.v('game')::uuid, pg_temp.v('t1')::uuid, 'gotcha');
 select is(public.report_kill(pg_temp.v('game')::uuid, pg_temp.v('t1')::uuid)::text, pg_temp.v('k1'),
   'reporting twice returns the same open claim');
 select throws_ok($$ select public.respond_to_kill(pg_temp.v('k1')::uuid, true) $$,
@@ -197,7 +197,7 @@ select ok((
   from public.missions m, public.missions v,
     lateral (values
       (m.weapon_card_id, v.weapon_card_id), (m.place_card_id, v.place_card_id),
-      (m.object_card_id, v.object_card_id)) as pair(new_card, old_card),
+      (m.phrase_card_id, v.phrase_card_id)) as pair(new_card, old_card),
     lateral (select submitted_by as old_owner from public.cards where id = pair.old_card) o
   where m.hunter_id = pg_temp.pid('a') and m.is_active and v.id = pg_temp.v('victim_mission')::uuid
 ), 'killer inherits the victim''s cards (except any they wrote themselves)');
@@ -249,7 +249,7 @@ select is((
   select count(*)::int from public.missions m
   join public.cards w on w.id = m.weapon_card_id
   join public.cards p on p.id = m.place_card_id
-  join public.cards o on o.id = m.object_card_id
+  join public.cards o on o.id = m.phrase_card_id
   where m.game_id = pg_temp.v('game')::uuid
     and m.hunter_id in (w.submitted_by, p.submitted_by, o.submitted_by)
 ), 0, 'after every inheritance, still nobody ever held their own card');

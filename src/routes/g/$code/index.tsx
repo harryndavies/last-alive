@@ -134,7 +134,7 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
             params={{ code }}
             className="inline-flex min-h-11 items-center justify-center label-mono underline"
           >
-            View weapon, place &amp; object
+            View weapon, place &amp; phrase
           </Link>
         </div>
       </TargetCard>

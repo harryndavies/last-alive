@@ -1,26 +1,40 @@
-export const CARD_KINDS = ['weapon', 'place', 'object'] as const
+export const CARD_KINDS = ['weapon', 'place', 'phrase'] as const
 export type CardKind = (typeof CARD_KINDS)[number]
 
-export const CARD_COPY: Record<CardKind, { label: string; hint: string; placeholder: string }> = {
+export const CARD_COPY: Record<
+  CardKind,
+  { label: string; hint: string; placeholder: string; maxLength: number }
+> = {
   weapon: {
     label: 'Weapon',
-    hint: 'Something harmless you tag them with.',
+    hint: 'An everyday object the hunter tags them with.',
+    maxLength: 60,
     placeholder: 'A rubber duck',
   },
   place: {
     label: 'Place',
     hint: 'Where the hit has to happen.',
+    maxLength: 60,
     placeholder: 'The kitchen',
   },
-  object: {
-    label: 'Object',
-    hint: 'Must be in shot. Bonus, not required.',
-    placeholder: 'A mug',
+  phrase: {
+    label: 'Phrase',
+    hint: 'What the hunter has to say once they have got them.',
+    placeholder: 'The eagle has landed',
+    maxLength: 80,
   },
 }
 
 export const SUGGESTIONS: Record<CardKind, readonly string[]> = {
   weapon: ['Wooden spoon', 'Sock', 'Banana', 'Post-it note', 'Teaspoon', 'Pool noodle', 'Feather'],
   place: ['Kitchen', 'Lift', 'Car park', 'Staircase', 'Bus stop', 'Garden', 'Front door'],
-  object: ['Mug', 'Umbrella', 'Plant', 'Hat', 'Phone charger', 'Biscuit', 'Remote control'],
+  phrase: [
+    'The eagle has landed',
+    'Nothing personal',
+    'Tag, you’re it',
+    'Sweet dreams',
+    'Checkmate',
+    'I’ll be back',
+    'You never saw me',
+  ],
 }

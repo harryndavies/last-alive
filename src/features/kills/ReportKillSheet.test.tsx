@@ -38,7 +38,7 @@ const mission: Mission = {
   created_at: '2026-10-01T00:00:00Z',
   weapon: { text: 'Sock' },
   place: { text: 'Kitchen' },
-  object: { text: 'Mug' },
+  phrase: { text: 'The eagle has landed' },
 }
 
 function renderSheet() {
@@ -58,28 +58,29 @@ function renderSheet() {
 }
 
 describe('ReportKillSheet', () => {
-  it('needs the weapon and place ticked before you can confirm', async () => {
+  it('needs the weapon, place and phrase ticked before you can confirm', async () => {
     renderSheet()
     const confirm = screen.getByRole('button', { name: 'Confirm the kill' })
     expect(confirm).toBeDisabled()
     await userEvent.click(screen.getByRole('checkbox', { name: /Weapon/ }))
     expect(confirm).toBeDisabled()
     await userEvent.click(screen.getByRole('checkbox', { name: /Place/ }))
+    expect(confirm).toBeDisabled()
+    await userEvent.click(screen.getByRole('checkbox', { name: /Said the phrase/ }))
     expect(confirm).toBeEnabled()
   })
 
-  it('reports the kill with the object bonus and note', async () => {
+  it('reports the kill with its note', async () => {
     rpc.mockResolvedValue('kill-id')
     const { onClose } = renderSheet()
     await userEvent.click(screen.getByRole('checkbox', { name: /Weapon/ }))
     await userEvent.click(screen.getByRole('checkbox', { name: /Place/ }))
-    await userEvent.click(screen.getByRole('checkbox', { name: /Object in shot/ }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /Said the phrase/ }))
     await userEvent.type(screen.getByRole('textbox', { name: /Note/ }), 'In the fridge')
     await userEvent.click(screen.getByRole('button', { name: 'Confirm the kill' }))
     expect(rpc).toHaveBeenCalledWith('report_kill', {
       p_game_id: target.game_id,
       p_victim_id: target.id,
-      p_used_object: true,
       p_note: 'In the fridge',
     })
     await vi.waitFor(() => expect(onClose).toHaveBeenCalled())

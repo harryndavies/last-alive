@@ -4,10 +4,10 @@ import type { CardKind } from './suggestions'
 const TONE: Record<CardKind, string> = {
   weapon: 'bg-red',
   place: 'bg-blue',
-  object: 'bg-mint',
+  phrase: 'bg-mint',
 }
-const ICON: Record<CardKind, string> = { weapon: '🗡', place: '⌖', object: '◆' }
-const LABEL: Record<CardKind, string> = { weapon: 'Weapon', place: 'Place', object: 'Object' }
+const ICON: Record<CardKind, string> = { weapon: '🗡', place: '⌖', phrase: '❝' }
+const LABEL: Record<CardKind, string> = { weapon: 'Weapon', place: 'Place', phrase: 'Say' }
 
 export interface PlayingCardProps {
   kind: CardKind
@@ -20,7 +20,7 @@ export interface PlayingCardProps {
 
 const TILT = { [-2]: '-rotate-2', [-1]: '-rotate-1', 0: '', 1: 'rotate-1', 2: 'rotate-2' } as const
 
-/** A weapon / place / object card. */
+/** A weapon / place / phrase card. */
 export function PlayingCard({ kind, text, tilt = 0, badge, hidden, className }: PlayingCardProps) {
   return (
     <div
@@ -35,7 +35,6 @@ export function PlayingCard({ kind, text, tilt = 0, badge, hidden, className }: 
         <span className="label-mono">
           <span aria-hidden="true">{ICON[kind]} </span>
           {LABEL[kind]}
-          {kind === 'object' && <span className="opacity-80"> · bonus</span>}
         </span>
         {badge && (
           <span className="rotate-3 rounded-md border-2 border-ink bg-yellow px-1.5 label-mono shadow-hard-sm">
@@ -49,7 +48,7 @@ export function PlayingCard({ kind, text, tilt = 0, badge, hidden, className }: 
           hidden && 'tracking-widest select-none',
         )}
       >
-        {hidden ? '••••••••' : text}
+        {hidden ? '••••••••' : kind === 'phrase' ? `“${text}”` : text}
       </p>
     </div>
   )

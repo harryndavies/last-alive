@@ -26,16 +26,15 @@ const ev = (id: number, type: string, payload: Record<string, unknown> = {}): Ga
 })
 
 describe('describeEvent', () => {
-  it('describes a confirmed kill with the object bonus and auto-confirm', () => {
+  it('describes a confirmed kill that was auto-confirmed', () => {
     const item = describeEvent(
       ev(1, 'kill_confirmed', {
         killer_name: 'Ana',
         victim_name: 'Ben',
-        used_object: true,
         resolved_by: 'auto',
       }),
     )
-    expect(item?.text).toBe('Ana got Ben (+ object bonus)')
+    expect(item?.text).toBe('Ana got Ben')
     expect(item?.detail).toMatch(/12h/)
   })
 
