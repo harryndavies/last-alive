@@ -1,0 +1,6 @@
+dist
+node_modules
+supabase/.temp
+src/routeTree.gen.ts
+src/lib/database.types.ts
+package-lock.json
