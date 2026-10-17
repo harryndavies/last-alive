@@ -10,63 +10,158 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NewRouteImport } from './routes/new'
+import { Route as GCodeRouteRouteImport } from './routes/g/$code/route'
+import { Route as JoinCodeRouteImport } from './routes/join.$code'
 import { Route as GCodeIndexRouteImport } from './routes/g/$code/index'
 import { Route as GCodeBoardRouteImport } from './routes/g/$code/board'
+import { Route as GCodeCardsRouteImport } from './routes/g/$code/cards'
+import { Route as GCodeLobbyRouteImport } from './routes/g/$code/lobby'
 import { Route as GCodeMissionRouteImport } from './routes/g/$code/mission'
+import { Route as GCodeNewMissionRouteImport } from './routes/g/$code/new-mission'
+import { Route as GCodeWinnerRouteImport } from './routes/g/$code/winner'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GCodeIndexRoute = GCodeIndexRouteImport.update({
-  id: '/g/$code/',
-  path: '/g/$code/',
+const NewRoute = NewRouteImport.update({
+  id: '/new',
+  path: '/new',
   getParentRoute: () => rootRouteImport,
+} as any)
+const GCodeRouteRoute = GCodeRouteRouteImport.update({
+  id: '/g/$code',
+  path: '/g/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinCodeRoute = JoinCodeRouteImport.update({
+  id: '/join/$code',
+  path: '/join/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GCodeIndexRoute = GCodeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GCodeRouteRoute,
 } as any)
 const GCodeBoardRoute = GCodeBoardRouteImport.update({
-  id: '/g/$code/board',
-  path: '/g/$code/board',
-  getParentRoute: () => rootRouteImport,
+  id: '/board',
+  path: '/board',
+  getParentRoute: () => GCodeRouteRoute,
+} as any)
+const GCodeCardsRoute = GCodeCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => GCodeRouteRoute,
+} as any)
+const GCodeLobbyRoute = GCodeLobbyRouteImport.update({
+  id: '/lobby',
+  path: '/lobby',
+  getParentRoute: () => GCodeRouteRoute,
 } as any)
 const GCodeMissionRoute = GCodeMissionRouteImport.update({
-  id: '/g/$code/mission',
-  path: '/g/$code/mission',
-  getParentRoute: () => rootRouteImport,
+  id: '/mission',
+  path: '/mission',
+  getParentRoute: () => GCodeRouteRoute,
+} as any)
+const GCodeNewMissionRoute = GCodeNewMissionRouteImport.update({
+  id: '/new-mission',
+  path: '/new-mission',
+  getParentRoute: () => GCodeRouteRoute,
+} as any)
+const GCodeWinnerRoute = GCodeWinnerRouteImport.update({
+  id: '/winner',
+  path: '/winner',
+  getParentRoute: () => GCodeRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/new': typeof NewRoute
+  '/g/$code': typeof GCodeRouteRouteWithChildren
+  '/join/$code': typeof JoinCodeRoute
   '/g/$code/board': typeof GCodeBoardRoute
+  '/g/$code/cards': typeof GCodeCardsRoute
+  '/g/$code/lobby': typeof GCodeLobbyRoute
   '/g/$code/mission': typeof GCodeMissionRoute
+  '/g/$code/new-mission': typeof GCodeNewMissionRoute
+  '/g/$code/winner': typeof GCodeWinnerRoute
   '/g/$code/': typeof GCodeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/new': typeof NewRoute
+  '/join/$code': typeof JoinCodeRoute
   '/g/$code/board': typeof GCodeBoardRoute
+  '/g/$code/cards': typeof GCodeCardsRoute
+  '/g/$code/lobby': typeof GCodeLobbyRoute
   '/g/$code/mission': typeof GCodeMissionRoute
+  '/g/$code/new-mission': typeof GCodeNewMissionRoute
+  '/g/$code/winner': typeof GCodeWinnerRoute
   '/g/$code': typeof GCodeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/new': typeof NewRoute
+  '/g/$code': typeof GCodeRouteRouteWithChildren
+  '/join/$code': typeof JoinCodeRoute
   '/g/$code/board': typeof GCodeBoardRoute
+  '/g/$code/cards': typeof GCodeCardsRoute
+  '/g/$code/lobby': typeof GCodeLobbyRoute
   '/g/$code/mission': typeof GCodeMissionRoute
+  '/g/$code/new-mission': typeof GCodeNewMissionRoute
+  '/g/$code/winner': typeof GCodeWinnerRoute
   '/g/$code/': typeof GCodeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/g/$code/board' | '/g/$code/mission' | '/g/$code/'
+  fullPaths:
+    | '/'
+    | '/new'
+    | '/g/$code'
+    | '/join/$code'
+    | '/g/$code/board'
+    | '/g/$code/cards'
+    | '/g/$code/lobby'
+    | '/g/$code/mission'
+    | '/g/$code/new-mission'
+    | '/g/$code/winner'
+    | '/g/$code/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/g/$code/board' | '/g/$code/mission' | '/g/$code'
-  id: '__root__' | '/' | '/g/$code/board' | '/g/$code/mission' | '/g/$code/'
+  to:
+    | '/'
+    | '/new'
+    | '/join/$code'
+    | '/g/$code/board'
+    | '/g/$code/cards'
+    | '/g/$code/lobby'
+    | '/g/$code/mission'
+    | '/g/$code/new-mission'
+    | '/g/$code/winner'
+    | '/g/$code'
+  id:
+    | '__root__'
+    | '/'
+    | '/new'
+    | '/g/$code'
+    | '/join/$code'
+    | '/g/$code/board'
+    | '/g/$code/cards'
+    | '/g/$code/lobby'
+    | '/g/$code/mission'
+    | '/g/$code/new-mission'
+    | '/g/$code/winner'
+    | '/g/$code/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  GCodeBoardRoute: typeof GCodeBoardRoute
-  GCodeMissionRoute: typeof GCodeMissionRoute
-  GCodeIndexRoute: typeof GCodeIndexRoute
+  NewRoute: typeof NewRoute
+  GCodeRouteRoute: typeof GCodeRouteRouteWithChildren
+  JoinCodeRoute: typeof JoinCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -78,35 +173,108 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/new': {
+      id: '/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof NewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/g/$code': {
+      id: '/g/$code'
+      path: '/g/$code'
+      fullPath: '/g/$code'
+      preLoaderRoute: typeof GCodeRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join/$code': {
+      id: '/join/$code'
+      path: '/join/$code'
+      fullPath: '/join/$code'
+      preLoaderRoute: typeof JoinCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/g/$code/': {
       id: '/g/$code/'
-      path: '/g/$code'
+      path: '/'
       fullPath: '/g/$code/'
       preLoaderRoute: typeof GCodeIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof GCodeRouteRoute
     }
     '/g/$code/board': {
       id: '/g/$code/board'
-      path: '/g/$code/board'
+      path: '/board'
       fullPath: '/g/$code/board'
       preLoaderRoute: typeof GCodeBoardRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof GCodeRouteRoute
+    }
+    '/g/$code/cards': {
+      id: '/g/$code/cards'
+      path: '/cards'
+      fullPath: '/g/$code/cards'
+      preLoaderRoute: typeof GCodeCardsRouteImport
+      parentRoute: typeof GCodeRouteRoute
+    }
+    '/g/$code/lobby': {
+      id: '/g/$code/lobby'
+      path: '/lobby'
+      fullPath: '/g/$code/lobby'
+      preLoaderRoute: typeof GCodeLobbyRouteImport
+      parentRoute: typeof GCodeRouteRoute
     }
     '/g/$code/mission': {
       id: '/g/$code/mission'
-      path: '/g/$code/mission'
+      path: '/mission'
       fullPath: '/g/$code/mission'
       preLoaderRoute: typeof GCodeMissionRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof GCodeRouteRoute
+    }
+    '/g/$code/new-mission': {
+      id: '/g/$code/new-mission'
+      path: '/new-mission'
+      fullPath: '/g/$code/new-mission'
+      preLoaderRoute: typeof GCodeNewMissionRouteImport
+      parentRoute: typeof GCodeRouteRoute
+    }
+    '/g/$code/winner': {
+      id: '/g/$code/winner'
+      path: '/winner'
+      fullPath: '/g/$code/winner'
+      preLoaderRoute: typeof GCodeWinnerRouteImport
+      parentRoute: typeof GCodeRouteRoute
     }
   }
 }
 
+interface GCodeRouteRouteChildren {
+  GCodeBoardRoute: typeof GCodeBoardRoute
+  GCodeCardsRoute: typeof GCodeCardsRoute
+  GCodeLobbyRoute: typeof GCodeLobbyRoute
+  GCodeMissionRoute: typeof GCodeMissionRoute
+  GCodeNewMissionRoute: typeof GCodeNewMissionRoute
+  GCodeWinnerRoute: typeof GCodeWinnerRoute
+  GCodeIndexRoute: typeof GCodeIndexRoute
+}
+
+const GCodeRouteRouteChildren: GCodeRouteRouteChildren = {
+  GCodeBoardRoute: GCodeBoardRoute,
+  GCodeCardsRoute: GCodeCardsRoute,
+  GCodeLobbyRoute: GCodeLobbyRoute,
+  GCodeMissionRoute: GCodeMissionRoute,
+  GCodeNewMissionRoute: GCodeNewMissionRoute,
+  GCodeWinnerRoute: GCodeWinnerRoute,
+  GCodeIndexRoute: GCodeIndexRoute,
+}
+
+const GCodeRouteRouteWithChildren = GCodeRouteRoute._addFileChildren(
+  GCodeRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  GCodeBoardRoute: GCodeBoardRoute,
-  GCodeMissionRoute: GCodeMissionRoute,
-  GCodeIndexRoute: GCodeIndexRoute,
+  NewRoute: NewRoute,
+  GCodeRouteRoute: GCodeRouteRouteWithChildren,
+  JoinCodeRoute: JoinCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
