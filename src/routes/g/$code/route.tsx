@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, redirect, useLocation, useNavigate } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { TabBar } from '@/components'
 import { guardRedirect, screenFromPath, screenPath } from '@/features/game/guard'
@@ -6,6 +7,7 @@ import { gameQuery, playersQuery, useGameContext } from '@/features/game/queries
 import { useGameRealtime } from '@/features/game/realtime'
 import { normaliseCode } from '@/features/game/schemas'
 import { KillAlert } from '@/features/kills/KillAlert'
+import { hasSeenMission, missionQuery } from '@/features/missions/queries'
 import { useUserId } from '@/lib/useUserId'
 
 export const Route = createFileRoute('/g/$code')({
@@ -44,6 +46,18 @@ function GameLayout() {
     const target = guardRedirect(game.status, alive, screenFromPath(pathname))
     if (target) void navigate({ to: screenPath(target), params: { code }, replace: true })
   }, [game.status, alive, pathname, code, navigate])
+
+  // Inherited a mission you have not looked at yet: show "New mission unlocked".
+  const { data: mission } = useQuery({
+    ...missionQuery(game.id),
+    enabled: game.status === 'active' && alive,
+  })
+  const unseenInherited = mission?.inherited_from && !hasSeenMission(mission.id) ? mission.id : null
+  useEffect(() => {
+    if (unseenInherited && screenFromPath(pathname) !== 'new-mission') {
+      void navigate({ to: '/g/$code/new-mission', params: { code } })
+    }
+  }, [unseenInherited, pathname, code, navigate])
 
   return (
     <>

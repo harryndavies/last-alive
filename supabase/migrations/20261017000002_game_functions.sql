@@ -226,6 +226,39 @@ as $$
   where killer_id = p_player_id and status in ('pending', 'disputed')
 $$;
 
+-- Picks the card to inherit. Keeps the victim's card unless the new hunter
+-- wrote it themselves; then swaps in the same kind of card from the hunter's
+-- just-finished mission (now free, and never their own), or failing that any
+-- card of that kind they did not write, preferring ones not on a live mission.
+create function private.inheritable_card(p_card uuid, p_fallback uuid, p_hunter uuid)
+returns uuid
+language plpgsql
+set search_path = ''
+as $$
+declare
+  v_card public.cards;
+  v_alt uuid;
+begin
+  select * into v_card from public.cards where id = p_card;
+  if v_card.submitted_by <> p_hunter then
+    return p_card;
+  end if;
+  if p_fallback is not null
+    and (select submitted_by from public.cards where id = p_fallback) <> p_hunter then
+    return p_fallback;
+  end if;
+  select c.id into v_alt
+  from public.cards c
+  where c.game_id = v_card.game_id and c.kind = v_card.kind and c.submitted_by <> p_hunter
+  order by exists (
+    select 1 from public.missions m
+    where m.is_active and c.id in (m.weapon_card_id, m.place_card_id, m.object_card_id)
+  ), random()
+  limit 1;
+  return coalesce(v_alt, p_card);
+end;
+$$;
+
 -- Moves the dead/leaving player's active mission to their hunter.
 -- Returns the new mission id, or null if the hunter would be hunting themself.
 create function private.pass_mission_on(p_from uuid, p_to uuid)
@@ -234,12 +267,14 @@ language plpgsql
 set search_path = ''
 as $$
 declare
+  v_old public.missions;
   v_inherit public.missions;
   v_new uuid;
 begin
   -- The hunter's own mission (on the departing player) is done.
   update public.missions set is_active = false, ended_at = now()
-  where hunter_id = p_to and is_active;
+  where hunter_id = p_to and is_active
+  returning * into v_old;
 
   -- Take the departing player's mission.
   update public.missions set is_active = false, ended_at = now()
@@ -253,8 +288,11 @@ begin
   insert into public.missions (
     game_id, hunter_id, target_id, weapon_card_id, place_card_id, object_card_id, inherited_from
   ) values (
-    v_inherit.game_id, p_to, v_inherit.target_id, v_inherit.weapon_card_id,
-    v_inherit.place_card_id, v_inherit.object_card_id, v_inherit.id
+    v_inherit.game_id, p_to, v_inherit.target_id,
+    private.inheritable_card(v_inherit.weapon_card_id, v_old.weapon_card_id, p_to),
+    private.inheritable_card(v_inherit.place_card_id, v_old.place_card_id, p_to),
+    private.inheritable_card(v_inherit.object_card_id, v_old.object_card_id, p_to),
+    v_inherit.id
   )
   returning id into v_new;
   return v_new;

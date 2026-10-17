@@ -2,7 +2,7 @@
 -- confirmation + inheritance, auto-confirm, idempotency and winner detection.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(47);
+select plan(50);
 
 -- Pretend to be a signed-in anonymous user. RPCs only look at auth.uid(), so for
 -- them we stay as postgres; RLS checks below also switch the role.
@@ -188,12 +188,19 @@ select is((select kills_count from public.players where id = pg_temp.pid('a')), 
 select is((select killed_by from public.players where id = pg_temp.v('t1')::uuid), pg_temp.pid('a'),
   'victim records who got them');
 select ok((
-  select m.target_id = v.target_id and m.weapon_card_id = v.weapon_card_id
-    and m.place_card_id = v.place_card_id and m.object_card_id = v.object_card_id
-    and m.inherited_from = v.id
+  select m.target_id = v.target_id and m.inherited_from = v.id
   from public.missions m, public.missions v
   where m.hunter_id = pg_temp.pid('a') and m.is_active and v.id = pg_temp.v('victim_mission')::uuid
-), 'killer inherits the victim''s target and cards');
+), 'killer inherits the victim''s target');
+select ok((
+  select bool_and(new_card = old_card or old_owner = pg_temp.pid('a'))
+  from public.missions m, public.missions v,
+    lateral (values
+      (m.weapon_card_id, v.weapon_card_id), (m.place_card_id, v.place_card_id),
+      (m.object_card_id, v.object_card_id)) as pair(new_card, old_card),
+    lateral (select submitted_by as old_owner from public.cards where id = pair.old_card) o
+  where m.hunter_id = pg_temp.pid('a') and m.is_active and v.id = pg_temp.v('victim_mission')::uuid
+), 'killer inherits the victim''s cards (except any they wrote themselves)');
 select is((select count(*)::int from public.missions where hunter_id = pg_temp.v('t1')::uuid and is_active),
   0, 'victim has no active mission');
 select is((select count(*)::int from public.events where type = 'kill_confirmed'), 1,
@@ -238,6 +245,16 @@ select is((select status::text from public.games where id = pg_temp.v('game')::u
 select is((select winner_player_id from public.games where id = pg_temp.v('game')::uuid), pg_temp.pid('a'),
   'the last one alive wins');
 select is((select count(*)::int from public.events where type = 'game_finished'), 1, 'winner is announced');
+select is((
+  select count(*)::int from public.missions m
+  join public.cards w on w.id = m.weapon_card_id
+  join public.cards p on p.id = m.place_card_id
+  join public.cards o on o.id = m.object_card_id
+  where m.game_id = pg_temp.v('game')::uuid
+    and m.hunter_id in (w.submitted_by, p.submitted_by, o.submitted_by)
+), 0, 'after every inheritance, still nobody ever held their own card');
+select is((select count(*)::int from public.missions where game_id = pg_temp.v('game')::uuid and is_active),
+  0, 'no missions stay active after the game ends');
 
 select * from finish();
 rollback;
