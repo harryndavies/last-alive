@@ -10,3 +10,4 @@ scripts/.bots.json
 supabase/.db-password
 .vercel
 .env*
+.claude/hooks/.logs/
