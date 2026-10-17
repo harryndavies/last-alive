@@ -2,6 +2,8 @@ import { Link } from '@tanstack/react-router'
 
 export interface TabBarProps {
   code: string
+  /** Dead players have no mission, so the tab is hidden. */
+  spectator?: boolean
 }
 
 const TABS = [
@@ -10,14 +12,15 @@ const TABS = [
   { to: '/g/$code/board', label: 'Board', icon: '☰', exact: false },
 ] as const
 
-export function TabBar({ code }: TabBarProps) {
+export function TabBar({ code, spectator }: TabBarProps) {
+  const tabs = spectator ? TABS.filter((t) => t.label !== 'Mission') : TABS
   return (
     <nav
       aria-label="Game"
       className="fixed inset-x-0 bottom-0 z-20 border-t-3 border-ink bg-paper pb-[env(safe-area-inset-bottom)]"
     >
-      <ul className="mx-auto grid max-w-md grid-cols-3">
-        {TABS.map((tab) => (
+      <ul className={`mx-auto grid max-w-md ${tabs.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+        {tabs.map((tab) => (
           <li key={tab.to} className="border-ink not-last:border-r-3">
             <Link
               to={tab.to}

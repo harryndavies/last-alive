@@ -62,7 +62,7 @@ function GameLayout() {
   return (
     <>
       <Outlet />
-      {game.status === 'active' && <TabBar code={code} />}
+      {game.status === 'active' && <TabBar code={code} spectator={!alive} />}
       {game.status === 'active' && alive && <KillAlert gameId={game.id} me={me} />}
     </>
   )
