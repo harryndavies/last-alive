@@ -1,3 +1,4 @@
+import { KillPhoto } from '@/features/kills/KillPhoto'
 import { cn } from '@/lib/cn'
 import { timeAgo, type FeedItem } from './feed'
 
@@ -43,6 +44,13 @@ export function FeedList({
           <div className="min-w-0 flex-1">
             <p className="leading-snug font-bold">{item.text}</p>
             {item.detail && <p className="text-sm text-muted">{item.detail}</p>}
+            {item.photoPath && (
+              <KillPhoto
+                path={item.photoPath}
+                alt={item.text}
+                className="mt-2 aspect-[4/3] w-full rounded-lg"
+              />
+            )}
             <p className="mt-0.5 label-mono text-muted">
               <time dateTime={item.at}>{timeAgo(item.at)}</time>
             </p>

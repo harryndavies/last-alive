@@ -139,6 +139,18 @@ async function activeMission(bot) {
   return data
 }
 
+/** Uploads one of the fixture images as proof, like the app does. */
+async function uploadProof(bot) {
+  const { data } = await bot.sb.auth.getUser()
+  const file = join(here, 'fixtures', `proof-${(bot.index % 5) + 1}.jpg`)
+  const path = `${bot.gameId}/${data.user.id}/${crypto.randomUUID()}.jpg`
+  const { error } = await bot.sb.storage
+    .from('kill-photos')
+    .upload(path, readFileSync(file), { contentType: 'image/jpeg' })
+  if (error) throw new Error(`${bot.name} photo upload: ${error.message}`)
+  return path
+}
+
 async function cmdJoin(code, count = 5) {
   const existing = readState()[code] ?? []
   const bots = []
@@ -266,6 +278,7 @@ async function cmdHunt(code) {
         p_game_id: bot.gameId,
         p_victim_id: m.target_id,
         p_note: 'Got you by the kettle!',
+        p_photo_path: await uploadProof(bot),
       })
       console.log(`${bot.name} claims they got you. Check your phone.`)
       return
@@ -284,6 +297,7 @@ async function cmdKill(code) {
     const killId = await call(bot.sb, 'report_kill', {
       p_game_id: bot.gameId,
       p_victim_id: victim.playerId,
+      p_photo_path: await uploadProof(bot),
     })
     await call(victim.sb, 'respond_to_kill', { p_kill_id: killId, p_confirm: true })
     console.log(`${bot.name} got ${victim.name}`)

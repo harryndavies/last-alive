@@ -1,6 +1,7 @@
 import type { GameStatus } from './schemas'
 
-export type Screen = 'lobby' | 'cards' | 'home' | 'mission' | 'new-mission' | 'board' | 'winner'
+export type Screen =
+  'lobby' | 'cards' | 'home' | 'mission' | 'new-mission' | 'board' | 'killcam' | 'winner'
 
 const SCREENS: readonly Screen[] = [
   'lobby',
@@ -9,6 +10,7 @@ const SCREENS: readonly Screen[] = [
   'mission',
   'new-mission',
   'board',
+  'killcam',
   'winner',
 ]
 
@@ -28,9 +30,11 @@ export function allowedScreens(status: GameStatus, alive: boolean): readonly Scr
     case 'picking':
       return ['cards']
     case 'active':
-      return alive ? ['home', 'mission', 'new-mission', 'board'] : ['home', 'board']
+      return alive
+        ? ['home', 'mission', 'new-mission', 'board', 'killcam']
+        : ['home', 'board', 'killcam']
     case 'finished':
-      return ['winner', 'board']
+      return ['winner', 'board', 'killcam']
   }
 }
 

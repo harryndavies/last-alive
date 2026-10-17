@@ -97,14 +97,14 @@ isOneToOne: false
                   ]
                 },"kills": {
                   Row: {
-                    "created_at": string,"game_id": string,"id": string,"killer_id": string,"mission_id": string,"note": string | null,"resolved_at": string | null,"resolved_by": string | null,"status": Database["public"]['Enums']["kill_status"],"victim_id": string
+                    "created_at": string,"game_id": string,"id": string,"killer_id": string,"mission_id": string,"note": string | null,"photo_path": string | null,"resolved_at": string | null,"resolved_by": string | null,"status": Database["public"]['Enums']["kill_status"],"victim_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"game_id": string,"id"?: string,"killer_id": string,"mission_id": string,"note"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["kill_status"],"victim_id": string
+                    "created_at"?: string,"game_id": string,"id"?: string,"killer_id": string,"mission_id": string,"note"?: string | null,"photo_path"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["kill_status"],"victim_id": string
                   }
                   Update: {
-                    "created_at"?: string,"game_id"?: string,"id"?: string,"killer_id"?: string,"mission_id"?: string,"note"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["kill_status"],"victim_id"?: string
+                    "created_at"?: string,"game_id"?: string,"id"?: string,"killer_id"?: string,"mission_id"?: string,"note"?: string | null,"photo_path"?: string | null,"resolved_at"?: string | null,"resolved_by"?: string | null,"status"?: Database["public"]['Enums']["kill_status"],"victim_id"?: string
                   }
                   Relationships: [
                     {
@@ -227,11 +227,17 @@ isOneToOne: false
 "game_preview":
 { Args: { "p_code": string }; Returns: Json
                            },
+"games_due_for_cleanup":
+{ Args: Record<PropertyKey, never>; Returns: string[]
+                           },
 "get_kill_claim":
 { Args: { "p_kill_id": string }; Returns: Json
                            },
 "join_game":
 { Args: { "p_code": string,"p_colour": string,"p_name": string }; Returns: Json
+                           },
+"kill_photo_paths":
+{ Args: { "p_game_ids": (string)[] }; Returns: string[]
                            },
 "leave_game":
 { Args: { "p_game_id": string }; Returns: undefined
@@ -243,7 +249,7 @@ isOneToOne: false
 { Args: { "p_game_id": string,"p_player_id": string }; Returns: undefined
                            },
 "report_kill":
-{ Args: { "p_game_id": string,"p_note"?: string,"p_victim_id": string }; Returns: string
+{ Args: { "p_game_id": string,"p_note"?: string,"p_photo_path"?: string,"p_victim_id": string }; Returns: string
                            },
 "resolve_dispute":
 { Args: { "p_confirm": boolean,"p_kill_id": string }; Returns: Database["public"]['Enums']["kill_status"]

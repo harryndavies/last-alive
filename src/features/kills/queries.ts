@@ -15,6 +15,7 @@ export const KillSchema = z.object({
   victim_id: z.uuid(),
   status: KillStatus,
   note: z.string().nullable(),
+  photo_path: z.string().nullable(),
   created_at: z.string(),
   resolved_at: z.string().nullable(),
   resolved_by: z.string().nullable(),
@@ -33,6 +34,7 @@ export const ClaimSchema = z.object({
   place: z.string(),
   phrase: z.string(),
   note: z.string().nullable(),
+  photo_path: z.string().nullable(),
   created_at: z.string(),
   auto_confirm_at: z.string(),
 })
@@ -93,11 +95,12 @@ function useKillAction<TArgs>(gameId: string, run: (args: TArgs) => Promise<unkn
 }
 
 export const useReportKill = (gameId: string) =>
-  useKillAction(gameId, (input: { victimId: string; note: string }) =>
+  useKillAction(gameId, (input: { victimId: string; note: string; photoPath?: string }) =>
     rpc('report_kill', {
       p_game_id: gameId,
       p_victim_id: input.victimId,
       p_note: input.note.trim() || undefined,
+      p_photo_path: input.photoPath,
     }),
   )
 

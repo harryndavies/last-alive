@@ -4,9 +4,12 @@ import type { Player } from '@/features/game/schemas'
 import type { Mission } from '@/features/missions/queries'
 import { cn } from '@/lib/cn'
 import { errorMessage } from '@/lib/errors'
+import { uploadKillPhoto } from './photos'
+import { PhotoPicker } from './PhotoPicker'
 import { useReportKill } from './queries'
 
 export interface ReportKillSheetProps {
+  userId: string
   open: boolean
   onClose: () => void
   gameId: string
@@ -48,18 +51,41 @@ function Tick({
   )
 }
 
-export function ReportKillSheet({ open, onClose, gameId, mission, target }: ReportKillSheetProps) {
+export function ReportKillSheet({
+  userId,
+  open,
+  onClose,
+  gameId,
+  mission,
+  target,
+}: ReportKillSheetProps) {
   const report = useReportKill(gameId)
+  const [photo, setPhoto] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const [weapon, setWeapon] = useState(false)
   const [place, setPlace] = useState(false)
   const [phrase, setPhrase] = useState(false)
   const [note, setNote] = useState('')
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault()
     if (!weapon || !place || !phrase) return
+    let photoPath: string | undefined
+    if (photo) {
+      setUploading(true)
+      setUploadError(null)
+      try {
+        photoPath = await uploadKillPhoto(gameId, userId, photo)
+      } catch (err) {
+        setUploadError(errorMessage(err))
+        return
+      } finally {
+        setUploading(false)
+      }
+    }
     report.mutate(
-      { victimId: target.id, note },
+      { victimId: target.id, note, photoPath },
       {
         onSuccess: () => {
           onClose()
@@ -67,6 +93,7 @@ export function ReportKillSheet({ open, onClose, gameId, mission, target }: Repo
           setPlace(false)
           setPhrase(false)
           setNote('')
+          setPhoto(null)
         },
       },
     )
@@ -74,7 +101,7 @@ export function ReportKillSheet({ open, onClose, gameId, mission, target }: Repo
 
   return (
     <Sheet open={open} onClose={onClose} title="Report a kill">
-      <form onSubmit={onSubmit} className="flex flex-col gap-3">
+      <form onSubmit={(e) => void onSubmit(e)} className="flex flex-col gap-3">
         <div className="mb-1 flex items-center gap-3">
           <Avatar name={target.name} colour={target.colour} />
           <p className="font-bold">
@@ -102,6 +129,7 @@ export function ReportKillSheet({ open, onClose, gameId, mission, target }: Repo
           value={`“${mission.phrase.text}”`}
           tone="bg-mint"
         />
+        <PhotoPicker file={photo} onChange={setPhoto} disabled={uploading || report.isPending} />
         <label className="flex flex-col gap-1.5">
           <span className="label-mono">Note (optional)</span>
           <textarea
@@ -113,6 +141,11 @@ export function ReportKillSheet({ open, onClose, gameId, mission, target }: Repo
             className="rounded-xl brut bg-paper px-3 py-2 font-medium shadow-hard-sm focus:outline-none"
           />
         </label>
+        {uploadError && (
+          <p role="alert" className="font-bold text-red-ink">
+            {uploadError}
+          </p>
+        )}
         {report.isError && (
           <p role="alert" className="font-bold text-red-ink">
             {errorMessage(report.error)}
@@ -124,7 +157,7 @@ export function ReportKillSheet({ open, onClose, gameId, mission, target }: Repo
           size="lg"
           block
           disabled={!weapon || !place || !phrase}
-          loading={report.isPending}
+          loading={uploading || report.isPending}
         >
           Confirm the kill
         </Button>

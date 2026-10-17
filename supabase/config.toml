@@ -439,3 +439,7 @@ verify_enabled = true
 
 [remotes.production.storage.vector]
 enabled = false
+
+# Called by pg_cron with a shared secret (x-cron-secret), not a user JWT.
+[functions.cleanup-games]
+verify_jwt = false

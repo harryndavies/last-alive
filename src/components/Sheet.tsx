@@ -27,7 +27,7 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
-      className="m-0 mt-auto max-h-[92dvh] w-full max-w-none bg-transparent p-0 backdrop:bg-ink/60 open:animate-slide-up sm:mx-auto sm:max-w-md"
+      className="m-0 mt-auto max-h-[92dvh] w-full max-w-none overflow-y-auto bg-transparent p-0 backdrop:bg-ink/60 open:animate-slide-up sm:mx-auto sm:max-w-md"
     >
       <div className="rounded-t-3xl brut border-b-0 bg-paper px-5 pt-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-ink" aria-hidden="true" />

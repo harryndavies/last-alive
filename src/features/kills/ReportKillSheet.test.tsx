@@ -46,6 +46,7 @@ function renderSheet() {
   render(
     <QueryClientProvider client={new QueryClient()}>
       <ReportKillSheet
+        userId="66666666-6666-4666-8666-666666666666"
         open
         onClose={onClose}
         gameId={target.game_id}
@@ -82,6 +83,7 @@ describe('ReportKillSheet', () => {
       p_game_id: target.game_id,
       p_victim_id: target.id,
       p_note: 'In the fridge',
+      p_photo_path: undefined,
     })
     await vi.waitFor(() => expect(onClose).toHaveBeenCalled())
   })

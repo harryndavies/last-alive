@@ -4,6 +4,7 @@ import { Avatar, Button, Tag } from '@/components'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import type { Player } from '@/features/game/schemas'
 import { errorMessage } from '@/lib/errors'
+import { KillPhoto } from './KillPhoto'
 import { claimQuery, killsQuery, pendingClaimAgainst, useRespondToKill } from './queries'
 
 function formatDeadline(iso: string): string {
@@ -62,6 +63,12 @@ function ConfirmDeath({ gameId, killId }: { gameId: string; killId: string }) {
                 <p className="font-display text-3xl uppercase">{claim.killer.name}</p>
               </div>
             </div>
+            <KillPhoto
+              eager
+              path={claim.photo_path}
+              alt={`${claim.killer.name}'s proof photo`}
+              className="aspect-[4/5] w-full rotate-1 rounded-2xl shadow-hard"
+            />
             <div className="grid gap-3">
               <PlayingCard kind="weapon" text={claim.weapon} tilt={1} />
               <PlayingCard kind="place" text={claim.place} tilt={-1} />

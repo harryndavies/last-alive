@@ -16,6 +16,7 @@ import { Route as JoinCodeRouteImport } from './routes/join.$code'
 import { Route as GCodeIndexRouteImport } from './routes/g/$code/index'
 import { Route as GCodeBoardRouteImport } from './routes/g/$code/board'
 import { Route as GCodeCardsRouteImport } from './routes/g/$code/cards'
+import { Route as GCodeKillcamRouteImport } from './routes/g/$code/killcam'
 import { Route as GCodeLobbyRouteImport } from './routes/g/$code/lobby'
 import { Route as GCodeMissionRouteImport } from './routes/g/$code/mission'
 import { Route as GCodeNewMissionRouteImport } from './routes/g/$code/new-mission'
@@ -56,6 +57,11 @@ const GCodeCardsRoute = GCodeCardsRouteImport.update({
   path: '/cards',
   getParentRoute: () => GCodeRouteRoute,
 } as any)
+const GCodeKillcamRoute = GCodeKillcamRouteImport.update({
+  id: '/killcam',
+  path: '/killcam',
+  getParentRoute: () => GCodeRouteRoute,
+} as any)
 const GCodeLobbyRoute = GCodeLobbyRouteImport.update({
   id: '/lobby',
   path: '/lobby',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/join/$code': typeof JoinCodeRoute
   '/g/$code/board': typeof GCodeBoardRoute
   '/g/$code/cards': typeof GCodeCardsRoute
+  '/g/$code/killcam': typeof GCodeKillcamRoute
   '/g/$code/lobby': typeof GCodeLobbyRoute
   '/g/$code/mission': typeof GCodeMissionRoute
   '/g/$code/new-mission': typeof GCodeNewMissionRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/join/$code': typeof JoinCodeRoute
   '/g/$code/board': typeof GCodeBoardRoute
   '/g/$code/cards': typeof GCodeCardsRoute
+  '/g/$code/killcam': typeof GCodeKillcamRoute
   '/g/$code/lobby': typeof GCodeLobbyRoute
   '/g/$code/mission': typeof GCodeMissionRoute
   '/g/$code/new-mission': typeof GCodeNewMissionRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/join/$code': typeof JoinCodeRoute
   '/g/$code/board': typeof GCodeBoardRoute
   '/g/$code/cards': typeof GCodeCardsRoute
+  '/g/$code/killcam': typeof GCodeKillcamRoute
   '/g/$code/lobby': typeof GCodeLobbyRoute
   '/g/$code/mission': typeof GCodeMissionRoute
   '/g/$code/new-mission': typeof GCodeNewMissionRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/join/$code'
     | '/g/$code/board'
     | '/g/$code/cards'
+    | '/g/$code/killcam'
     | '/g/$code/lobby'
     | '/g/$code/mission'
     | '/g/$code/new-mission'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/join/$code'
     | '/g/$code/board'
     | '/g/$code/cards'
+    | '/g/$code/killcam'
     | '/g/$code/lobby'
     | '/g/$code/mission'
     | '/g/$code/new-mission'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/join/$code'
     | '/g/$code/board'
     | '/g/$code/cards'
+    | '/g/$code/killcam'
     | '/g/$code/lobby'
     | '/g/$code/mission'
     | '/g/$code/new-mission'
@@ -215,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GCodeCardsRouteImport
       parentRoute: typeof GCodeRouteRoute
     }
+    '/g/$code/killcam': {
+      id: '/g/$code/killcam'
+      path: '/killcam'
+      fullPath: '/g/$code/killcam'
+      preLoaderRoute: typeof GCodeKillcamRouteImport
+      parentRoute: typeof GCodeRouteRoute
+    }
     '/g/$code/lobby': {
       id: '/g/$code/lobby'
       path: '/lobby'
@@ -249,6 +268,7 @@ declare module '@tanstack/react-router' {
 interface GCodeRouteRouteChildren {
   GCodeBoardRoute: typeof GCodeBoardRoute
   GCodeCardsRoute: typeof GCodeCardsRoute
+  GCodeKillcamRoute: typeof GCodeKillcamRoute
   GCodeLobbyRoute: typeof GCodeLobbyRoute
   GCodeMissionRoute: typeof GCodeMissionRoute
   GCodeNewMissionRoute: typeof GCodeNewMissionRoute
@@ -259,6 +279,7 @@ interface GCodeRouteRouteChildren {
 const GCodeRouteRouteChildren: GCodeRouteRouteChildren = {
   GCodeBoardRoute: GCodeBoardRoute,
   GCodeCardsRoute: GCodeCardsRoute,
+  GCodeKillcamRoute: GCodeKillcamRoute,
   GCodeLobbyRoute: GCodeLobbyRoute,
   GCodeMissionRoute: GCodeMissionRoute,
   GCodeNewMissionRoute: GCodeNewMissionRoute,

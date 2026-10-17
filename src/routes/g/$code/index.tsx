@@ -71,6 +71,7 @@ function Home() {
 function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
   const { game, players, me } = ctx
   const { code } = Route.useParams()
+  const userId = useUserId()
   const { report } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const { data: mission } = useQuery(missionQuery(game.id))
@@ -140,6 +141,7 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
       </TargetCard>
 
       <ReportKillSheet
+        userId={userId}
         open={!!report && !claim}
         onClose={() => setSheet(false)}
         gameId={game.id}

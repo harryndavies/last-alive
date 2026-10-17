@@ -59,6 +59,15 @@ function Winner() {
       </section>
 
       <div className="flex flex-col gap-3">
+        {totalKills > 0 && (
+          <Link
+            to="/g/$code/killcam"
+            params={{ code }}
+            className={buttonClasses('red', 'lg', true)}
+          >
+            ▶ Watch the kill cam
+          </Link>
+        )}
         <Link
           to="/g/$code/board"
           params={{ code }}

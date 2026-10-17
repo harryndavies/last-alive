@@ -75,3 +75,12 @@
 @utility brut {
   @apply border-3 border-ink;
 }
+
+@keyframes killcam-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}

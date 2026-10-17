@@ -60,7 +60,18 @@ function Board() {
             winnerId={game.winner_player_id}
           />
         ) : (
-          <FeedList items={kills} empty="No kills yet. Everyone is still breathing." />
+          <div className="flex flex-col gap-4">
+            {kills.some((k) => k.type === 'kill_confirmed') && (
+              <Link
+                to="/g/$code/killcam"
+                params={{ code }}
+                className={buttonClasses('red', 'md', true)}
+              >
+                ▶ {game.status === 'finished' ? 'Watch the kill cam' : 'Kill cam so far'}
+              </Link>
+            )}
+            <FeedList items={kills} empty="No kills yet. Everyone is still breathing." />
+          </div>
         )}
       </div>
 

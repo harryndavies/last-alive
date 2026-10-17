@@ -36,6 +36,7 @@ export interface FeedItem {
   icon: string
   text: string
   detail?: string
+  photoPath?: string
   tone: FeedTone
   at: string
 }
@@ -62,6 +63,7 @@ export function describeEvent(e: GameEvent): FeedItem | null {
         tone: 'red',
         text: `${str(p.killer_name)} got ${str(p.victim_name)}`,
         detail: [note, how].filter(Boolean).join(' ') || undefined,
+        photoPath: typeof p.photo_path === 'string' ? p.photo_path : undefined,
       }
     }
     case 'player_left':
