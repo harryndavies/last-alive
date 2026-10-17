@@ -197,12 +197,17 @@ async function cmdAuto(code, { dispute = false, once = false } = {}) {
     for (const bot of bots) {
       let { game, players } = await snapshot(bot)
       if (!game) {
-        // Another bots command (hunt, kill…) took the seat over with the PIN. Take it back.
+        // Another bots command (hunt, kill…) took the seat over with the PIN.
+        // Give it 10s to finish before taking the seat back, so the two
+        // processes do not snatch it from each other mid-action.
+        bot.lostAt ??= Date.now()
+        if (Date.now() - bot.lostAt < 10_000) continue
         const res = await call(bot.sb, 'reclaim_player', {
           p_code: code,
           p_name: bot.name,
           p_pin: bot.pin,
         })
+        bot.lostAt = undefined
         if (!res.ok) continue
         ;({ game, players } = await snapshot(bot))
         if (!game) continue
