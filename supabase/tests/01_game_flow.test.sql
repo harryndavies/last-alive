@@ -87,7 +87,7 @@ select lives_ok($$ select public.start_game(pg_temp.v('game')::uuid) $$, 'host s
 -- --- Ring generation -----------------------------------------------------
 select is((select count(*)::int from public.missions where game_id = pg_temp.v('game')::uuid and is_active),
   5, 'one active mission per player');
-select is((select count(*)::int from public.missions where hunter_id = target_id),
+select is((select count(*)::int from public.missions where hunter_id = target_id and game_id = pg_temp.v('game')::uuid),
   0, 'nobody hunts themselves');
 select is((
   with recursive walk(player, steps) as (
@@ -203,7 +203,7 @@ select ok((
 ), 'killer inherits the victim''s cards (except any they wrote themselves)');
 select is((select count(*)::int from public.missions where hunter_id = pg_temp.v('t1')::uuid and is_active),
   0, 'victim has no active mission');
-select is((select count(*)::int from public.events where type = 'kill_confirmed'), 1,
+select is((select count(*)::int from public.events where type = 'kill_confirmed' and game_id = pg_temp.v('game')::uuid), 1,
   'kill appears in the feed');
 
 select is(public.resolve_dispute(pg_temp.v('k1')::uuid, true)::text, 'confirmed', 'confirming again is a no-op');
@@ -244,7 +244,7 @@ select is((select status::text from public.games where id = pg_temp.v('game')::u
   'game ends when one player is left');
 select is((select winner_player_id from public.games where id = pg_temp.v('game')::uuid), pg_temp.pid('a'),
   'the last one alive wins');
-select is((select count(*)::int from public.events where type = 'game_finished'), 1, 'winner is announced');
+select is((select count(*)::int from public.events where type = 'game_finished' and game_id = pg_temp.v('game')::uuid), 1, 'winner is announced');
 select is((
   select count(*)::int from public.missions m
   join public.cards w on w.id = m.weapon_card_id

@@ -113,7 +113,7 @@ select ok((select m.target_id = l.target_id and m.inherited_from = l.id
   from public.missions m, public.missions l
   where m.hunter_id = pg_temp.v('hunter')::uuid and m.is_active and l.id = pg_temp.v('leaver_mission')::uuid),
   'the leaver''s hunter inherits their mission');
-select is((select count(*)::int from public.events where type = 'player_left' and payload->>'name' = 'Dan'),
+select is((select count(*)::int from public.events where type = 'player_left' and payload->>'name' = 'Dan' and game_id = pg_temp.v('game')::uuid),
   1, 'leaving is in the feed');
 select is((select count(*)::int from public.missions where game_id = pg_temp.v('game')::uuid and is_active),
   4, 'ring is intact: one mission per living player');
