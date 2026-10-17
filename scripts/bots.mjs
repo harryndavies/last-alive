@@ -157,9 +157,10 @@ async function cmdJoin(code, count = 5) {
     }
     bot.pin = res.pin
     bots.push(bot)
+    // Save as we go, so an interrupted run never leaves bots without their PIN.
+    saveBots(code, [...existing, ...bots])
     console.log(`+ ${bot.name} joined`)
   }
-  saveBots(code, [...existing, ...bots])
 }
 
 async function cmdSeed() {
