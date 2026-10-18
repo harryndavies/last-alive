@@ -217,6 +217,23 @@ Import the repo. `vercel.json` already sets the Vite build, the SPA rewrites and
 headers. Add the environment variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, then
 deploy. In Supabase, set **Auth → URL Configuration → Site URL** to the Vercel URL.
 
+This one repo feeds two Vercel projects, both connected to GitHub, so a push to `main` deploys:
+
+| Vercel project    | Root directory | Rebuilds when                    |
+| ----------------- | -------------- | -------------------------------- |
+| `last-alive`      | `/`            | anything outside `site/` changes |
+| `last-alive-site` | `site`         | anything in `site/` changes      |
+
+Database migrations and Edge Functions are not deployed automatically: run `npx supabase db
+push` and `npx supabase functions deploy` yourself, **before** pushing app code that depends
+on them.
+
+### CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs the type check, lint, Prettier, the unit tests,
+the build and the database tests on every push and pull request. Vercel doesn't wait for it, so
+watch for a red run.
+
 ### PWA
 
 `public/manifest.webmanifest`, the icons, and a small service worker (`public/sw.js`, registered
