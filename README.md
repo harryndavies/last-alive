@@ -201,3 +201,39 @@ deploy. In Supabase, set **Auth → URL Configuration → Site URL** to the Verc
 in production only) make the app installable to the home screen. The service worker caches the
 app shell and hashed assets. It never caches Supabase traffic, because a stale mission is worse
 than none.
+
+### Push notifications and scheduled cleanup
+
+Two Edge Functions are called by the database through `pg_net`, authenticated with a shared
+secret (`x-cron-secret`) rather than a user token:
+
+- `send-push`: delivers Web Push notifications. Deferred triggers on `kills` and `events` decide
+  who to notify.
+- `cleanup-games`: deletes expired games and their photos. `pg_cron` calls it daily.
+
+One-time set-up per Supabase project:
+
+```bash
+npx web-push generate-vapid-keys            # keep both halves
+npx supabase functions deploy send-push
+npx supabase functions deploy cleanup-games
+npx supabase secrets set CRON_SECRET=<random> VAPID_PUBLIC_KEY=<pub> VAPID_PRIVATE_KEY=<priv> \
+  VAPID_SUBJECT=https://last-alive-site.vercel.app
+```
+
+Then tell the database where the functions are, in the SQL editor:
+
+```sql
+select vault.create_secret('https://<ref>.supabase.co/functions/v1', 'last_alive_functions_url');
+select vault.create_secret('<same CRON_SECRET>', 'last_alive_cron_secret');
+```
+
+Finally, set `VITE_VAPID_PUBLIC_KEY=<pub>` on Vercel and redeploy. Without these, notifications
+are skipped and cleanup is a no-op. Game actions are unaffected either way.
+
+Locally, run `npx supabase functions serve --env-file supabase/functions/.env` and point the
+Vault URL at `http://kong:8000/functions/v1`.
+
+On iPhone, Web Push only works once the app is added to the home screen (iOS 16.4+). A home
+screen web app has its own storage, so players reclaim their seat there with their name and
+PIN.
