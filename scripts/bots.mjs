@@ -40,7 +40,10 @@ function loadEnv() {
 
 const env = loadEnv()
 const APP_URL = process.env.APP_URL ?? 'http://localhost:5173'
-const NAMES = ['Botty', 'Robo', 'Chip', 'Gizmo', 'Bolt', 'Sprocket', 'Widget', 'Pixel', 'Servo']
+// BOT_NAMES="Sam,Priya,Jo" overrides these, e.g. for nicer screenshots.
+const NAMES = process.env.BOT_NAMES
+  ? process.env.BOT_NAMES.split(',').map((n) => n.trim())
+  : ['Botty', 'Robo', 'Chip', 'Gizmo', 'Bolt', 'Sprocket', 'Widget', 'Pixel', 'Servo']
 const COLOURS = ['red', 'blue', 'mint', 'pink', 'orange', 'purple', 'paper', 'yellow']
 const WEAPONS = [
   'Rubber duck',

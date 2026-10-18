@@ -3,6 +3,28 @@
 A mobile-first web app for playing a real-life assassin game with friends. No accounts: you join
 with a code, a name and a colour.
 
+**Play it:** [last-alive.vercel.app](https://last-alive.vercel.app) ·
+**How to play:** [last-alive-site.vercel.app](https://last-alive-site.vercel.app)
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/01-landing.jpg" width="180" alt="Landing screen"><br><sub>Start or join</sub></td>
+    <td align="center"><img src="docs/screenshots/02-lobby.jpg" width="180" alt="Lobby with game code and players"><br><sub>Lobby</sub></td>
+    <td align="center"><img src="docs/screenshots/03-qr.jpg" width="180" alt="QR code to join"><br><sub>Scan to join</sub></td>
+    <td align="center"><img src="docs/screenshots/04-mission.jpg" width="180" alt="Secret mission with target, weapon, place and phrase"><br><sub>Your secret mission</sub></td>
+    <td align="center"><img src="docs/screenshots/05-report-kill.jpg" width="180" alt="Reporting a kill with a proof photo"><br><sub>Report a kill</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/08-claim-alert.jpg" width="180" alt="Victim alert: someone says they got you"><br><sub>The victim's alert</sub></td>
+    <td align="center"><img src="docs/screenshots/06-new-mission.jpg" width="180" alt="Inheriting the victim's mission"><br><sub>Inherit their mission</sub></td>
+    <td align="center"><img src="docs/screenshots/07-feed.jpg" width="180" alt="Kill feed with photos, reactions and comments"><br><sub>Kill feed</sub></td>
+    <td align="center"><img src="docs/screenshots/09-kill-cam.jpg" width="180" alt="Kill cam replay slide"><br><sub>Kill cam replay</sub></td>
+    <td align="center"><img src="docs/screenshots/10-winner.jpg" width="180" alt="Winner screen with rematch"><br><sub>Winner and rematch</sub></td>
+  </tr>
+</table>
+
+<sub>Screenshots are from a demo game against the bot players in `scripts/bots.mjs`.</sub>
+
 1. The host creates a game and shares the code (e.g. `CLUE-7Q`).
 2. Everyone joins, then submits one **weapon** (anything you can hand someone), one **place** and one
    **phrase** card.
