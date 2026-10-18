@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, redirect, useLocation, useNavigate } from '@ta
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { TabBar } from '@/components'
-import { guardRedirect, screenFromPath, screenPath } from '@/features/game/guard'
+import { codeFromPath, guardRedirect, screenFromPath, screenPath } from '@/features/game/guard'
 import { gameQuery, playersQuery, useGameContext } from '@/features/game/queries'
 import { useGameRealtime } from '@/features/game/realtime'
 import { normaliseCode } from '@/features/game/schemas'
@@ -44,10 +44,15 @@ function GameLayout() {
 
   // Live guard: status changes arrive over realtime, so re-check on every change.
   const alive = me.status === 'alive'
+  // While navigating to another game (e.g. a rematch), this layout briefly sees
+  // the other game's path. Only guard paths that belong to this game.
+  const ownPath = codeFromPath(pathname) === code
+
   useEffect(() => {
+    if (!ownPath) return
     const target = guardRedirect(game.status, alive, screenFromPath(pathname))
     if (target) void navigate({ to: screenPath(target), params: { code }, replace: true })
-  }, [game.status, alive, pathname, code, navigate])
+  }, [game.status, alive, pathname, code, navigate, ownPath])
 
   // Inherited a mission you have not looked at yet: show "New mission unlocked".
   const { data: mission } = useQuery({
@@ -56,10 +61,10 @@ function GameLayout() {
   })
   const unseenInherited = mission?.inherited_from && !hasSeenMission(mission.id) ? mission.id : null
   useEffect(() => {
-    if (unseenInherited && screenFromPath(pathname) !== 'new-mission') {
+    if (ownPath && unseenInherited && screenFromPath(pathname) !== 'new-mission') {
       void navigate({ to: '/g/$code/new-mission', params: { code } })
     }
-  }, [unseenInherited, pathname, code, navigate])
+  }, [unseenInherited, pathname, code, navigate, ownPath])
 
   return (
     <>

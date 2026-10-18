@@ -10,6 +10,7 @@
 //   npm run bots -- dispute CODE    bots dispute open claims against them instead of confirming
 //   npm run bots -- status CODE     show who is alive
 //   npm run bots -- banter CODE     bots react to and comment on the latest kill
+//   npm run bots -- rematch CODE    bots join the rematch of a finished game
 //
 // Bots sign in anonymously and take their seat with reclaim_player + their PIN,
 // which is stored in scripts/.bots.json (gitignored).
@@ -341,6 +342,22 @@ async function cmdBanter(code) {
   )
 }
 
+async function cmdRematch(code) {
+  const bots = await connectBots(code)
+  const joined = []
+  let newCode = null
+  for (const bot of bots) {
+    const res = await call(bot.sb, 'join_rematch', { p_game_id: bot.gameId })
+    newCode = res.code
+    joined.push({ name: bot.name, pin: res.pin })
+    console.log(`+ ${bot.name} joined the rematch`)
+  }
+  if (newCode) {
+    saveBots(newCode, joined)
+    console.log(`Rematch is ${newCode}. Run: npm run bots -- auto ${newCode}`)
+  }
+}
+
 async function cmdStatus(code) {
   const [bot] = await connectBots(code)
   const { game, players } = await snapshot(bot)
@@ -361,13 +378,14 @@ const commands = {
   kill: () => cmdKill(upper),
   status: () => cmdStatus(upper),
   banter: () => cmdBanter(upper),
+  rematch: () => cmdRematch(upper),
 }
 
 if (!commands[cmd] || (cmd !== 'seed' && !upper)) {
   console.log(
     readFileSync(fileURLToPath(import.meta.url), 'utf8')
       .split('\n')
-      .slice(1, 15)
+      .slice(1, 16)
       .join('\n'),
   )
   process.exit(1)

@@ -71,14 +71,14 @@ isOneToOne: false
                   ]
                 },"games": {
                   Row: {
-                    "code": string,"created_at": string,"ends_at": string | null,"final_hour_announced_at": string | null,"finished_at": string | null,"host_player_id": string | null,"id": string,"name": string,"started_at": string | null,"status": Database["public"]['Enums']["game_status"],"sudden_death_announced_at": string | null,"winner_player_id": string | null
+                    "code": string,"created_at": string,"ends_at": string | null,"final_hour_announced_at": string | null,"finished_at": string | null,"host_player_id": string | null,"id": string,"name": string,"rematch_code": string | null,"rematch_game_id": string | null,"started_at": string | null,"status": Database["public"]['Enums']["game_status"],"sudden_death_announced_at": string | null,"winner_player_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "code": string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name": string,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"winner_player_id"?: string | null
+                    "code": string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name": string,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"winner_player_id"?: string | null
                   }
                   Update: {
-                    "code"?: string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name"?: string,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"winner_player_id"?: string | null
+                    "code"?: string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name"?: string,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"winner_player_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -86,6 +86,12 @@ isOneToOne: false
       columns: ["host_player_id"]
 isOneToOne: false
       referencedRelation: "players"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "games_rematch_game_id_fkey"
+      columns: ["rematch_game_id"]
+isOneToOne: false
+      referencedRelation: "games"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "games_winner_fk"
@@ -308,6 +314,9 @@ isOneToOne: false
 "create_game":
 { Args: { "p_colour": string,"p_game_name": string,"p_player_name": string }; Returns: Json
                            },
+"create_rematch":
+{ Args: { "p_game_id": string }; Returns: Json
+                           },
 "delete_comment":
 { Args: { "p_comment_id": string }; Returns: undefined
                            },
@@ -328,6 +337,9 @@ isOneToOne: false
                            },
 "join_game":
 { Args: { "p_code": string,"p_colour": string,"p_name": string }; Returns: Json
+                           },
+"join_rematch":
+{ Args: { "p_game_id": string }; Returns: Json
                            },
 "kill_photo_paths":
 { Args: { "p_game_ids": (string)[] }; Returns: string[]

@@ -38,6 +38,7 @@ const MESSAGES: Record<string, string> = {
   can_only_extend: 'Once the game has started you can only make it longer.',
   times_up: 'Time is up. No new kills can be claimed.',
   claim_already_open: 'You already have a claim waiting for an answer.',
+  no_rematch: 'Nobody has started a rematch yet.',
 }
 
 /** An error from one of our RPCs, carrying the short code the database raised. */

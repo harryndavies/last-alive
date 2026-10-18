@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { guardRedirect, screenFromPath } from './guard'
+import { codeFromPath, guardRedirect, screenFromPath } from './guard'
 
 describe('screenFromPath', () => {
   it('reads the screen segment', () => {
@@ -9,6 +9,14 @@ describe('screenFromPath', () => {
     expect(screenFromPath('/g/CLUE-7Q/new-mission')).toBe('new-mission')
     expect(screenFromPath('/g/CLUE-7Q/nope')).toBeNull()
     expect(screenFromPath('/')).toBeNull()
+  })
+})
+
+describe('codeFromPath', () => {
+  it('reads the game code', () => {
+    expect(codeFromPath('/g/CLUE-7Q/lobby')).toBe('CLUE-7Q')
+    expect(codeFromPath('/g/CLUE-7Q')).toBe('CLUE-7Q')
+    expect(codeFromPath('/join/CLUE-7Q')).toBeNull()
   })
 })
 

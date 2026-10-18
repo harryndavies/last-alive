@@ -3,6 +3,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { Avatar, buttonClasses, Card, StatBox, Tag } from '@/components'
 import { eventsQuery, standings } from '@/features/board/feed'
 import { StandingsList } from '@/features/board/StandingsList'
+import { RematchPanel } from '@/features/game/components/RematchPanel'
 import { useGameContext } from '@/features/game/queries'
 import { useUserId } from '@/lib/useUserId'
 
@@ -12,7 +13,8 @@ export const Route = createFileRoute('/g/$code/winner')({
 
 function Winner() {
   const { code } = Route.useParams()
-  const { game, players, me } = useGameContext(code, useUserId())
+  const userId = useUserId()
+  const { game, players, me } = useGameContext(code, userId)
   const { data: events = [] } = useQuery(eventsQuery(game.id))
   const onTime = events.find((e) => e.type === 'game_finished')?.payload.reason === 'time'
   const winner = players.find((p) => p.id === game.winner_player_id)
@@ -56,6 +58,8 @@ function Winner() {
         <StatBox label={days === 1 ? 'Day' : 'Days'} value={days} tone="pink" />
       </div>
 
+      <RematchPanel game={game} userId={userId} />
+
       <section aria-labelledby="final-heading" className="flex flex-col gap-3">
         <h2 id="final-heading" className="text-2xl">
           Final standings
@@ -68,7 +72,7 @@ function Winner() {
           <Link
             to="/g/$code/killcam"
             params={{ code }}
-            className={buttonClasses('red', 'lg', true)}
+            className={buttonClasses('yellow', 'lg', true)}
           >
             ▶ Watch the kill cam
           </Link>
@@ -81,8 +85,11 @@ function Winner() {
         >
           See every kill
         </Link>
-        <Link to="/new" className={buttonClasses('yellow', 'lg', true)}>
-          Play again
+        <Link
+          to="/new"
+          className="inline-flex min-h-11 items-center justify-center label-mono underline"
+        >
+          New game with different people
         </Link>
       </div>
     </main>

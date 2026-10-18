@@ -14,6 +14,11 @@ const SCREENS: readonly Screen[] = [
   'winner',
 ]
 
+/** The game code in a /g/$code/... path, or null. */
+export function codeFromPath(pathname: string): string | null {
+  return /^\/g\/([^/?#]+)/.exec(pathname)?.[1] ?? null
+}
+
 /** Which screen a /g/$code/... path is, or null for unknown sub-paths. */
 export function screenFromPath(pathname: string): Screen | null {
   const match = /^\/g\/[^/]+\/?([^/?#]*)/.exec(pathname)
