@@ -25,7 +25,7 @@ export type Slide =
       resolvedBy: string | null
       at: string
     }
-  | { kind: 'winner'; key: string; winner: Who | null; kills: number }
+  | { kind: 'winner'; key: string; winner: Who | null; kills: number; onTime: boolean }
 
 const text = (value: unknown): string | null =>
   typeof value === 'string' && value.trim() ? value : null
@@ -88,6 +88,7 @@ export function buildKillCam(events: GameEvent[], players: Player[], game: Game)
         ? { id: winner.id, name: winner.name, colour: winner.colour, photo: winner.avatar_path }
         : null,
       kills: winner?.kills_count ?? 0,
+      onTime: events.find((e) => e.type === 'game_finished')?.payload.reason === 'time',
     })
   }
   return slides

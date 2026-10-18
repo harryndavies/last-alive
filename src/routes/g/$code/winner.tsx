@@ -1,6 +1,7 @@
+import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Avatar, buttonClasses, Card, StatBox, Tag } from '@/components'
-import { standings } from '@/features/board/feed'
+import { eventsQuery, standings } from '@/features/board/feed'
 import { StandingsList } from '@/features/board/StandingsList'
 import { useGameContext } from '@/features/game/queries'
 import { useUserId } from '@/lib/useUserId'
@@ -12,6 +13,8 @@ export const Route = createFileRoute('/g/$code/winner')({
 function Winner() {
   const { code } = Route.useParams()
   const { game, players, me } = useGameContext(code, useUserId())
+  const { data: events = [] } = useQuery(eventsQuery(game.id))
+  const onTime = events.find((e) => e.type === 'game_finished')?.payload.reason === 'time'
   const winner = players.find((p) => p.id === game.winner_player_id)
   const rows = standings(players, game.winner_player_id)
   const totalKills = players.reduce((n, p) => n + p.kills_count, 0)
@@ -42,7 +45,7 @@ function Winner() {
         {winner && (
           <Avatar name={winner.name} colour={winner.colour} photo={winner.avatar_path} size="xl" />
         )}
-        <p className="label-mono">Last one alive</p>
+        <p className="label-mono">{onTime ? 'Time’s up · most kills' : 'Last one alive'}</p>
         <h1 className="text-5xl break-words">{winner?.name ?? 'Nobody'}</h1>
         {winner?.id === me.id && <Tag tone="ink">That&rsquo;s you!</Tag>}
       </Card>

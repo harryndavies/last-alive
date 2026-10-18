@@ -4,6 +4,7 @@ import { Button, buttonClasses, Card, PageHeader, Tag } from '@/components'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import { useGameContext } from '@/features/game/queries'
 import { missionQuery } from '@/features/missions/queries'
+import { DeadlineBanner } from '@/features/game/components/Deadline'
 import { TargetCard } from '@/features/missions/TargetCard'
 import { useReveal } from '@/features/missions/useReveal'
 import { useUserId } from '@/lib/useUserId'
@@ -14,7 +15,7 @@ export const Route = createFileRoute('/g/$code/mission')({
 
 function MissionScreen() {
   const { code } = Route.useParams()
-  const { game, players } = useGameContext(code, useUserId())
+  const { game, players, me } = useGameContext(code, useUserId())
   const { data: mission } = useSuspenseQuery(missionQuery(game.id))
   const [revealed, toggle] = useReveal()
   const hidden = !revealed
@@ -25,6 +26,7 @@ function MissionScreen() {
       <PageHeader kicker="Top secret" title="Your mission">
         <p className="font-medium">Only you can see this. Keep your screen to yourself.</p>
       </PageHeader>
+      <DeadlineBanner game={game} me={me} compact />
 
       {mission ? (
         <>

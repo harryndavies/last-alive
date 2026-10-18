@@ -16,6 +16,7 @@ export const GameSchema = z.object({
   created_at: z.string(),
   started_at: z.string().nullable(),
   finished_at: z.string().nullable(),
+  ends_at: z.string().nullable(),
 })
 export type Game = z.infer<typeof GameSchema>
 

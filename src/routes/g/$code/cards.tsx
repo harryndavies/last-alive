@@ -6,6 +6,7 @@ import { PlayingCard } from '@/features/cards/PlayingCard'
 import { CardsForm, myCardsQuery, useSubmitCards } from '@/features/cards/queries'
 import { CARD_COPY, CARD_KINDS, SUGGESTIONS, type CardKind } from '@/features/cards/suggestions'
 import { ChangePhotoSheet } from '@/features/game/components/ChangePhotoSheet'
+import { DeadlineEditor } from '@/features/game/components/Deadline'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
 import { QrSheet } from '@/features/game/components/QrSheet'
 import { gameKeys } from '@/features/game/keys'
@@ -41,6 +42,7 @@ function PickCards() {
       </PageHeader>
 
       <ProgressBar value={locked} max={players.length} label="Locked in" />
+      <DeadlineEditor game={game} me={me} />
 
       {me.cards_locked ? (
         <LockedCards gameId={game.id} playerId={me.id} />

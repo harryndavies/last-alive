@@ -25,11 +25,15 @@ export function DisputeCard({ gameId, killId }: { gameId: string; killId: string
         className="aspect-[4/5] w-full rounded-xl shadow-hard-sm"
         fallback={<p className="label-mono">No photo with this claim</p>}
       />
-      <ul className="space-y-1 label-mono">
-        <li>Weapon: {claim.weapon}</li>
-        <li>Place: {claim.place}</li>
-        <li>Phrase: “{claim.phrase}”</li>
-      </ul>
+      {claim.sudden_death ? (
+        <p className="label-mono">⚡ Sudden-death kill: any weapon, any place</p>
+      ) : (
+        <ul className="space-y-1 label-mono">
+          <li>Weapon: {claim.weapon}</li>
+          <li>Place: {claim.place}</li>
+          <li>Phrase: “{claim.phrase}”</li>
+        </ul>
+      )}
       {claim.note && <p className="font-medium">&ldquo;{claim.note}&rdquo;</p>}
       {resolve.isError && (
         <p role="alert" className="font-bold text-red-ink">

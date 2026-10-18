@@ -9,6 +9,8 @@ import { useGameContext, type GameContext } from '@/features/game/queries'
 import { DisputeCard } from '@/features/kills/DisputeCard'
 import { disputesFor, killsQuery, openClaimBy, type Kill } from '@/features/kills/queries'
 import { ReportKillSheet } from '@/features/kills/ReportKillSheet'
+import { DeadlineBanner } from '@/features/game/components/Deadline'
+import { deadlinePhase, useNow } from '@/lib/deadline'
 import { missionQuery } from '@/features/missions/queries'
 import { TargetCard } from '@/features/missions/TargetCard'
 import { useReveal } from '@/features/missions/useReveal'
@@ -40,6 +42,7 @@ function Home() {
         <StatBox label="Survived" value={survivedFor(game.started_at, me.died_at)} tone="pink" />
       </div>
 
+      <DeadlineBanner game={game} me={me} />
       <NotificationsCard />
 
       {disputes.map((k) => (
@@ -80,6 +83,11 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
   const [revealed, toggle] = useReveal()
   const target = players.find((p) => p.id === mission?.target_id)
   const claim = openClaimBy(kills, me.id)
+  const now = useNow(15_000)
+  const suddenDeath = deadlinePhase(game, now) === 'sudden'
+  const others = players.filter(
+    (p) => p.status === 'alive' && p.id !== me.id && p.id !== target?.id,
+  )
   const lastRejected = kills.find(
     (k) =>
       k.killer_id === me.id &&
@@ -130,7 +138,7 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
             {revealed ? 'Hide target' : 'Show target'}
           </button>
           <Button variant="red" size="lg" block disabled={!!claim} onClick={() => setSheet(true)}>
-            {claim ? 'Claim sent' : 'I got them!'}
+            {claim ? 'Claim sent' : suddenDeath ? 'I got someone!' : 'I got them!'}
           </Button>
           <Link
             to="/g/$code/mission"
@@ -144,6 +152,8 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
 
       <ReportKillSheet
         userId={userId}
+        suddenDeath={suddenDeath}
+        others={others}
         open={!!report && !claim}
         onClose={() => setSheet(false)}
         gameId={game.id}

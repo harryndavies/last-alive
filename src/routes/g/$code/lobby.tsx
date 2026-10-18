@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Button, Card, NotificationsCard, PageHeader } from '@/components'
 import { ChangePhotoSheet } from '@/features/game/components/ChangePhotoSheet'
+import { DeadlineEditor } from '@/features/game/components/Deadline'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
 import { PlayerList } from '@/features/game/components/PlayerList'
 import { ShareCode } from '@/features/game/components/ShareCode'
@@ -32,6 +33,7 @@ function Lobby() {
     <main className="flex flex-col gap-6 pt-4">
       <PageHeader kicker="Lobby" title={game.name} />
       <ShareCode code={game.code} gameName={game.name} />
+      <DeadlineEditor game={game} me={me} />
       <NotificationsCard />
 
       <section aria-labelledby="players-heading" className="flex flex-col gap-3">

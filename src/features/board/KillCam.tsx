@@ -179,7 +179,7 @@ function SlideView({
               size="xl"
             />
           )}
-          <p className="label-mono">Last one alive</p>
+          <p className="label-mono">{slide.onTime ? 'Time’s up · most kills' : 'Last one alive'}</p>
           <h2 className="text-6xl break-words text-yellow">{slide.winner?.name ?? 'Nobody'}</h2>
           <p className="font-bold">
             {slide.kills} {slide.kills === 1 ? 'kill' : 'kills'}

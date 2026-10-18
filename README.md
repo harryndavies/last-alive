@@ -237,3 +237,17 @@ Vault URL at `http://kong:8000/functions/v1`.
 On iPhone, Web Push only works once the app is added to the home screen (iOS 16.4+). A home
 screen web app has its own storage, so players reclaim their seat there with their name and
 PIN.
+
+### Game deadlines
+
+A host can give a game an "end by" time (`set_game_end`). It can be set or cleared freely before
+the start; once the game is running it can only be extended. `pg_cron` runs
+`private.tick_deadlines()` every minute. It:
+
+- announces **sudden death**, which is the final 24 hours, or the last quarter of a game shorter
+  than 4 days. During it, `report_kill` accepts any living player, with no weapon, place or
+  phrase. The killer gets the credit, and the victim's mission goes to whoever was hunting them.
+- announces the final hour;
+- at the deadline, stops new claims and waits for open ones (at most 12 hours). It then ends the
+  game: most kills among survivors wins. Ties go to whoever made their latest kill first, then to
+  the longest-standing player.

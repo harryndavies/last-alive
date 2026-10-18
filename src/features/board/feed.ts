@@ -61,7 +61,7 @@ export function describeEvent(e: GameEvent): FeedItem | null {
         ...base,
         icon: '✕',
         tone: 'red',
-        text: `${str(p.killer_name)} got ${str(p.victim_name)}`,
+        text: `${str(p.killer_name)} got ${str(p.victim_name)}${p.sudden_death ? ' ⚡' : ''}`,
         detail: [note, how].filter(Boolean).join(' ') || undefined,
         photoPath: typeof p.photo_path === 'string' ? p.photo_path : undefined,
       }
@@ -93,14 +93,36 @@ export function describeEvent(e: GameEvent): FeedItem | null {
         ...base,
         icon: '♛',
         tone: 'yellow',
-        text: `${str(p.winner_name)} is the last one alive!`,
+        text:
+          p.reason === 'time'
+            ? `Time's up! ${str(p.winner_name)} wins with the most kills`
+            : `${str(p.winner_name)} is the last one alive!`,
       }
+    case 'sudden_death_started':
+      return {
+        ...base,
+        icon: '⚡',
+        tone: 'red',
+        text: 'Sudden death! Anyone can get anyone now',
+        detail: 'Any weapon, any place. Most kills among survivors wins at the deadline.',
+      }
+    case 'final_hour':
+      return { ...base, icon: '⏱', tone: 'yellow', text: 'One hour left' }
+    case 'deadline_extended':
+      return { ...base, icon: '⏱', tone: 'blue', text: 'The host extended the game' }
     default:
       return null
   }
 }
 
-const KILL_FEED_TYPES = new Set(['kill_confirmed', 'player_left', 'game_started', 'game_finished'])
+const KILL_FEED_TYPES = new Set([
+  'kill_confirmed',
+  'player_left',
+  'game_started',
+  'game_finished',
+  'sudden_death_started',
+  'final_hour',
+])
 
 /** The board's kill feed: deaths, leavers, start and finish. */
 export function killFeed(events: GameEvent[]): FeedItem[] {

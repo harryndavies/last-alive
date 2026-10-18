@@ -74,11 +74,17 @@ function ConfirmDeath({ gameId, killId }: { gameId: string; killId: string }) {
               alt={`${claim.killer.name}'s proof photo`}
               className="aspect-[4/5] w-full rotate-1 rounded-2xl shadow-hard"
             />
-            <div className="grid gap-3">
-              <PlayingCard kind="weapon" text={claim.weapon} tilt={1} />
-              <PlayingCard kind="place" text={claim.place} tilt={-1} />
-              <PlayingCard kind="phrase" text={claim.phrase} tilt={1} />
-            </div>
+            {claim.sudden_death ? (
+              <p className="rounded-xl brut bg-ink p-3 font-bold text-paper shadow-hard-sm">
+                ⚡ Sudden-death kill: any weapon, any place, no phrase needed. Were you got?
+              </p>
+            ) : (
+              <div className="grid gap-3">
+                <PlayingCard kind="weapon" text={claim.weapon ?? ''} tilt={1} />
+                <PlayingCard kind="place" text={claim.place ?? ''} tilt={-1} />
+                <PlayingCard kind="phrase" text={claim.phrase ?? ''} tilt={1} />
+              </div>
+            )}
             {claim.note && (
               <p className="rounded-xl brut bg-paper p-3 font-medium shadow-hard-sm">
                 &ldquo;{claim.note}&rdquo;

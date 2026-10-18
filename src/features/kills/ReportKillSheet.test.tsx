@@ -42,7 +42,7 @@ const mission: Mission = {
   phrase: { text: 'The eagle has landed' },
 }
 
-function renderSheet() {
+function renderSheet(extra: Partial<Parameters<typeof ReportKillSheet>[0]> = {}) {
   const onClose = vi.fn()
   render(
     <QueryClientProvider client={new QueryClient()}>
@@ -53,6 +53,7 @@ function renderSheet() {
         gameId={target.game_id}
         mission={mission}
         target={target}
+        {...extra}
       />
     </QueryClientProvider>,
   )
@@ -87,5 +88,18 @@ describe('ReportKillSheet', () => {
       p_photo_path: undefined,
     })
     await vi.waitFor(() => expect(onClose).toHaveBeenCalled())
+  })
+
+  it('in sudden death lets you claim anyone, with no weapon, place or phrase', async () => {
+    rpc.mockResolvedValue('kill-id')
+    const other = { ...target, id: '77777777-7777-4777-8777-777777777777', name: 'Cat' }
+    renderSheet({ suddenDeath: true, others: [other] })
+    await userEvent.click(screen.getByRole('radio', { name: /Cat/ }))
+    expect(screen.queryByRole('checkbox', { name: /took the weapon/ })).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Confirm the kill' }))
+    expect(rpc).toHaveBeenLastCalledWith(
+      'report_kill',
+      expect.objectContaining({ p_victim_id: other.id }),
+    )
   })
 })
