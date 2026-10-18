@@ -4,7 +4,7 @@ A mobile-first web app for playing a real-life assassin game with friends. No ac
 with a code, a name and a colour.
 
 1. The host creates a game and shares the code (e.g. `CLUE-7Q`).
-2. Everyone joins, then submits one **weapon** (an everyday object), one **place** and one
+2. Everyone joins, then submits one **weapon** (anything you can hand someone), one **place** and one
    **phrase** card.
 3. The server secretly deals a hunting ring. Each hunter gets a target plus one weapon, place and
    phrase card, never their own.

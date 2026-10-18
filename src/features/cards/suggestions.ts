@@ -7,7 +7,7 @@ export const CARD_COPY: Record<
 > = {
   weapon: {
     label: 'Weapon',
-    hint: 'An everyday object the hunter has to get them to take.',
+    hint: 'Anything at all. The target has to take it from the hunter.',
     maxLength: 60,
     placeholder: 'A rubber duck',
   },
