@@ -70,7 +70,11 @@ function Board() {
                 ▶ {game.status === 'finished' ? 'Watch the kill cam' : 'Kill cam so far'}
               </Link>
             )}
-            <FeedList items={kills} empty="No kills yet. Everyone is still breathing." />
+            <FeedList
+              items={kills}
+              empty="No kills yet. Everyone is still breathing."
+              social={{ gameId: game.id, me, players }}
+            />
           </div>
         )}
       </div>

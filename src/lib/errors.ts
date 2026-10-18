@@ -29,7 +29,11 @@ const MESSAGES: Record<string, string> = {
   kill_not_pending: 'That claim has already been answered.',
   kill_not_disputed: 'That dispute has already been resolved.',
   cannot_remove_self: 'You cannot remove yourself. Leave the game instead.',
-  not_allowed: 'You cannot see that.',
+  not_allowed: 'You cannot do that.',
+  invalid_photo: 'That photo could not be used. Try again.',
+  invalid_reaction: 'That reaction is not available.',
+  invalid_comment: 'Comments need 1 to 200 characters.',
+  slow_down: 'Easy, tiger. Wait a few seconds between comments.',
 }
 
 /** An error from one of our RPCs, carrying the short code the database raised. */

@@ -13,6 +13,7 @@ export type Slide =
   | {
       kind: 'kill'
       key: string
+      eventId: number
       number: number
       killer: Who
       victim: Who
@@ -53,6 +54,7 @@ export function buildKillCam(events: GameEvent[], players: Player[], game: Game)
       return {
         kind: 'kill',
         key: `kill-${e.id}`,
+        eventId: e.id,
         number: i + 1,
         killer: who(byId, p.killer_id, p.killer_name),
         victim: who(byId, p.victim_id, p.victim_name),

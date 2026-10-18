@@ -62,7 +62,7 @@ function Home() {
             All news →
           </Link>
         </div>
-        <FeedList items={news} />
+        <FeedList items={news} social={{ gameId: game.id, me, players }} />
       </section>
 
       {me.status === 'alive' && <LeaveButton gameId={game.id} active />}

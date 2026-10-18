@@ -7,14 +7,21 @@ import { whenInGame, type Slide, type Who } from './killcamSlides'
 
 const SLIDE_MS = { intro: 3500, kill: 6000, winner: 6000 } as const
 
+export interface Banter {
+  reactions: Array<{ emoji: string; count: number }>
+  comments: Array<{ id: string; author: string; body: string }>
+}
+
 export interface KillCamProps {
   slides: Slide[]
   startedAt: string | null
   onClose: () => void
+  /** Reactions and latest comments per kill event id. */
+  banter?: Map<number, Banter>
 }
 
 /** Full-screen, stories-style replay. Tap right/left to skip, hold the pause button to look. */
-export function KillCam({ slides, startedAt, onClose }: KillCamProps) {
+export function KillCam({ slides, startedAt, onClose, banter }: KillCamProps) {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const slide = slides[index]
@@ -101,7 +108,11 @@ export function KillCam({ slides, startedAt, onClose }: KillCamProps) {
         </div>
 
         <div className="relative mt-4 flex flex-1 flex-col" aria-live="polite">
-          <SlideView slide={slide} startedAt={startedAt} />
+          <SlideView
+            slide={slide}
+            startedAt={startedAt}
+            banter={slide.kind === 'kill' ? banter?.get(slide.eventId) : undefined}
+          />
           {/* Tap zones sit on top of the slide: left third goes back, the rest forward. */}
           <button
             type="button"
@@ -126,7 +137,15 @@ export function KillCam({ slides, startedAt, onClose }: KillCamProps) {
   )
 }
 
-function SlideView({ slide, startedAt }: { slide: Slide; startedAt: string | null }) {
+function SlideView({
+  slide,
+  startedAt,
+  banter,
+}: {
+  slide: Slide
+  startedAt: string | null
+  banter?: Banter
+}) {
   switch (slide.kind) {
     case 'intro':
       return (
@@ -207,6 +226,27 @@ function SlideView({ slide, startedAt }: { slide: Slide; startedAt: string | nul
           )}
           {slide.resolvedBy === 'auto' && (
             <p className="label-mono text-paper/70">No reply in 12h</p>
+          )}
+          {banter && (banter.reactions.length > 0 || banter.comments.length > 0) && (
+            <div className="mt-1 flex flex-col gap-2">
+              {banter.reactions.length > 0 && (
+                <p className="flex flex-wrap gap-1.5" aria-label="Reactions">
+                  {banter.reactions.map((r) => (
+                    <span
+                      key={r.emoji}
+                      className="inline-flex items-center gap-1 rounded-full border-2 border-paper px-2 py-0.5 text-sm"
+                    >
+                      {r.emoji} <b className="font-mono text-xs">{r.count}</b>
+                    </span>
+                  ))}
+                </p>
+              )}
+              {banter.comments.map((c) => (
+                <p key={c.id} className="text-sm text-paper/90">
+                  <b className="text-yellow">{c.author}</b> {c.body}
+                </p>
+              ))}
+            </div>
           )}
         </article>
       )

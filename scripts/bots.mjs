@@ -9,6 +9,7 @@
 //   npm run bots -- kill CODE       one bot gets its (bot) target, confirmed instantly
 //   npm run bots -- dispute CODE    bots dispute open claims against them instead of confirming
 //   npm run bots -- status CODE     show who is alive
+//   npm run bots -- banter CODE     bots react to and comment on the latest kill
 //
 // Bots sign in anonymously and take their seat with reclaim_player + their PIN,
 // which is stored in scripts/.bots.json (gitignored).
@@ -311,6 +312,35 @@ async function cmdKill(code) {
   console.log('No bot is hunting another bot right now.')
 }
 
+const BANTER = [
+  'HOW did you fall for that',
+  'Absolute scenes',
+  'Never trust a biscuit',
+  'RIP 🫡',
+  'Cold.',
+]
+const EMOJI = ['💀', '😂', '🔥', '😱', '👏']
+
+async function cmdBanter(code) {
+  const bots = await connectBots(code)
+  const { data: events } = await bots[0].sb
+    .from('events')
+    .select('id, payload')
+    .eq('game_id', bots[0].gameId)
+    .eq('type', 'kill_confirmed')
+    .order('id', { ascending: false })
+    .limit(1)
+  const kill = events?.[0]
+  if (!kill) return console.log('No confirmed kills yet.')
+  for (const [i, bot] of bots.entries()) {
+    await call(bot.sb, 'toggle_reaction', { p_event_id: kill.id, p_emoji: pick(EMOJI, i) })
+  }
+  await call(bots[0].sb, 'add_comment', { p_event_id: kill.id, p_body: pick(BANTER, kill.id) })
+  console.log(
+    `${bots.length} bots reacted to "${kill.payload.killer_name} got ${kill.payload.victim_name}", ${bots[0].name} commented.`,
+  )
+}
+
 async function cmdStatus(code) {
   const [bot] = await connectBots(code)
   const { game, players } = await snapshot(bot)
@@ -330,13 +360,14 @@ const commands = {
   hunt: () => cmdHunt(upper),
   kill: () => cmdKill(upper),
   status: () => cmdStatus(upper),
+  banter: () => cmdBanter(upper),
 }
 
 if (!commands[cmd] || (cmd !== 'seed' && !upper)) {
   console.log(
     readFileSync(fileURLToPath(import.meta.url), 'utf8')
       .split('\n')
-      .slice(1, 14)
+      .slice(1, 15)
       .join('\n'),
   )
   process.exit(1)

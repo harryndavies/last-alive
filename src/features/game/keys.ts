@@ -8,4 +8,6 @@ export const gameKeys = {
   missionHistory: (gameId: string) => ['mission-history', gameId] as const,
   myCards: (gameId: string) => ['my-cards', gameId] as const,
   claim: (killId: string) => ['kill-claim', killId] as const,
+  reactions: (gameId: string) => ['reactions', gameId] as const,
+  comments: (gameId: string) => ['comments', gameId] as const,
 }

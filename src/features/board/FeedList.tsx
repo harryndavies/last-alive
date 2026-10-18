@@ -1,6 +1,7 @@
 import { KillPhoto } from '@/features/kills/KillPhoto'
 import { cn } from '@/lib/cn'
 import { timeAgo, type FeedItem } from './feed'
+import { KillSocial, type SocialContext } from './KillSocial'
 
 const TONE = {
   red: 'bg-red',
@@ -14,9 +15,12 @@ const TONE = {
 export function FeedList({
   items,
   empty = 'Nothing yet. Quiet… too quiet.',
+  social,
 }: {
   items: FeedItem[]
   empty?: string
+  /** When given, kills get reactions and comments. */
+  social?: SocialContext
 }) {
   if (items.length === 0) {
     return (
@@ -54,6 +58,9 @@ export function FeedList({
             <p className="mt-0.5 label-mono text-muted">
               <time dateTime={item.at}>{timeAgo(item.at)}</time>
             </p>
+            {social && item.type === 'kill_confirmed' && (
+              <KillSocial eventId={item.id} ctx={social} />
+            )}
           </div>
         </li>
       ))}

@@ -95,6 +95,70 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"kill_comments": {
+                  Row: {
+                    "body": string,"created_at": string,"event_id": number,"game_id": string,"id": string,"player_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body": string,"created_at"?: string,"event_id": number,"game_id": string,"id"?: string,"player_id": string
+                  }
+                  Update: {
+                    "body"?: string,"created_at"?: string,"event_id"?: number,"game_id"?: string,"id"?: string,"player_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "kill_comments_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "kill_comments_game_id_fkey"
+      columns: ["game_id"]
+isOneToOne: false
+      referencedRelation: "games"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "kill_comments_player_id_fkey"
+      columns: ["player_id"]
+isOneToOne: false
+      referencedRelation: "players"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"kill_reactions": {
+                  Row: {
+                    "created_at": string,"emoji": string,"event_id": number,"game_id": string,"player_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"emoji": string,"event_id": number,"game_id": string,"player_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"emoji"?: string,"event_id"?: number,"game_id"?: string,"player_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "kill_reactions_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "kill_reactions_game_id_fkey"
+      columns: ["game_id"]
+isOneToOne: false
+      referencedRelation: "games"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "kill_reactions_player_id_fkey"
+      columns: ["player_id"]
+isOneToOne: false
+      referencedRelation: "players"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"kills": {
                   Row: {
                     "created_at": string,"game_id": string,"id": string,"killer_id": string,"mission_id": string,"note": string | null,"photo_path": string | null,"resolved_at": string | null,"resolved_by": string | null,"status": Database["public"]['Enums']["kill_status"],"victim_id": string
@@ -235,11 +299,17 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "avatar_paths":
+            "add_comment":
+{ Args: { "p_body": string,"p_event_id": number }; Returns: string
+                           },
+"avatar_paths":
 { Args: { "p_game_ids": (string)[] }; Returns: string[]
                            },
 "create_game":
 { Args: { "p_colour": string,"p_game_name": string,"p_player_name": string }; Returns: Json
+                           },
+"delete_comment":
+{ Args: { "p_comment_id": string }; Returns: undefined
                            },
 "delete_push_subscription":
 { Args: { "p_endpoint": string }; Returns: undefined
@@ -294,6 +364,9 @@ isOneToOne: false
                            },
 "submit_cards":
 { Args: { "p_game_id": string,"p_phrase": string,"p_place": string,"p_weapon": string }; Returns: undefined
+                           },
+"toggle_reaction":
+{ Args: { "p_emoji": string,"p_event_id": number }; Returns: boolean
                            }
           }
           Enums: {
