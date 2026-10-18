@@ -63,7 +63,7 @@ describe('ReportKillSheet', () => {
     renderSheet()
     const confirm = screen.getByRole('button', { name: 'Confirm the kill' })
     expect(confirm).toBeDisabled()
-    await userEvent.click(screen.getByRole('checkbox', { name: /Weapon/ }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /took the weapon/ }))
     expect(confirm).toBeDisabled()
     await userEvent.click(screen.getByRole('checkbox', { name: /Place/ }))
     expect(confirm).toBeDisabled()
@@ -74,7 +74,7 @@ describe('ReportKillSheet', () => {
   it('reports the kill with its note', async () => {
     rpc.mockResolvedValue('kill-id')
     const { onClose } = renderSheet()
-    await userEvent.click(screen.getByRole('checkbox', { name: /Weapon/ }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /took the weapon/ }))
     await userEvent.click(screen.getByRole('checkbox', { name: /Place/ }))
     await userEvent.click(screen.getByRole('checkbox', { name: /Said the phrase/ }))
     await userEvent.type(screen.getByRole('textbox', { name: /Note/ }), 'In the fridge')

@@ -8,7 +8,7 @@ with a code, a name and a colour.
    **phrase** card.
 3. The server secretly deals a hunting ring. Each hunter gets a target plus one weapon, place and
    phrase card, never their own.
-4. Get your target with the weapon, in the place, then say the phrase to them. Tap
+4. Get your target to willingly take the weapon from you, in the place, then say the phrase. Tap
    **I got them**. The victim confirms or disputes. No answer within 12 hours counts as a yes.
    The host settles disputes.
 5. The killer inherits the victim's mission. The last player alive wins.

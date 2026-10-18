@@ -49,7 +49,8 @@ function MissionScreen() {
             <h2 className="mb-2 text-xl">The rules</h2>
             <ol className="list-decimal space-y-1 pl-5 font-medium">
               <li>
-                Tag <strong>your target</strong> with the <strong>weapon</strong>.
+                Get <strong>your target</strong> to take the <strong>weapon</strong> from you. They
+                have to take it willingly.
               </li>
               <li>
                 It has to happen in the <strong>place</strong>.

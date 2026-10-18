@@ -40,8 +40,8 @@ function Landing() {
 
       <Card tone="paper" tilt={1}>
         <p className="text-lg font-medium">
-          The real-life assassin game. Get your target with the right weapon, in the right place.
-          Don&rsquo;t get got.
+          The real-life assassin game. Get your target to take the right weapon from you, in the
+          right place. Don&rsquo;t get got.
         </p>
       </Card>
 

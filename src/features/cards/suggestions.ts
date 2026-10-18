@@ -7,7 +7,7 @@ export const CARD_COPY: Record<
 > = {
   weapon: {
     label: 'Weapon',
-    hint: 'An everyday object the hunter tags them with.',
+    hint: 'An everyday object the hunter has to get them to take.',
     maxLength: 60,
     placeholder: 'A rubber duck',
   },
@@ -26,12 +26,12 @@ export const CARD_COPY: Record<
 }
 
 export const SUGGESTIONS: Record<CardKind, readonly string[]> = {
-  weapon: ['Wooden spoon', 'Sock', 'Banana', 'Post-it note', 'Teaspoon', 'Pool noodle', 'Feather'],
+  weapon: ['Pen', 'Biscuit', 'Cup of tea', 'Banana', 'Post-it note', 'Teaspoon', 'Sock'],
   place: ['Kitchen', 'Lift', 'Car park', 'Staircase', 'Bus stop', 'Garden', 'Front door'],
   phrase: [
     'The eagle has landed',
     'Nothing personal',
-    'Tag, you’re it',
+    'You’ve been served',
     'Sweet dreams',
     'Checkmate',
     'I’ll be back',

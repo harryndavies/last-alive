@@ -111,7 +111,7 @@ export function ReportKillSheet({
         <Tick
           checked={weapon}
           onChange={setWeapon}
-          label="Weapon"
+          label="They took the weapon"
           value={mission.weapon.text}
           tone="bg-red"
         />

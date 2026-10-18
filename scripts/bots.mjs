@@ -68,7 +68,7 @@ const PHRASES = [
   'Sweet dreams',
   'Checkmate',
   'I’ll be back',
-  'Tag, you’re it',
+  'You’ve been served',
   'You never saw me',
   'Bon voyage',
   'Hasta la vista',
