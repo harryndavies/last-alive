@@ -1,4 +1,5 @@
 export { Avatar } from './Avatar'
+export { AvatarPicker } from './AvatarPicker'
 export { Button, buttonClasses } from './Button'
 export { Card } from './Card'
 export { ColourPicker } from './ColourPicker'

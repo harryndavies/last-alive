@@ -191,14 +191,14 @@ isOneToOne: false
                   ]
                 },"players": {
                   Row: {
-                    "cards_locked": boolean,"colour": string,"created_at": string,"died_at": string | null,"game_id": string,"id": string,"is_host": boolean,"killed_by": string | null,"kills_count": number,"name": string,"status": Database["public"]['Enums']["player_status"],"user_id": string
+                    "avatar_path": string | null,"cards_locked": boolean,"colour": string,"created_at": string,"died_at": string | null,"game_id": string,"id": string,"is_host": boolean,"killed_by": string | null,"kills_count": number,"name": string,"status": Database["public"]['Enums']["player_status"],"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "cards_locked"?: boolean,"colour": string,"created_at"?: string,"died_at"?: string | null,"game_id": string,"id"?: string,"is_host"?: boolean,"killed_by"?: string | null,"kills_count"?: number,"name": string,"status"?: Database["public"]['Enums']["player_status"],"user_id": string
+                    "avatar_path"?: string | null,"cards_locked"?: boolean,"colour": string,"created_at"?: string,"died_at"?: string | null,"game_id": string,"id"?: string,"is_host"?: boolean,"killed_by"?: string | null,"kills_count"?: number,"name": string,"status"?: Database["public"]['Enums']["player_status"],"user_id": string
                   }
                   Update: {
-                    "cards_locked"?: boolean,"colour"?: string,"created_at"?: string,"died_at"?: string | null,"game_id"?: string,"id"?: string,"is_host"?: boolean,"killed_by"?: string | null,"kills_count"?: number,"name"?: string,"status"?: Database["public"]['Enums']["player_status"],"user_id"?: string
+                    "avatar_path"?: string | null,"cards_locked"?: boolean,"colour"?: string,"created_at"?: string,"died_at"?: string | null,"game_id"?: string,"id"?: string,"is_host"?: boolean,"killed_by"?: string | null,"kills_count"?: number,"name"?: string,"status"?: Database["public"]['Enums']["player_status"],"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -235,7 +235,10 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "create_game":
+            "avatar_paths":
+{ Args: { "p_game_ids": (string)[] }; Returns: string[]
+                           },
+"create_game":
 { Args: { "p_colour": string,"p_game_name": string,"p_player_name": string }; Returns: Json
                            },
 "delete_push_subscription":
@@ -279,6 +282,9 @@ isOneToOne: false
                            },
 "save_push_subscription":
 { Args: { "p_auth": string,"p_endpoint": string,"p_p256dh": string,"p_user_agent"?: string }; Returns: undefined
+                           },
+"set_avatar":
+{ Args: { "p_game_id": string,"p_path"?: string }; Returns: undefined
                            },
 "start_game":
 { Args: { "p_game_id": string }; Returns: undefined

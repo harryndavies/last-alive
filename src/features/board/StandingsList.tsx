@@ -24,7 +24,13 @@ export function StandingsList({
             )}
           >
             <span className="w-7 shrink-0 text-center font-display text-xl">{rank}</span>
-            <Avatar name={player.name} colour={player.colour} dead={dead} size="sm" />
+            <Avatar
+              name={player.name}
+              colour={player.colour}
+              photo={player.avatar_path}
+              dead={dead}
+              size="sm"
+            />
             <div className="min-w-0 flex-1">
               <p
                 className={cn(

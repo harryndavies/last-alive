@@ -12,6 +12,7 @@ function player(over: Partial<Player> & { id: string; name: string }): Player {
     cards_locked: true,
     kills_count: 0,
     killed_by: null,
+    avatar_path: null,
     died_at: null,
     created_at: '2026-10-01T00:00:00Z',
     ...over,

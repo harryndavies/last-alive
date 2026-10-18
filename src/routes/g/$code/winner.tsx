@@ -39,7 +39,9 @@ function Winner() {
         <span aria-hidden="true" className="font-display text-5xl">
           ♛
         </span>
-        {winner && <Avatar name={winner.name} colour={winner.colour} size="xl" />}
+        {winner && (
+          <Avatar name={winner.name} colour={winner.colour} photo={winner.avatar_path} size="xl" />
+        )}
         <p className="label-mono">Last one alive</p>
         <h1 className="text-5xl break-words">{winner?.name ?? 'Nobody'}</h1>
         {winner?.id === me.id && <Tag tone="ink">That&rsquo;s you!</Tag>}

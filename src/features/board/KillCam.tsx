@@ -3,7 +3,7 @@ import { Avatar, Tag } from '@/components'
 import { KillPhoto } from '@/features/kills/KillPhoto'
 import { useKillPhotoUrl } from '@/features/kills/photos'
 import { cn } from '@/lib/cn'
-import { whenInGame, type Slide } from './killcamSlides'
+import { whenInGame, type Slide, type Who } from './killcamSlides'
 
 const SLIDE_MS = { intro: 3500, kill: 6000, winner: 6000 } as const
 
@@ -153,7 +153,12 @@ function SlideView({ slide, startedAt }: { slide: Slide; startedAt: string | nul
             ♛
           </span>
           {slide.winner && (
-            <Avatar name={slide.winner.name} colour={slide.winner.colour} size="xl" />
+            <Avatar
+              name={slide.winner.name}
+              colour={slide.winner.colour}
+              photo={slide.winner.photo}
+              size="xl"
+            />
           )}
           <p className="label-mono">Last one alive</p>
           <h2 className="text-6xl break-words text-yellow">{slide.winner?.name ?? 'Nobody'}</h2>
@@ -178,7 +183,7 @@ function SlideView({ slide, startedAt }: { slide: Slide; startedAt: string | nul
             path={slide.photoPath}
             alt={`${slide.killer.name} gets ${slide.victim.name}`}
             className="max-h-[46dvh] w-full -rotate-1 rounded-2xl border-paper shadow-[6px_6px_0_#ffd23f]"
-            fallback={<NoPhoto victim={slide.victim.name} colour={slide.victim.colour} />}
+            fallback={<NoPhoto victim={slide.victim} />}
           />
 
           <h2 className="mt-1 text-4xl leading-none">
@@ -218,10 +223,10 @@ function Chip({ tone, children }: { tone: string; children: React.ReactNode }) {
   )
 }
 
-function NoPhoto({ victim, colour }: { victim: string; colour: string }) {
+function NoPhoto({ victim }: { victim: Who }) {
   return (
     <div className="flex aspect-[4/3] w-full -rotate-1 flex-col items-center justify-center gap-3 rounded-2xl brut border-paper bg-red text-ink shadow-[6px_6px_0_#ffd23f]">
-      <Avatar name={victim} colour={colour} size="xl" dead />
+      <Avatar name={victim.name} colour={victim.colour} photo={victim.photo} size="xl" dead />
       <span className="label-mono">No photo. You had to be there.</span>
     </div>
   )

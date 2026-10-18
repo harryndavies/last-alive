@@ -1,8 +1,12 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
 import { Button, Card, NotificationsCard, PageHeader } from '@/components'
+import { ChangePhotoSheet } from '@/features/game/components/ChangePhotoSheet'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
 import { PlayerList } from '@/features/game/components/PlayerList'
 import { ShareCode } from '@/features/game/components/ShareCode'
+import { gameKeys } from '@/features/game/keys'
 import { useGameContext, useRemovePlayer, useStartPicking } from '@/features/game/queries'
 import { errorMessage } from '@/lib/errors'
 import { useUserId } from '@/lib/useUserId'
@@ -15,7 +19,10 @@ const MIN_PLAYERS = 4
 
 function Lobby() {
   const { code } = Route.useParams()
-  const { game, players, me } = useGameContext(code, useUserId())
+  const userId = useUserId()
+  const { game, players, me } = useGameContext(code, userId)
+  const qc = useQueryClient()
+  const [photoOpen, setPhotoOpen] = useState(false)
   const startPicking = useStartPicking(game.id)
   const remove = useRemovePlayer(game.id)
   const host = players.find((p) => p.is_host)
@@ -38,6 +45,7 @@ function Lobby() {
           players={players}
           meId={me.id}
           onRemove={me.is_host ? (p) => remove.mutate(p.id) : undefined}
+          onEditMe={() => setPhotoOpen(true)}
         />
       </section>
 
@@ -72,6 +80,15 @@ function Lobby() {
       )}
 
       <LeaveButton gameId={game.id} active={false} />
+      {photoOpen && (
+        <ChangePhotoSheet
+          open
+          onClose={() => setPhotoOpen(false)}
+          me={me}
+          userId={userId}
+          onSaved={() => void qc.invalidateQueries({ queryKey: gameKeys.players(game.id) })}
+        />
+      )}
     </main>
   )
 }

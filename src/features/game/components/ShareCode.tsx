@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Button, Card } from '@/components'
+import { joinUrl, QrSheet } from './QrSheet'
 
 export function ShareCode({ code, gameName }: { code: string; gameName: string }) {
   const [copied, setCopied] = useState(false)
-  const url = `${window.location.origin}/join/${code}`
+  const [qrOpen, setQrOpen] = useState(false)
+  const url = joinUrl(code)
 
   async function share() {
     const text = `Join "${gameName}" on Last Alive with code ${code}`
@@ -26,9 +28,15 @@ export function ShareCode({ code, gameName }: { code: string; gameName: string }
       <p className="font-display text-[clamp(2rem,11vw,3rem)] tracking-wide whitespace-nowrap select-all">
         {code}
       </p>
-      <Button variant="paper" onClick={() => void share()} aria-live="polite">
-        {copied ? 'Link copied!' : 'Share invite'}
-      </Button>
+      <div className="flex flex-wrap justify-center gap-3">
+        <Button variant="ink" onClick={() => setQrOpen(true)}>
+          Show QR code
+        </Button>
+        <Button variant="paper" onClick={() => void share()} aria-live="polite">
+          {copied ? 'Link copied!' : 'Share invite'}
+        </Button>
+      </div>
+      <QrSheet open={qrOpen} onClose={() => setQrOpen(false)} code={code} gameName={gameName} />
     </Card>
   )
 }

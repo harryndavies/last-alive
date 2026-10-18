@@ -164,7 +164,7 @@ function Spectator({ ctx }: { ctx: GameContext }) {
       </Tag>
       {killer ? (
         <div className="flex items-center gap-3">
-          <Avatar name={killer.name} colour={killer.colour} />
+          <Avatar name={killer.name} colour={killer.colour} photo={killer.avatar_path} />
           <p className="text-lg font-bold">{killer.name} got you.</p>
         </div>
       ) : (

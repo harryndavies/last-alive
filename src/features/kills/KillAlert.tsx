@@ -57,7 +57,12 @@ function ConfirmDeath({ gameId, killId }: { gameId: string; killId: string }) {
         {claim ? (
           <>
             <div className="flex -rotate-1 items-center gap-3 rounded-2xl brut bg-paper p-3 shadow-hard">
-              <Avatar name={claim.killer.name} colour={claim.killer.colour} size="lg" />
+              <Avatar
+                name={claim.killer.name}
+                colour={claim.killer.colour}
+                photo={claim.killer.avatar_path}
+                size="lg"
+              />
               <div>
                 <p className="label-mono">Claimed by</p>
                 <p className="font-display text-3xl uppercase">{claim.killer.name}</p>

@@ -103,7 +103,7 @@ export function ReportKillSheet({
     <Sheet open={open} onClose={onClose} title="Report a kill">
       <form onSubmit={(e) => void onSubmit(e)} className="flex flex-col gap-3">
         <div className="mb-1 flex items-center gap-3">
-          <Avatar name={target.name} colour={target.colour} />
+          <Avatar name={target.name} colour={target.colour} photo={target.avatar_path} />
           <p className="font-bold">
             You got <span className="font-display text-xl uppercase">{target.name}</span>?
           </p>

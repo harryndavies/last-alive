@@ -1,10 +1,23 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
-import { Button, Card, ColourPicker, PageHeader, PinReveal, Tag, TextField } from '@/components'
+import {
+  AvatarPicker,
+  Button,
+  Card,
+  ColourPicker,
+  PageHeader,
+  PinReveal,
+  Tag,
+  TextField,
+} from '@/components'
 import { previewQuery, useJoinGame, useReclaimPlayer } from '@/features/game/queries'
 import { NameForm, normaliseCode } from '@/features/game/schemas'
+import { uploadAvatar } from '@/lib/avatars'
 import type { AvatarColour } from '@/lib/colours'
+import { dataUrlToBlob } from '@/lib/image'
+import { loadProfile, saveProfile } from '@/lib/profile'
+import { useUserId } from '@/lib/useUserId'
 import { errorMessage, GameError } from '@/lib/errors'
 
 export const Route = createFileRoute('/join/$code')({
@@ -27,8 +40,12 @@ function JoinGame() {
   const reclaim = useReclaimPlayer()
 
   const [mode, setMode] = useState<Mode>('join')
-  const [name, setName] = useState('')
-  const [colour, setColour] = useState<AvatarColour>('pink')
+  const userId = useUserId()
+  const [remembered] = useState(loadProfile)
+  const [name, setName] = useState(remembered?.name ?? '')
+  const [colour, setColour] = useState<AvatarColour>(remembered?.colour ?? 'pink')
+  const [photo, setPhoto] = useState<string | null>(remembered?.photo ?? null)
+  const [photoNote, setPhotoNote] = useState<string | null>(null)
   const [pin, setPin] = useState('')
   const [fieldError, setFieldError] = useState<string | null>(null)
   const [newPin, setNewPin] = useState<string | null>(null)
@@ -51,7 +68,7 @@ function JoinGame() {
     )
   }
 
-  if (newPin) return <PinReveal pin={newPin} onDone={goToGame} />
+  if (newPin) return <PinReveal pin={newPin} onDone={goToGame} note={photoNote} />
 
   const canJoin = preview ? preview.status === 'lobby' || preview.status === 'picking' : true
   const activeMode: Mode = canJoin ? mode : 'reclaim'
@@ -66,7 +83,18 @@ function JoinGame() {
     join.mutate(
       { code, name: parsed.data.name, colour: parsed.data.colour },
       {
-        onSuccess: (res) => (res.pin ? setNewPin(res.pin) : goToGame()),
+        onSuccess: async (res) => {
+          saveProfile({ name: parsed.data.name, colour: parsed.data.colour, photo })
+          if (photo && !res.rejoined) {
+            try {
+              await uploadAvatar(res.game_id, userId, await dataUrlToBlob(photo))
+            } catch (err) {
+              setPhotoNote(errorMessage(err))
+            }
+          }
+          if (res.pin) setNewPin(res.pin)
+          else goToGame()
+        },
         onError: (err) => {
           if (err instanceof GameError && err.code === 'name_taken') setMode('reclaim')
         },
@@ -120,6 +148,7 @@ function JoinGame() {
             error={fieldError}
           />
           <ColourPicker value={colour} onChange={setColour} />
+          <AvatarPicker name={name} colour={colour} value={photo} onChange={setPhoto} />
           {join.isError && (
             <p role="alert" className="font-bold text-red-ink">
               {errorMessage(join.error)}

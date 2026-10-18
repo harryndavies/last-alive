@@ -34,7 +34,7 @@ export function TargetCard({ target, hidden, badge, children, className }: Targe
             ?
           </span>
         ) : (
-          <Avatar name={target.name} colour={target.colour} size="lg" />
+          <Avatar name={target.name} colour={target.colour} photo={target.avatar_path} size="lg" />
         )}
         <p className="min-w-0 font-display text-4xl leading-none break-words uppercase">
           {hidden ? 'Hidden' : (target?.name ?? 'Unknown')}

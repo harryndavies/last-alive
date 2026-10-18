@@ -8,6 +8,7 @@ import { useGameRealtime } from '@/features/game/realtime'
 import { normaliseCode } from '@/features/game/schemas'
 import { KillAlert } from '@/features/kills/KillAlert'
 import { hasSeenMission, missionQuery } from '@/features/missions/queries'
+import { usePrefetchAvatars } from '@/lib/avatars'
 import { useUserId } from '@/lib/useUserId'
 
 export const Route = createFileRoute('/g/$code')({
@@ -34,11 +35,12 @@ export const Route = createFileRoute('/g/$code')({
 function GameLayout() {
   const { code } = Route.useParams()
   const userId = useUserId()
-  const { game, me } = useGameContext(code, userId)
+  const { game, players, me } = useGameContext(code, userId)
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
   useGameRealtime(game.id, code)
+  usePrefetchAvatars(players.map((p) => p.avatar_path))
 
   // Live guard: status changes arrive over realtime, so re-check on every change.
   const alive = me.status === 'alive'

@@ -1,5 +1,5 @@
 // Deletes games past their retention (finished > 7 days, abandoned lobbies >
-// 30 days) together with their kill photos. Photos can only be deleted through
+// 30 days) together with their kill photos and avatars. Photos can only be deleted through
 // the Storage API, which is why this is a function and not plain SQL.
 // Called daily by pg_cron (private.request_cleanup) with a shared secret.
 import { createClient } from 'npm:@supabase/supabase-js@2'
@@ -32,16 +32,25 @@ Deno.serve(async (req) => {
   if (pathsError) return json({ error: pathsError.message }, 500)
   const photos = (paths ?? []) as string[]
 
-  for (let i = 0; i < photos.length; i += 100) {
-    const { error: removeError } = await sb.storage
-      .from('kill-photos')
-      .remove(photos.slice(i, i + 100))
-    // Stop before deleting the games, so the photos are retried tomorrow.
-    if (removeError) return json({ error: removeError.message }, 500)
+  const { data: avatarPaths, error: avatarsError } = await sb.rpc('avatar_paths', {
+    p_game_ids: gameIds,
+  })
+  if (avatarsError) return json({ error: avatarsError.message }, 500)
+  const avatars = (avatarPaths ?? []) as string[]
+
+  for (const [bucket, files] of [
+    ['kill-photos', photos],
+    ['avatars', avatars],
+  ] as const) {
+    for (let i = 0; i < files.length; i += 100) {
+      const { error: removeError } = await sb.storage.from(bucket).remove(files.slice(i, i + 100))
+      // Stop before deleting the games, so the files are retried tomorrow.
+      if (removeError) return json({ error: removeError.message }, 500)
+    }
   }
 
   const { error: deleteError } = await sb.from('games').delete().in('id', gameIds)
   if (deleteError) return json({ error: deleteError.message }, 500)
 
-  return json({ games: gameIds.length, photos: photos.length })
+  return json({ games: gameIds.length, photos: photos.length, avatars: avatars.length })
 })

@@ -22,7 +22,12 @@ export const KillSchema = z.object({
 })
 export type Kill = z.infer<typeof KillSchema>
 
-const Who = z.object({ id: z.uuid(), name: z.string(), colour: z.string() })
+const Who = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  colour: z.string(),
+  avatar_path: z.string().nullable().optional(),
+})
 
 export const ClaimSchema = z.object({
   id: z.uuid(),

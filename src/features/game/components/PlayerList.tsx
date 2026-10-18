@@ -7,9 +7,11 @@ export interface PlayerListProps {
   /** Show the cards-locked state instead of plain "in". */
   showReady?: boolean
   onRemove?: (player: Player) => void
+  /** When set, your own row offers "Change photo". */
+  onEditMe?: () => void
 }
 
-export function PlayerList({ players, meId, showReady, onRemove }: PlayerListProps) {
+export function PlayerList({ players, meId, showReady, onRemove, onEditMe }: PlayerListProps) {
   return (
     <ul className="flex flex-col gap-2.5" aria-label="Players">
       {players.map((p, i) => (
@@ -17,7 +19,24 @@ export function PlayerList({ players, meId, showReady, onRemove }: PlayerListPro
           key={p.id}
           className={`flex min-h-16 items-center gap-3 rounded-xl brut bg-paper px-3 py-2 shadow-hard-sm ${i % 2 ? 'rotate-[0.4deg]' : '-rotate-[0.4deg]'}`}
         >
-          <Avatar name={p.name} colour={p.colour} />
+          {onEditMe && p.id === meId ? (
+            <button
+              type="button"
+              onClick={onEditMe}
+              aria-label={p.avatar_path ? 'Change your photo' : 'Add your photo'}
+              className="relative shrink-0 rounded-full"
+            >
+              <Avatar name={p.name} colour={p.colour} photo={p.avatar_path} />
+              <span
+                aria-hidden="true"
+                className="absolute -right-1 -bottom-1 inline-flex size-6 items-center justify-center rounded-full border-2 border-ink bg-yellow text-xs"
+              >
+                📸
+              </span>
+            </button>
+          ) : (
+            <Avatar name={p.name} colour={p.colour} photo={p.avatar_path} />
+          )}
           <div className="flex min-w-0 flex-1 flex-col">
             <span className="truncate text-lg font-bold">{p.name}</span>
             <span className="flex gap-1.5">

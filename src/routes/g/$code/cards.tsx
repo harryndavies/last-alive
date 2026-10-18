@@ -1,11 +1,14 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
 import { Button, Card, PageHeader, ProgressBar, TextField } from '@/components'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import { CardsForm, myCardsQuery, useSubmitCards } from '@/features/cards/queries'
 import { CARD_COPY, CARD_KINDS, SUGGESTIONS, type CardKind } from '@/features/cards/suggestions'
+import { ChangePhotoSheet } from '@/features/game/components/ChangePhotoSheet'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
+import { QrSheet } from '@/features/game/components/QrSheet'
+import { gameKeys } from '@/features/game/keys'
 import { PlayerList } from '@/features/game/components/PlayerList'
 import { useGameContext, useStartGame } from '@/features/game/queries'
 import { errorMessage } from '@/lib/errors'
@@ -19,7 +22,11 @@ const TILTS = [-1, 1, -2] as const
 
 function PickCards() {
   const { code } = Route.useParams()
-  const { game, players, me } = useGameContext(code, useUserId())
+  const userId = useUserId()
+  const { game, players, me } = useGameContext(code, userId)
+  const qc = useQueryClient()
+  const [photoOpen, setPhotoOpen] = useState(false)
+  const [qrOpen, setQrOpen] = useState(false)
   const locked = players.filter((p) => p.cards_locked).length
   const allLocked = locked === players.length && players.length >= 4
   const startGame = useStartGame(game.id)
@@ -82,10 +89,32 @@ function PickCards() {
         <h2 id="ready-heading" className="text-2xl">
           Who&rsquo;s ready
         </h2>
-        <PlayerList players={players} meId={me.id} showReady />
+        <PlayerList players={players} meId={me.id} showReady onEditMe={() => setPhotoOpen(true)} />
+        <button
+          type="button"
+          className="min-h-11 self-center label-mono underline"
+          onClick={() => setQrOpen(true)}
+        >
+          Someone missing? Show the QR code
+        </button>
       </section>
 
       <LeaveButton gameId={game.id} active={false} />
+      <QrSheet
+        open={qrOpen}
+        onClose={() => setQrOpen(false)}
+        code={game.code}
+        gameName={game.name}
+      />
+      {photoOpen && (
+        <ChangePhotoSheet
+          open
+          onClose={() => setPhotoOpen(false)}
+          me={me}
+          userId={userId}
+          onSaved={() => void qc.invalidateQueries({ queryKey: gameKeys.players(game.id) })}
+        />
+      )}
     </main>
   )
 }

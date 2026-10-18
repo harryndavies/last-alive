@@ -30,6 +30,7 @@ export const PlayerSchema = z.object({
   cards_locked: z.boolean(),
   kills_count: z.number().int(),
   killed_by: z.uuid().nullable(),
+  avatar_path: z.string().nullable(),
   died_at: z.string().nullable(),
   created_at: z.string(),
 })

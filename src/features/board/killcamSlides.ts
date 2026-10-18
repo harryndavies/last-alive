@@ -5,6 +5,7 @@ export interface Who {
   id: string | null
   name: string
   colour: string
+  photo: string | null
 }
 
 export type Slide =
@@ -34,6 +35,7 @@ function who(players: Map<string, Player>, id: unknown, name: unknown): Who {
     id: player?.id ?? (typeof id === 'string' ? id : null),
     name: player?.name ?? text(name) ?? 'Someone',
     colour: player?.colour ?? 'paper',
+    photo: player?.avatar_path ?? null,
   }
 }
 
@@ -80,7 +82,9 @@ export function buildKillCam(events: GameEvent[], players: Player[], game: Game)
     slides.push({
       kind: 'winner',
       key: 'winner',
-      winner: winner ? { id: winner.id, name: winner.name, colour: winner.colour } : null,
+      winner: winner
+        ? { id: winner.id, name: winner.name, colour: winner.colour, photo: winner.avatar_path }
+        : null,
       kills: winner?.kills_count ?? 0,
     })
   }
