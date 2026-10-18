@@ -12,3 +12,5 @@ supabase/.db-password
 .env*
 .claude/hooks/.logs/
 supabase/.cron-secret
+supabase/.vapid.json
+supabase/functions/.env

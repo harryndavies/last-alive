@@ -443,3 +443,7 @@ enabled = false
 # Called by pg_cron with a shared secret (x-cron-secret), not a user JWT.
 [functions.cleanup-games]
 verify_jwt = false
+
+# Called by the database (pg_net) with a shared secret, not a user JWT.
+[functions.send-push]
+verify_jwt = false

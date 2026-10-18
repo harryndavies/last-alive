@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
-import { Avatar, Button, Card, PageHeader, StatBox, Tag } from '@/components'
+import { Avatar, Button, Card, NotificationsCard, PageHeader, StatBox, Tag } from '@/components'
 import { eventsQuery, gameFeed, survivedFor } from '@/features/board/feed'
 import { FeedList } from '@/features/board/FeedList'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
@@ -39,6 +39,8 @@ function Home() {
         <StatBox label="Kills" value={me.kills_count} tone="yellow" />
         <StatBox label="Survived" value={survivedFor(game.started_at, me.died_at)} tone="pink" />
       </div>
+
+      <NotificationsCard />
 
       {disputes.map((k) => (
         <DisputeCard key={k.id} gameId={game.id} killId={k.id} />

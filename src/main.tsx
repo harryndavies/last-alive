@@ -35,7 +35,8 @@ createRoot(root).render(
   </StrictMode>,
 )
 
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
+// The service worker makes the app installable and receives push notifications.
+if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     void navigator.serviceWorker.register('/sw.js')
   })

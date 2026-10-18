@@ -215,6 +215,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"push_subscriptions": {
+                  Row: {
+                    "auth": string,"created_at": string,"endpoint": string,"p256dh": string,"updated_at": string,"user_agent": string | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "auth": string,"created_at"?: string,"endpoint": string,"p256dh": string,"updated_at"?: string,"user_agent"?: string | null,"user_id": string
+                  }
+                  Update: {
+                    "auth"?: string,"created_at"?: string,"endpoint"?: string,"p256dh"?: string,"updated_at"?: string,"user_agent"?: string | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 }
           }
           Views: {
@@ -223,6 +237,12 @@ isOneToOne: false
           Functions: {
             "create_game":
 { Args: { "p_colour": string,"p_game_name": string,"p_player_name": string }; Returns: Json
+                           },
+"delete_push_subscription":
+{ Args: { "p_endpoint": string }; Returns: undefined
+                           },
+"drop_push_subscriptions":
+{ Args: { "p_endpoints": (string)[] }; Returns: undefined
                            },
 "game_preview":
 { Args: { "p_code": string }; Returns: Json
@@ -256,6 +276,9 @@ isOneToOne: false
                            },
 "respond_to_kill":
 { Args: { "p_confirm": boolean,"p_kill_id": string }; Returns: Database["public"]['Enums']["kill_status"]
+                           },
+"save_push_subscription":
+{ Args: { "p_auth": string,"p_endpoint": string,"p_p256dh": string,"p_user_agent"?: string }; Returns: undefined
                            },
 "start_game":
 { Args: { "p_game_id": string }; Returns: undefined

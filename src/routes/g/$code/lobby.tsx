@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Button, Card, PageHeader } from '@/components'
+import { Button, Card, NotificationsCard, PageHeader } from '@/components'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
 import { PlayerList } from '@/features/game/components/PlayerList'
 import { ShareCode } from '@/features/game/components/ShareCode'
@@ -25,6 +25,7 @@ function Lobby() {
     <main className="flex flex-col gap-6 pt-4">
       <PageHeader kicker="Lobby" title={game.name} />
       <ShareCode code={game.code} gameName={game.name} />
+      <NotificationsCard />
 
       <section aria-labelledby="players-heading" className="flex flex-col gap-3">
         <div className="flex items-baseline justify-between">

@@ -3,6 +3,8 @@ import { z } from 'zod'
 const EnvSchema = z.object({
   VITE_SUPABASE_URL: z.url(),
   VITE_SUPABASE_ANON_KEY: z.string().min(10),
+  /** Optional: without it, push notifications are hidden. */
+  VITE_VAPID_PUBLIC_KEY: z.string().min(20).optional().or(z.literal('')),
 })
 
 const parsed = EnvSchema.safeParse(import.meta.env)
