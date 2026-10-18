@@ -88,6 +88,12 @@ function Landing() {
             Join with code
           </Button>
         )}
+        <a
+          href="https://last-alive-site.vercel.app/"
+          className="inline-flex min-h-11 items-center justify-center label-mono underline"
+        >
+          New here? How to play →
+        </a>
       </div>
     </main>
   )

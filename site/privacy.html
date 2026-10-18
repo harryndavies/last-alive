@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Privacy · Last Alive</title>
+    <meta
+      name="description"
+      content="What Last Alive stores about you, who can see it, and when it is deleted."
+    />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="wrap prose">
+      <a class="mono back" href="/">← Back</a>
+      <h1>Privacy</h1>
+      <p class="lead">Short version: we keep as little as we can, for as short as we can.</p>
+
+      <h2>No accounts</h2>
+      <p>
+        You never give us an email address, phone number or password. When you open the app, your
+        browser gets an anonymous ID. That ID is how the app recognises your seat in a game.
+      </p>
+
+      <h2>What a game stores</h2>
+      <ul>
+        <li>The display name and colour you pick.</li>
+        <li>The weapon, place and phrase cards you write.</li>
+        <li>Who hunts whom, and every kill claim: who, when, and any note you add.</li>
+        <li>Kill photos, if you choose to take one.</li>
+        <li>
+          A scrambled (hashed) copy of your 4-digit PIN, used only to give you your seat back on a
+          new phone.
+        </li>
+      </ul>
+
+      <h2>Who can see what</h2>
+      <ul>
+        <li>Only players in your game can see that game. Strangers can&rsquo;t browse games.</li>
+        <li>Your mission is visible to you alone.</li>
+        <li>
+          A kill photo is visible to the killer and the victim, and to the host if the claim is
+          disputed. Once the kill is confirmed, everyone in the game can see it.
+        </li>
+      </ul>
+
+      <h2>When it&rsquo;s deleted</h2>
+      <p>
+        Everything about a game, photos included, is deleted 7 days after the game ends. Games that
+        never start are deleted after 30 days.
+      </p>
+
+      <h2>Where it lives</h2>
+      <p>
+        Game data and photos are stored with Supabase in London (UK). The app itself is served by
+        Vercel. Like most websites, they keep standard server logs (such as IP addresses) for a
+        short time for security. We don&rsquo;t use advertising or tracking cookies, and we
+        don&rsquo;t sell or share your data.
+      </p>
+    </main>
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <b class="footer-logo">Last Alive</b>
+        <nav aria-label="Footer">
+          <a href="/#what">How to play</a>
+          <a href="/#faq">FAQ</a>
+          <a href="https://last-alive.vercel.app/">Open the app</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
