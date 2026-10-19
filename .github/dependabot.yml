@@ -12,7 +12,10 @@ updates:
     commit-message:
       prefix: deps
     groups:
-      # One PR a week for everything non-breaking. Majors still come one by one.
+      # React and its types must move together, or npm can't install them.
+      react:
+        patterns: [react, react-dom, '@types/react', '@types/react-dom']
+      # One PR a week for everything else non-breaking. Majors still come one by one.
       minor-and-patch:
         update-types: [minor, patch]
     ignore:
