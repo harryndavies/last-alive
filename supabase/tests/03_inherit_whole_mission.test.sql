@@ -1,5 +1,5 @@
--- Inheriting a mission that holds one of the killer's own cards swaps that card
--- for the matching card from the killer's finished mission.
+-- A kill hands over the victim's whole mission, even when it holds a card the
+-- killer wrote themselves.
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(3);
@@ -54,20 +54,16 @@ insert into ctx select 'k', public.report_kill(pg_temp.v('game')::uuid, pg_temp.
 select pg_temp.login((select user_id from public.players where id = pg_temp.v('victim')::uuid));
 select public.respond_to_kill(pg_temp.v('k')::uuid, true);
 
-select isnt((select weapon_card_id from public.missions where hunter_id = pg_temp.v('ana')::uuid and is_active),
-  pg_temp.v('ana_weapon')::uuid, 'the killer does not inherit their own card');
+select results_eq(
+  $$ select target_id, weapon_card_id, place_card_id, phrase_card_id
+     from public.missions where hunter_id = pg_temp.v('ana')::uuid and is_active $$,
+  $$ select target_id, weapon_card_id, place_card_id, phrase_card_id
+     from public.missions where id = pg_temp.v('victim_m')::uuid $$,
+  'the killer inherits the victim''s whole mission: target and all three cards');
 select is((select weapon_card_id from public.missions where hunter_id = pg_temp.v('ana')::uuid and is_active),
-  (select weapon_card_id from public.missions where id = pg_temp.v('ana_old')::uuid),
-  'it is replaced by the weapon from the killer''s finished mission');
-select ok((
-  select m.target_id = v.target_id
-    and (m.place_card_id = v.place_card_id or vp.submitted_by = pg_temp.v('ana')::uuid)
-    and (m.phrase_card_id = v.phrase_card_id or vo.submitted_by = pg_temp.v('ana')::uuid)
-  from public.missions m, public.missions v
-  join public.cards vp on vp.id = v.place_card_id
-  join public.cards vo on vo.id = v.phrase_card_id
-  where m.hunter_id = pg_temp.v('ana')::uuid and m.is_active and v.id = pg_temp.v('victim_m')::uuid
-), 'the target and other cards are inherited (unless also the killer''s own)');
+  pg_temp.v('ana_weapon')::uuid, '...including a card the killer wrote themselves');
+select is((select inherited_from from public.missions where hunter_id = pg_temp.v('ana')::uuid and is_active),
+  pg_temp.v('victim_m')::uuid, '...and it is shown to them as an inherited mission');
 
 select * from finish();
 rollback;

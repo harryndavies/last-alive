@@ -2,7 +2,7 @@
 -- confirmation + inheritance, auto-confirm, idempotency and winner detection.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(50);
+select plan(51);
 
 -- Pretend to be a signed-in anonymous user. RPCs only look at auth.uid(), so for
 -- them we stay as postgres; RLS checks below also switch the role.
@@ -250,9 +250,16 @@ select is((
   join public.cards w on w.id = m.weapon_card_id
   join public.cards p on p.id = m.place_card_id
   join public.cards o on o.id = m.phrase_card_id
-  where m.game_id = pg_temp.v('game')::uuid
+  where m.game_id = pg_temp.v('game')::uuid and m.inherited_from is null
     and m.hunter_id in (w.submitted_by, p.submitted_by, o.submitted_by)
-), 0, 'after every inheritance, still nobody ever held their own card');
+), 0, 'nobody was dealt their own card');
+select is((
+  select count(*)::int from public.missions m
+  join public.missions v on v.id = m.inherited_from
+  where m.game_id = pg_temp.v('game')::uuid
+    and (m.target_id, m.weapon_card_id, m.place_card_id, m.phrase_card_id)
+      is distinct from (v.target_id, v.weapon_card_id, v.place_card_id, v.phrase_card_id)
+), 0, 'every kill handed over the victim''s whole mission');
 select is((select count(*)::int from public.missions where game_id = pg_temp.v('game')::uuid and is_active),
   0, 'no missions stay active after the game ends');
 

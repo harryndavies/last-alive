@@ -33,7 +33,8 @@ with a code, a name and a colour.
 4. Get your target to willingly take the weapon from you, in the place, then say the phrase. Tap
    **I got them**. The victim confirms or disputes. No answer within 12 hours counts as a yes.
    The host settles disputes.
-5. The killer inherits the victim's mission. The last player alive wins.
+5. The killer inherits the victim's whole mission: target, weapon, place and phrase (even cards they
+   wrote themselves). The last player alive wins.
 6. **Cutthroat call-outs:** if you work out who is hunting you, call them out. Right, and they're
    rumbled: out, with the kill yours. Their hunter takes you over as a target, keeping their own
    cards (yours has just seen the rumbled hunter's weapon). Wrong, and you can't call anyone out
