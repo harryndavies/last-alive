@@ -5,6 +5,7 @@ import { Button, Card, NotificationsCard, PageHeader } from '@/components'
 import { ChangePhotoSheet } from '@/features/game/components/ChangePhotoSheet'
 import { DeadlineEditor } from '@/features/game/components/Deadline'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
+import { SwitchGameButton } from '@/features/game/components/SwitchGameButton'
 import { PlayerList } from '@/features/game/components/PlayerList'
 import { ShareCode } from '@/features/game/components/ShareCode'
 import { gameKeys } from '@/features/game/keys'
@@ -81,7 +82,10 @@ function Lobby() {
         </Card>
       )}
 
-      <LeaveButton gameId={game.id} active={false} />
+      <div className="flex flex-wrap items-center justify-center gap-x-6">
+        <SwitchGameButton code={game.code} />
+        <LeaveButton gameId={game.id} active={false} />
+      </div>
       {photoOpen && (
         <ChangePhotoSheet
           open

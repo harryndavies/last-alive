@@ -5,6 +5,7 @@ import { Avatar, Button, Card, NotificationsCard, PageHeader, StatBox, Tag } fro
 import { eventsQuery, gameFeed, survivedFor } from '@/features/board/feed'
 import { FeedList } from '@/features/board/FeedList'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
+import { SwitchGameButton } from '@/features/game/components/SwitchGameButton'
 import { useGameContext, type GameContext } from '@/features/game/queries'
 import { DisputeCard } from '@/features/kills/DisputeCard'
 import { disputesFor, killsQuery, openClaimBy, type Kill } from '@/features/kills/queries'
@@ -68,7 +69,10 @@ function Home() {
         <FeedList items={news} social={{ gameId: game.id, me, players }} />
       </section>
 
-      {me.status === 'alive' && <LeaveButton gameId={game.id} active />}
+      <div className="flex flex-wrap items-center justify-center gap-x-6">
+        <SwitchGameButton code={game.code} />
+        {me.status === 'alive' && <LeaveButton gameId={game.id} active />}
+      </div>
     </main>
   )
 }

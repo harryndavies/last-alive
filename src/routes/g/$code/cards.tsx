@@ -8,6 +8,7 @@ import { CARD_COPY, CARD_KINDS, SUGGESTIONS, type CardKind } from '@/features/ca
 import { ChangePhotoSheet } from '@/features/game/components/ChangePhotoSheet'
 import { DeadlineEditor } from '@/features/game/components/Deadline'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
+import { SwitchGameButton } from '@/features/game/components/SwitchGameButton'
 import { QrSheet } from '@/features/game/components/QrSheet'
 import { gameKeys } from '@/features/game/keys'
 import { PlayerList } from '@/features/game/components/PlayerList'
@@ -101,7 +102,10 @@ function PickCards() {
         </button>
       </section>
 
-      <LeaveButton gameId={game.id} active={false} />
+      <div className="flex flex-wrap items-center justify-center gap-x-6">
+        <SwitchGameButton code={game.code} />
+        <LeaveButton gameId={game.id} active={false} />
+      </div>
       <QrSheet
         open={qrOpen}
         onClose={() => setQrOpen(false)}

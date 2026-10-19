@@ -13,33 +13,56 @@ export function YourGames() {
   return <YourGamesList games={games} />
 }
 
-export function YourGamesList({ games }: { games: readonly MyGame[] }) {
+interface YourGamesListProps {
+  games: readonly MyGame[]
+  /** The game you're in now: shown as "You're here" instead of a link. */
+  currentCode?: string
+  /** Leave out the heading when something else already titles the list (a sheet). */
+  heading?: boolean
+}
+
+export function YourGamesList({ games, currentCode, heading = true }: YourGamesListProps) {
   return (
-    <section aria-labelledby="your-games" className="flex flex-col gap-2">
-      <h2 id="your-games" className="label-mono">
-        Your games
-      </h2>
+    <section aria-labelledby={heading ? 'your-games' : undefined} className="flex flex-col gap-2">
+      {heading && (
+        <h2 id="your-games" className="label-mono">
+          Your games
+        </h2>
+      )}
       <Card tone="paper" className="flex flex-col gap-1 p-2">
-        {games.map((g) => (
-          <Link
-            key={g.code}
-            to="/g/$code"
-            params={{ code: g.code }}
-            className={cn(
-              'flex min-h-14 items-center gap-3 rounded-xl px-2 py-1.5 active:bg-ground',
-              g.finished && 'opacity-70',
-            )}
-          >
-            <Avatar name={g.playerName} colour={g.colour} size="sm" dead={g.dead} />
-            <span className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate font-bold">{g.gameName}</span>
-              <span className="truncate text-sm text-muted">
-                {g.playerName} · {g.summary}
+        {games.map((g) => {
+          const rowClass = cn(
+            'flex min-h-14 items-center gap-3 rounded-xl px-2 py-1.5',
+            g.finished && 'opacity-70',
+          )
+          const details = (
+            <>
+              <Avatar name={g.playerName} colour={g.colour} size="sm" dead={g.dead} />
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate font-bold">{g.gameName}</span>
+                <span className="truncate text-sm text-muted">
+                  {g.playerName} · {g.summary}
+                </span>
               </span>
-            </span>
-            <span className="shrink-0 label-mono">{g.code}</span>
-          </Link>
-        ))}
+            </>
+          )
+          return g.code === currentCode ? (
+            <div key={g.code} aria-current="page" className={cn(rowClass, 'bg-ground')}>
+              {details}
+              <span className="shrink-0 label-mono">You&rsquo;re here</span>
+            </div>
+          ) : (
+            <Link
+              key={g.code}
+              to="/g/$code"
+              params={{ code: g.code }}
+              className={cn(rowClass, 'active:bg-ground')}
+            >
+              {details}
+              <span className="shrink-0 label-mono">{g.code}</span>
+            </Link>
+          )
+        })}
       </Card>
     </section>
   )
