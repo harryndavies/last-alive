@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
 import { buttonClasses, Button, Card, Tag, TextField } from '@/components'
+import { YourGames } from '@/features/game/components/YourGames'
 import { CodeForm, normaliseCode } from '@/features/game/schemas'
 
 export const Route = createFileRoute('/')({
@@ -57,6 +58,8 @@ function Landing() {
           </li>
         ))}
       </ol>
+
+      <YourGames />
 
       <div className="flex flex-col gap-4 pt-2">
         <Link to="/new" className={buttonClasses('yellow', 'lg', true)}>
