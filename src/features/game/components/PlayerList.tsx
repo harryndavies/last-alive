@@ -1,5 +1,6 @@
 import { Avatar, Tag } from '@/components'
 import type { Player } from '../schemas'
+import { useNames } from '@/lib/theme'
 
 export interface PlayerListProps {
   players: Player[]
@@ -12,6 +13,7 @@ export interface PlayerListProps {
 }
 
 export function PlayerList({ players, meId, showReady, onRemove, onEditMe }: PlayerListProps) {
+  const names = useNames()
   return (
     <ul className="flex flex-col gap-2.5" aria-label="Players">
       {players.map((p, i) => (
@@ -38,7 +40,8 @@ export function PlayerList({ players, meId, showReady, onRemove, onEditMe }: Pla
             <Avatar name={p.name} colour={p.colour} photo={p.avatar_path} />
           )}
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate text-lg font-bold">{p.name}</span>
+            <span className="truncate text-lg font-bold">{names.primary(p)}</span>
+            {names.secondary(p) && <span className="truncate text-sm">{names.secondary(p)}</span>}
             <span className="flex gap-1.5">
               {p.is_host && <Tag tone="yellow">Host</Tag>}
               {p.id === meId && <Tag tone="blue">You</Tag>}

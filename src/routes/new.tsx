@@ -12,6 +12,8 @@ import { rpc } from '@/lib/rpc'
 import { loadProfile, saveProfile } from '@/lib/profile'
 import { useUserId } from '@/lib/useUserId'
 import { errorMessage } from '@/lib/errors'
+import { ThemePicker } from '@/features/game/components/ThemePicker'
+import type { Theme } from '@/lib/themeCopy'
 
 export const Route = createFileRoute('/new')({
   component: NewGame,
@@ -28,6 +30,7 @@ function NewGame() {
   const [photo, setPhoto] = useState<string | null>(remembered?.photo ?? null)
   const [photoNote, setPhotoNote] = useState<string | null>(null)
   const [endsAt, setEndsAt] = useState('')
+  const [theme, setTheme] = useState<Theme>('classic')
   const [fieldError, setFieldError] = useState<string | null>(null)
   const [created, setCreated] = useState<{ code: string; pin: string } | null>(null)
 
@@ -43,6 +46,13 @@ function NewGame() {
       {
         onSuccess: async (res) => {
           saveProfile({ name: parsed.data.name, colour: parsed.data.colour, photo })
+          if (theme !== 'classic') {
+            try {
+              await rpc('set_game_theme', { p_game_id: res.game_id, p_theme: theme })
+            } catch (err) {
+              setPhotoNote(`Theme not set: ${errorMessage(err)} You can pick it in the lobby.`)
+            }
+          }
           const end = fromLocalInput(endsAt)
           if (end) {
             try {
@@ -103,6 +113,7 @@ function NewGame() {
         <ColourPicker value={colour} onChange={setColour} />
         <AvatarPicker name={name} colour={colour} value={photo} onChange={setPhoto} />
         <DeadlineField value={endsAt} onChange={setEndsAt} />
+        <ThemePicker value={theme} onChange={setTheme} />
         {create.isError && (
           <p role="alert" className="font-bold text-red-ink">
             {errorMessage(create.error)}

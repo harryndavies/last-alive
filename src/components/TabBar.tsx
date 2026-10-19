@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useCopy } from '@/lib/theme'
 
 export interface TabBarProps {
   code: string
@@ -7,13 +8,14 @@ export interface TabBarProps {
 }
 
 const TABS = [
-  { to: '/g/$code', label: 'Home', icon: '⌂', exact: true },
-  { to: '/g/$code/mission', label: 'Mission', icon: '◎', exact: false },
-  { to: '/g/$code/board', label: 'Board', icon: '☰', exact: false },
+  { to: '/g/$code', key: 'tabHome', icon: '⌂', exact: true },
+  { to: '/g/$code/mission', key: 'tabMission', icon: '◎', exact: false },
+  { to: '/g/$code/board', key: 'tabBoard', icon: '☰', exact: false },
 ] as const
 
 export function TabBar({ code, spectator }: TabBarProps) {
-  const tabs = spectator ? TABS.filter((t) => t.label !== 'Mission') : TABS
+  const copy = useCopy()
+  const tabs = spectator ? TABS.filter((t) => t.key !== 'tabMission') : TABS
   return (
     <nav
       aria-label="Game"
@@ -31,7 +33,7 @@ export function TabBar({ code, spectator }: TabBarProps) {
               <span aria-hidden="true" className="font-display text-2xl leading-none">
                 {tab.icon}
               </span>
-              <span className="label-mono">{tab.label}</span>
+              <span className="label-mono">{copy[tab.key]}</span>
             </Link>
           </li>
         ))}

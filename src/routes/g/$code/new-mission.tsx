@@ -7,12 +7,14 @@ import { useGameContext } from '@/features/game/queries'
 import { markMissionSeen, missionChanges, missionHistoryQuery } from '@/features/missions/queries'
 import { TargetCard } from '@/features/missions/TargetCard'
 import { useUserId } from '@/lib/useUserId'
+import { useCopy } from '@/lib/theme'
 
 export const Route = createFileRoute('/g/$code/new-mission')({
   component: NewMission,
 })
 
 function NewMission() {
+  const copy = useCopy()
   const { code } = Route.useParams()
   const { game, players } = useGameContext(code, useUserId())
   const { data: history } = useSuspenseQuery(missionHistoryQuery(game.id))
@@ -42,7 +44,7 @@ function NewMission() {
   return (
     <main className="flex flex-col gap-5 pt-4">
       <Tag tone="mint" tilt className="self-start">
-        New mission unlocked
+        {copy.newMissionTag}
       </Tag>
       <h1 className="text-5xl leading-[0.95]">
         {rumbled

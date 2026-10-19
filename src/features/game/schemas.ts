@@ -18,6 +18,7 @@ export const GameSchema = z.object({
   finished_at: z.string().nullable(),
   ends_at: z.string().nullable(),
   rematch_code: z.string().nullable(),
+  theme: z.enum(['classic', 'spy']).default('classic'),
 })
 export type Game = z.infer<typeof GameSchema>
 

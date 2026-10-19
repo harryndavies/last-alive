@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Avatar, Tag } from '@/components'
 import { cn } from '@/lib/cn'
+import { useNames, useTheme } from '@/lib/theme'
 import type { Player } from '@/features/game/schemas'
 
 export interface TargetCardProps {
@@ -12,13 +13,15 @@ export interface TargetCardProps {
 }
 
 export function TargetCard({ target, hidden, badge, children, className }: TargetCardProps) {
+  const theme = useTheme()
+  const names = useNames()
   return (
     <section
       aria-label="Your target"
       className={cn('relative -rotate-1 rounded-2xl brut bg-pink p-4 shadow-hard-lg', className)}
     >
       <div className="mb-3 flex items-center justify-between">
-        <Tag tone="ink">Your target</Tag>
+        <Tag tone="ink">{theme === 'spy' ? 'Subject' : 'Your target'}</Tag>
         {badge && (
           <Tag tone="yellow" className="rotate-3">
             {badge}
@@ -36,9 +39,20 @@ export function TargetCard({ target, hidden, badge, children, className }: Targe
         ) : (
           <Avatar name={target.name} colour={target.colour} photo={target.avatar_path} size="lg" />
         )}
-        <p className="min-w-0 font-display text-4xl leading-none break-words uppercase">
-          {hidden ? 'Hidden' : (target?.name ?? 'Unknown')}
-        </p>
+        <div className="min-w-0">
+          <p className="font-display text-4xl leading-none break-words uppercase">
+            {hidden
+              ? theme === 'spy'
+                ? 'Classified'
+                : 'Hidden'
+              : target
+                ? names.primary(target)
+                : 'Unknown'}
+          </p>
+          {!hidden && target && names.secondary(target) && (
+            <p className="mt-1 text-lg font-bold">{names.secondary(target)}</p>
+          )}
+        </div>
       </div>
       {children && <div className="mt-4">{children}</div>}
     </section>

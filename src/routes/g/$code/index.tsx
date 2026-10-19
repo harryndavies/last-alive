@@ -17,6 +17,7 @@ import { missionQuery } from '@/features/missions/queries'
 import { TargetCard } from '@/features/missions/TargetCard'
 import { useReveal } from '@/features/missions/useReveal'
 import { useUserId } from '@/lib/useUserId'
+import { useCopy, useNames } from '@/lib/theme'
 
 export const Route = createFileRoute('/g/$code/')({
   validateSearch: z.object({ report: z.boolean().optional() }),
@@ -24,6 +25,8 @@ export const Route = createFileRoute('/g/$code/')({
 })
 
 function Home() {
+  const copy = useCopy()
+  const names = useNames()
   const { code } = Route.useParams()
   const ctx = useGameContext(code, useUserId())
   const { game, players, me } = ctx
@@ -32,16 +35,23 @@ function Home() {
 
   const alive = players.filter((p) => p.status === 'alive').length
   const disputes = me.is_host ? disputesFor(kills) : []
-  const news = gameFeed(events).slice(0, 3)
+  const news = gameFeed(events, { copy, nameOf: names.of }).slice(0, 3)
 
   return (
     <main className="flex flex-col gap-5 pt-4">
-      <PageHeader kicker={game.name} title={me.status === 'alive' ? 'Stay alive' : "You're out"} />
+      <PageHeader
+        kicker={game.name}
+        title={me.status === 'alive' ? copy.homeAlive : copy.homeOut}
+      />
 
       <div className="grid grid-cols-3 gap-2.5">
-        <StatBox label="Alive" value={`${alive}/${players.length}`} tone="mint" />
-        <StatBox label="Kills" value={me.kills_count} tone="yellow" />
-        <StatBox label="Survived" value={survivedFor(game.started_at, me.died_at)} tone="pink" />
+        <StatBox label={copy.statAlive} value={`${alive}/${players.length}`} tone="mint" />
+        <StatBox label={copy.statKills} value={me.kills_count} tone="yellow" />
+        <StatBox
+          label={copy.statSurvived}
+          value={survivedFor(game.started_at, me.died_at)}
+          tone="pink"
+        />
       </div>
 
       <DeadlineBanner game={game} me={me} />
@@ -63,7 +73,7 @@ function Home() {
       <section aria-labelledby="news-heading" className="flex flex-col gap-3">
         <div className="flex items-baseline justify-between">
           <h2 id="news-heading" className="text-2xl">
-            Latest news
+            {copy.latestNews}
           </h2>
           <Link
             to="/g/$code/board"
@@ -86,6 +96,7 @@ function Home() {
 }
 
 function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
+  const copy = useCopy()
   const { game, players, me } = ctx
   const { code } = Route.useParams()
   const userId = useUserId()
@@ -150,7 +161,7 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
             {revealed ? 'Hide target' : 'Show target'}
           </button>
           <Button variant="red" size="lg" block disabled={!!claim} onClick={() => setSheet(true)}>
-            {claim ? 'Claim sent' : suddenDeath ? 'I got someone!' : 'I got them!'}
+            {claim ? 'Claim sent' : suddenDeath ? copy.iGotSomeone : copy.iGotThem}
           </Button>
           <Link
             to="/g/$code/mission"

@@ -39,6 +39,7 @@ const MESSAGES: Record<string, string> = {
   times_up: 'Time is up. No new kills can be claimed.',
   claim_already_open: 'You already have a claim waiting for an answer.',
   no_rematch: 'Nobody has started a rematch yet.',
+  invalid_theme: 'That theme is not available.',
   callout_cooldown: 'You guessed wrong recently. You can call someone out again 24 hours after.',
 }
 

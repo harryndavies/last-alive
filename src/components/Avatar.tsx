@@ -32,6 +32,7 @@ export function Avatar({ name, colour, photo, src, size = 'md', dead, className 
   return (
     <span
       aria-hidden="true"
+      data-avatar=""
       style={{ backgroundColor: bg }}
       className={cn(
         'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full brut font-display text-ink shadow-hard-sm',

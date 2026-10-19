@@ -4,6 +4,7 @@ import { KillPhoto } from '@/features/kills/KillPhoto'
 import { useKillPhotoUrl } from '@/features/kills/photos'
 import { cn } from '@/lib/cn'
 import { whenInGame, type Slide, type Who } from './killcamSlides'
+import { useCopy } from '@/lib/theme'
 
 const SLIDE_MS = { intro: 3500, kill: 6000, winner: 6000 } as const
 
@@ -22,6 +23,7 @@ export interface KillCamProps {
 
 /** Full-screen, stories-style replay. Tap right/left to skip, hold the pause button to look. */
 export function KillCam({ slides, startedAt, onClose, banter }: KillCamProps) {
+  const copy = useCopy()
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const slide = slides[index]
@@ -61,7 +63,7 @@ export function KillCam({ slides, startedAt, onClose, banter }: KillCamProps) {
     <div
       role="region"
       aria-roledescription="slideshow"
-      aria-label="Kill cam"
+      aria-label={copy.killCam}
       className="fixed inset-0 z-40 flex flex-col bg-ink text-paper"
     >
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]">
@@ -85,7 +87,7 @@ export function KillCam({ slides, startedAt, onClose, banter }: KillCamProps) {
         </div>
 
         <div className="mt-3 flex items-center justify-between">
-          <span className="label-mono text-paper/80">Kill cam</span>
+          <span className="label-mono text-paper/80">{copy.killCam}</span>
           <div className="flex gap-2">
             <button
               type="button"
@@ -146,6 +148,7 @@ function SlideView({
   startedAt: string | null
   banter?: Banter
 }) {
+  const copy = useCopy()
   switch (slide.kind) {
     case 'intro':
       return (
@@ -160,7 +163,7 @@ function SlideView({
           </h2>
           <p className="text-lg font-bold">{slide.gameName}</p>
           <p className="label-mono text-paper/80">
-            {slide.kills} {slide.kills === 1 ? 'kill' : 'kills'} · {slide.players} players
+            {slide.kills} {slide.kills === 1 ? copy.kill : copy.kills} · {slide.players} players
           </p>
         </div>
       )
@@ -182,7 +185,7 @@ function SlideView({
           <p className="label-mono">{slide.onTime ? 'Time’s up · most kills' : 'Last one alive'}</p>
           <h2 className="text-6xl break-words text-yellow">{slide.winner?.name ?? 'Nobody'}</h2>
           <p className="font-bold">
-            {slide.kills} {slide.kills === 1 ? 'kill' : 'kills'}
+            {slide.kills} {slide.kills === 1 ? copy.kill : copy.kills}
           </p>
         </div>
       )

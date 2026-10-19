@@ -9,6 +9,7 @@ import { normaliseCode } from '@/features/game/schemas'
 import { KillAlert } from '@/features/kills/KillAlert'
 import { hasSeenMission, missionQuery } from '@/features/missions/queries'
 import { usePrefetchAvatars } from '@/lib/avatars'
+import { GameTheme } from '@/lib/theme'
 import { useUserId } from '@/lib/useUserId'
 
 export const Route = createFileRoute('/g/$code')({
@@ -67,10 +68,10 @@ function GameLayout() {
   }, [unseenInherited, pathname, code, navigate, ownPath])
 
   return (
-    <>
+    <GameTheme theme={game.theme} gameId={game.id} playerIds={players.map((p) => p.id)}>
       <Outlet />
       {game.status === 'active' && <TabBar code={code} spectator={!alive} />}
       {game.status === 'active' && alive && <KillAlert gameId={game.id} me={me} />}
-    </>
+    </GameTheme>
   )
 }

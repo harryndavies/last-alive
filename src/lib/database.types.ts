@@ -103,14 +103,14 @@ isOneToOne: false
                   ]
                 },"games": {
                   Row: {
-                    "code": string,"created_at": string,"ends_at": string | null,"final_hour_announced_at": string | null,"finished_at": string | null,"host_player_id": string | null,"id": string,"name": string,"rematch_code": string | null,"rematch_game_id": string | null,"started_at": string | null,"status": Database["public"]['Enums']["game_status"],"sudden_death_announced_at": string | null,"winner_player_id": string | null
+                    "code": string,"created_at": string,"ends_at": string | null,"final_hour_announced_at": string | null,"finished_at": string | null,"host_player_id": string | null,"id": string,"name": string,"rematch_code": string | null,"rematch_game_id": string | null,"started_at": string | null,"status": Database["public"]['Enums']["game_status"],"sudden_death_announced_at": string | null,"theme": string,"winner_player_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "code": string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name": string,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"winner_player_id"?: string | null
+                    "code": string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name": string,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"theme"?: string,"winner_player_id"?: string | null
                   }
                   Update: {
-                    "code"?: string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name"?: string,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"winner_player_id"?: string | null
+                    "code"?: string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name"?: string,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"theme"?: string,"winner_player_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -405,6 +405,9 @@ isOneToOne: false
                            },
 "set_game_end":
 { Args: { "p_ends_at"?: string,"p_game_id": string }; Returns: undefined
+                           },
+"set_game_theme":
+{ Args: { "p_game_id": string,"p_theme": string }; Returns: undefined
                            },
 "start_game":
 { Args: { "p_game_id": string }; Returns: undefined

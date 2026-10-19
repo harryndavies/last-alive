@@ -15,6 +15,7 @@ import { PlayerList } from '@/features/game/components/PlayerList'
 import { useGameContext, useStartGame } from '@/features/game/queries'
 import { errorMessage } from '@/lib/errors'
 import { useUserId } from '@/lib/useUserId'
+import { useCopy, useTheme } from '@/lib/theme'
 
 export const Route = createFileRoute('/g/$code/cards')({
   component: PickCards,
@@ -23,6 +24,7 @@ export const Route = createFileRoute('/g/$code/cards')({
 const TILTS = [-1, 1, -2] as const
 
 function PickCards() {
+  const copy = useCopy()
   const { code } = Route.useParams()
   const userId = useUserId()
   const { game, players, me } = useGameContext(code, userId)
@@ -35,7 +37,7 @@ function PickCards() {
 
   return (
     <main className="flex flex-col gap-6 pt-4">
-      <PageHeader kicker="Step 2 of 2" title="Pick your cards">
+      <PageHeader kicker="Step 2 of 2" title={copy.cardsTitle}>
         <p className="font-medium">
           Your cards go into a shared deck and end up on someone else&rsquo;s mission. Never your
           own.
@@ -143,6 +145,8 @@ function LockedCards({ gameId, playerId }: { gameId: string; playerId: string })
 }
 
 function CardsFormView({ gameId }: { gameId: string }) {
+  const copy = useCopy()
+  const theme = useTheme()
   const submit = useSubmitCards(gameId)
   const [values, setValues] = useState<Record<CardKind, string>>({
     weapon: '',
@@ -176,7 +180,7 @@ function CardsFormView({ gameId }: { gameId: string }) {
       {CARD_KINDS.map((kind) => (
         <div key={kind} className="flex flex-col gap-2">
           <TextField
-            label={CARD_COPY[kind].label}
+            label={theme === 'spy' ? copy[kind] : CARD_COPY[kind].label}
             placeholder={CARD_COPY[kind].placeholder}
             hint={CARD_COPY[kind].hint}
             maxLength={CARD_COPY[kind].maxLength}
@@ -184,7 +188,10 @@ function CardsFormView({ gameId }: { gameId: string }) {
             onChange={(e) => set(kind, e.target.value)}
             error={errors[kind]}
           />
-          <ul className="flex flex-wrap gap-2" aria-label={`${CARD_COPY[kind].label} ideas`}>
+          <ul
+            className="flex flex-wrap gap-2"
+            aria-label={`${theme === 'spy' ? copy[kind] : CARD_COPY[kind].label} ideas`}
+          >
             {SUGGESTIONS[kind].map((s) => (
               <li key={s}>
                 <button

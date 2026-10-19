@@ -4,6 +4,7 @@ import { gameKeys } from '@/features/game/keys'
 import type { Player } from '@/features/game/schemas'
 import { toGameError } from '@/lib/errors'
 import { supabase } from '@/lib/supabase'
+import { copyFor, type Copy } from '@/lib/themeCopy'
 
 export const EventSchema = z.object({
   id: z.number().int(),
@@ -44,9 +45,17 @@ export interface FeedItem {
 const str = (value: unknown, fallback = 'Someone'): string =>
   typeof value === 'string' && value.length > 0 ? value : fallback
 
+/** The game's theme words, and how to name a player from an event's id + name. */
+export interface FeedOptions {
+  copy?: Copy
+  nameOf?: (id: unknown, name: unknown) => string
+}
+
 /** Turns a raw event into a line for the feed. Returns null for events we do not show. */
-export function describeEvent(e: GameEvent): FeedItem | null {
+export function describeEvent(e: GameEvent, opts: FeedOptions = {}): FeedItem | null {
   const p = e.payload
+  const copy = opts.copy ?? copyFor('classic')
+  const who = (id: unknown, name: unknown) => (opts.nameOf ? opts.nameOf(id, name) : str(name))
   const base = { id: e.id, type: e.type, at: e.created_at }
   switch (e.type) {
     case 'kill_confirmed': {
@@ -61,7 +70,7 @@ export function describeEvent(e: GameEvent): FeedItem | null {
         ...base,
         icon: '✕',
         tone: 'red',
-        text: `${str(p.killer_name)} got ${str(p.victim_name)}${p.sudden_death ? ' ⚡' : ''}`,
+        text: `${who(p.killer_id, p.killer_name)} ${copy.killed} ${who(p.victim_id, p.victim_name)}${p.sudden_death ? ' ⚡' : ''}`,
         detail: [note, how].filter(Boolean).join(' ') || undefined,
         photoPath: typeof p.photo_path === 'string' ? p.photo_path : undefined,
       }
@@ -71,7 +80,7 @@ export function describeEvent(e: GameEvent): FeedItem | null {
         ...base,
         icon: '🕵️',
         tone: 'pink',
-        text: `${str(p.by_name)} rumbled ${str(p.hunter_name)}`,
+        text: `${who(p.by_id, p.by_name)} ${copy.rumbled} ${who(p.hunter_id, p.hunter_name)}`,
         detail: 'Called out their hunter. They’re out.',
       }
     case 'player_left':
@@ -134,15 +143,15 @@ const KILL_FEED_TYPES = new Set([
 ])
 
 /** The board's kill feed: deaths (kills and rumbles), leavers, start and finish. */
-export function killFeed(events: GameEvent[]): FeedItem[] {
-  return gameFeed(events).filter((item) => KILL_FEED_TYPES.has(item.type))
+export function killFeed(events: GameEvent[], opts: FeedOptions = {}): FeedItem[] {
+  return gameFeed(events, opts).filter((item) => KILL_FEED_TYPES.has(item.type))
 }
 
 /** Only what happened once the game was running. */
-export function gameFeed(events: GameEvent[]): FeedItem[] {
+export function gameFeed(events: GameEvent[], opts: FeedOptions = {}): FeedItem[] {
   const startIdx = events.findIndex((e) => e.type === 'game_started')
   const relevant = startIdx === -1 ? events : events.slice(0, startIdx + 1)
-  return relevant.map(describeEvent).filter((x): x is FeedItem => x !== null)
+  return relevant.map((e) => describeEvent(e, opts)).filter((x): x is FeedItem => x !== null)
 }
 
 export interface Standing {

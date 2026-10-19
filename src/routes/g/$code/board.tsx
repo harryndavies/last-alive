@@ -8,6 +8,7 @@ import { StandingsList } from '@/features/board/StandingsList'
 import { useGameContext } from '@/features/game/queries'
 import { cn } from '@/lib/cn'
 import { useUserId } from '@/lib/useUserId'
+import { useCopy, useNames } from '@/lib/theme'
 
 const Tab = z.enum(['standings', 'feed'])
 
@@ -17,15 +18,17 @@ export const Route = createFileRoute('/g/$code/board')({
 })
 
 function Board() {
+  const copy = useCopy()
+  const names = useNames()
   const { code } = Route.useParams()
   const { tab = 'standings' } = Route.useSearch()
   const { game, players, me } = useGameContext(code, useUserId())
   const { data: events = [] } = useQuery(eventsQuery(game.id))
-  const kills = killFeed(events)
+  const kills = killFeed(events, { copy, nameOf: names.of })
 
   return (
     <main className="flex flex-col gap-5 pt-4">
-      <PageHeader kicker={game.name} title="The board" />
+      <PageHeader kicker={game.name} title={copy.boardTitle} />
 
       <div
         role="tablist"
@@ -47,7 +50,7 @@ function Board() {
               t === 'standings' && 'border-r-3 border-ink',
             )}
           >
-            {t === 'standings' ? 'Standings' : 'Kill feed'}
+            {t === 'standings' ? 'Standings' : copy.feedTab}
           </Link>
         ))}
       </div>
@@ -67,7 +70,7 @@ function Board() {
                 params={{ code }}
                 className={buttonClasses('red', 'md', true)}
               >
-                ▶ {game.status === 'finished' ? 'Watch the kill cam' : 'Kill cam so far'}
+                ▶ {game.status === 'finished' ? copy.watchKillCam : copy.killCamSoFar}
               </Link>
             )}
             <FeedList

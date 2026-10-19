@@ -1,4 +1,5 @@
 import { cn } from '@/lib/cn'
+import { useCopy, useTheme } from '@/lib/theme'
 import type { CardKind } from './suggestions'
 
 const TONE: Record<CardKind, string> = {
@@ -7,7 +8,6 @@ const TONE: Record<CardKind, string> = {
   phrase: 'bg-mint',
 }
 const ICON: Record<CardKind, string> = { weapon: '🗡', place: '⌖', phrase: '❝' }
-const LABEL: Record<CardKind, string> = { weapon: 'Weapon', place: 'Place', phrase: 'Say' }
 
 export interface PlayingCardProps {
   kind: CardKind
@@ -22,19 +22,22 @@ const TILT = { [-2]: '-rotate-2', [-1]: '-rotate-1', 0: '', 1: 'rotate-1', 2: 'r
 
 /** A weapon / place / phrase card. */
 export function PlayingCard({ kind, text, tilt = 0, badge, hidden, className }: PlayingCardProps) {
+  const copy = useCopy()
+  // Spy games show cards as typed lines on the file: plain paper, no tilt.
+  const spy = useTheme() === 'spy'
   return (
     <div
       className={cn(
         'relative flex min-h-24 flex-col justify-between rounded-2xl brut p-3 text-ink shadow-hard',
-        TONE[kind],
-        TILT[tilt],
+        spy ? 'bg-paper' : TONE[kind],
+        !spy && TILT[tilt],
         className,
       )}
     >
       <div className="flex items-center justify-between">
         <span className="label-mono">
           <span aria-hidden="true">{ICON[kind]} </span>
-          {LABEL[kind]}
+          {copy[kind]}
         </span>
         {badge && (
           <span className="rotate-3 rounded-md border-2 border-ink bg-yellow px-1.5 label-mono shadow-hard-sm">

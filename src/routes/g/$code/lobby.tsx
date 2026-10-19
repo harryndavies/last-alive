@@ -12,6 +12,8 @@ import { gameKeys } from '@/features/game/keys'
 import { useGameContext, useRemovePlayer, useStartPicking } from '@/features/game/queries'
 import { errorMessage } from '@/lib/errors'
 import { useUserId } from '@/lib/useUserId'
+import { useCopy } from '@/lib/theme'
+import { LobbyTheme } from '@/features/game/components/ThemePicker'
 
 export const Route = createFileRoute('/g/$code/lobby')({
   component: Lobby,
@@ -20,6 +22,7 @@ export const Route = createFileRoute('/g/$code/lobby')({
 const MIN_PLAYERS = 4
 
 function Lobby() {
+  const copy = useCopy()
   const { code } = Route.useParams()
   const userId = useUserId()
   const { game, players, me } = useGameContext(code, userId)
@@ -32,9 +35,10 @@ function Lobby() {
 
   return (
     <main className="flex flex-col gap-6 pt-4">
-      <PageHeader kicker="Lobby" title={game.name} />
+      <PageHeader kicker={copy.lobbyKicker} title={game.name} />
       <ShareCode code={game.code} gameName={game.name} />
       <DeadlineEditor game={game} me={me} />
+      <LobbyTheme game={game} isHost={me.is_host} />
       <NotificationsCard />
 
       <section aria-labelledby="players-heading" className="flex flex-col gap-3">

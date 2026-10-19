@@ -47,6 +47,58 @@
   }
 }
 
+/* Cold War spy theme (set on <html data-theme="spy"> inside spy games).
+   Same tokens, dossier values: khaki paper, olive ink, stamp red; typewriter
+   and stencil type; square corners and no drop shadows. Every pairing keeps
+   text at 4.5:1. */
+:root[data-theme='spy'] {
+  --color-ground: #d8d0ae;
+  --color-ink: #26281c;
+  --color-paper: #e6dfc2;
+  --color-yellow: #c9bf98; /* khaki: primary buttons and tags */
+  --color-red: #a62d1f; /* stamp red; text on it is cream, below */
+  --color-blue: #8e9bb0; /* cold slate */
+  --color-mint: #9aa56a; /* field olive */
+  --color-pink: #c4ae8c; /* aged manila */
+  --color-red-ink: #a62d1f;
+  --color-blue-ink: #2f4a6b;
+  --color-muted: #4d4a36;
+
+  --font-display: 'Stardos Stencil', 'Arial Black', system-ui, sans-serif;
+  --font-sans: 'Courier Prime', ui-monospace, monospace;
+  --font-mono: 'Courier Prime', ui-monospace, monospace;
+
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+}
+:root[data-theme='spy'] body {
+  background-image: none;
+}
+/* Square everything, pills and photos included, like typed forms and file photos. */
+:root[data-theme='spy'] .rounded-full {
+  border-radius: 0;
+}
+/* Avatars and photos look like faded file photos. */
+:root[data-theme='spy'] [data-avatar] {
+  filter: grayscale(0.75) sepia(0.35) contrast(1.05);
+}
+/* Tailwind bakes shadow values into each class, so turn the classes off. */
+:root[data-theme='spy'] :is(.shadow-hard, .shadow-hard-sm, .shadow-hard-lg) {
+  box-shadow: none;
+}
+/* Stamp red is too dark for ink text, so anything on it reads in cream. */
+:root[data-theme='spy'] .bg-red {
+  color: #ede6c8;
+}
+:root[data-theme='spy'] h1,
+:root[data-theme='spy'] h2,
+:root[data-theme='spy'] h3 {
+  letter-spacing: 0.04em;
+}
+
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;

@@ -1,6 +1,7 @@
 import { Avatar, Tag } from '@/components'
 import { cn } from '@/lib/cn'
 import type { Standing } from './feed'
+import { useCopy, useNames } from '@/lib/theme'
 
 export function StandingsList({
   rows,
@@ -11,6 +12,8 @@ export function StandingsList({
   meId: string
   winnerId?: string | null
 }) {
+  const copy = useCopy()
+  const names = useNames()
   return (
     <ol className="flex flex-col gap-2.5" aria-label="Standings">
       {rows.map(({ player, rank, killedBy }) => {
@@ -38,19 +41,26 @@ export function StandingsList({
                   dead && 'text-muted line-through decoration-red-ink decoration-[3px]',
                 )}
               >
-                {player.name}
+                {names.primary(player)}
                 {player.id === meId && <span className="sr-only"> (you)</span>}
               </p>
+              {names.secondary(player) && (
+                <p className="truncate text-sm">{names.secondary(player)}</p>
+              )}
               {dead && (
                 <p className="label-mono text-muted">
-                  {killedBy ? `Got by ${killedBy.name}` : 'Left the game'}
+                  {killedBy
+                    ? `${copy.killed === 'got' ? 'Got' : 'Terminated'} by ${names.primary(killedBy)}`
+                    : 'Left the game'}
                 </p>
               )}
             </div>
             {player.id === meId && <Tag tone="blue">You</Tag>}
             <span className="text-right">
               <span className="block font-display text-xl leading-none">{player.kills_count}</span>
-              <span className="label-mono">{player.kills_count === 1 ? 'kill' : 'kills'}</span>
+              <span className="label-mono">
+                {player.kills_count === 1 ? copy.kill : copy.kills}
+              </span>
             </span>
           </li>
         )
