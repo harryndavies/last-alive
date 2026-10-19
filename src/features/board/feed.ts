@@ -66,6 +66,14 @@ export function describeEvent(e: GameEvent): FeedItem | null {
         photoPath: typeof p.photo_path === 'string' ? p.photo_path : undefined,
       }
     }
+    case 'rumbled':
+      return {
+        ...base,
+        icon: '🕵️',
+        tone: 'pink',
+        text: `${str(p.by_name)} rumbled ${str(p.hunter_name)}`,
+        detail: 'Called out their hunter. They’re out.',
+      }
     case 'player_left':
       return {
         ...base,
@@ -117,6 +125,7 @@ export function describeEvent(e: GameEvent): FeedItem | null {
 
 const KILL_FEED_TYPES = new Set([
   'kill_confirmed',
+  'rumbled',
   'player_left',
   'game_started',
   'game_finished',
@@ -124,7 +133,7 @@ const KILL_FEED_TYPES = new Set([
   'final_hour',
 ])
 
-/** The board's kill feed: deaths, leavers, start and finish. */
+/** The board's kill feed: deaths (kills and rumbles), leavers, start and finish. */
 export function killFeed(events: GameEvent[]): FeedItem[] {
   return gameFeed(events).filter((item) => KILL_FEED_TYPES.has(item.type))
 }

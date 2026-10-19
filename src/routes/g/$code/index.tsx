@@ -12,6 +12,7 @@ import { disputesFor, killsQuery, openClaimBy, type Kill } from '@/features/kill
 import { ReportKillSheet } from '@/features/kills/ReportKillSheet'
 import { DeadlineBanner } from '@/features/game/components/Deadline'
 import { deadlinePhase, useNow } from '@/lib/deadline'
+import { CallOutCard } from '@/features/missions/CallOutCard'
 import { missionQuery } from '@/features/missions/queries'
 import { TargetCard } from '@/features/missions/TargetCard'
 import { useReveal } from '@/features/missions/useReveal'
@@ -50,7 +51,14 @@ function Home() {
         <DisputeCard key={k.id} gameId={game.id} killId={k.id} />
       ))}
 
-      {me.status === 'alive' ? <Hunt ctx={ctx} kills={kills} /> : <Spectator ctx={ctx} />}
+      {me.status === 'alive' ? (
+        <Hunt ctx={ctx} kills={kills} />
+      ) : (
+        <Spectator
+          ctx={ctx}
+          rumbled={events.some((e) => e.type === 'rumbled' && e.payload.hunter_id === me.id)}
+        />
+      )}
 
       <section aria-labelledby="news-heading" className="flex flex-col gap-3">
         <div className="flex items-baseline justify-between">
@@ -154,6 +162,8 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
         </div>
       </TargetCard>
 
+      <CallOutCard gameId={game.id} me={me} players={players} />
+
       <ReportKillSheet
         userId={userId}
         suddenDeath={suddenDeath}
@@ -168,7 +178,7 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
   )
 }
 
-function Spectator({ ctx }: { ctx: GameContext }) {
+function Spectator({ ctx, rumbled }: { ctx: GameContext; rumbled: boolean }) {
   const { players, me } = ctx
   const killer = players.find((p) => p.id === me.killed_by)
   return (
@@ -179,7 +189,9 @@ function Spectator({ ctx }: { ctx: GameContext }) {
       {killer ? (
         <div className="flex items-center gap-3">
           <Avatar name={killer.name} colour={killer.colour} photo={killer.avatar_path} />
-          <p className="text-lg font-bold">{killer.name} got you.</p>
+          <p className="text-lg font-bold">
+            {rumbled ? `${killer.name} rumbled you.` : `${killer.name} got you.`}
+          </p>
         </div>
       ) : (
         <p className="text-lg font-bold">You left the game.</p>

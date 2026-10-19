@@ -36,6 +36,8 @@ function NewMission() {
   const changed = missionChanges(current, previous)
   const victim = players.find((p) => p.id === previous?.target_id)
   const target = players.find((p) => p.id === current.target_id)
+  // Rumbled: your old target was called out by their target, who is now yours.
+  const rumbled = !!victim && victim.status === 'dead' && victim.killed_by === current.target_id
 
   return (
     <main className="flex flex-col gap-5 pt-4">
@@ -43,12 +45,16 @@ function NewMission() {
         New mission unlocked
       </Tag>
       <h1 className="text-5xl leading-[0.95]">
-        You inherit {victim ? `${victim.name}'s` : 'their'} mission
+        {rumbled
+          ? 'Your target got rumbled'
+          : `You inherit ${victim ? `${victim.name}'s` : 'their'} mission`}
       </h1>
       <p className="font-medium">
-        {victim?.status === 'dead' && victim.killed_by === null
-          ? `${victim.name} left the game, so their target is now yours.`
-          : `${victim?.name ?? 'Your target'} was hunting someone. Now you are.`}
+        {rumbled
+          ? `${target?.name ?? 'Their target'} called ${victim?.name ?? 'them'} out, so ${victim?.name ?? 'they'} is out. ${target?.name ?? 'They'} is your target now. Same weapon, place and phrase as before.`
+          : victim?.status === 'dead' && victim.killed_by === null
+            ? `${victim.name} left the game, so their target is now yours.`
+            : `${victim?.name ?? 'Your target'} was hunting someone. Now you are.`}
       </p>
 
       <TargetCard target={target} badge={changed.target ? 'New' : undefined} />

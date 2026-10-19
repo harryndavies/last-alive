@@ -34,6 +34,10 @@ with a code, a name and a colour.
    **I got them**. The victim confirms or disputes. No answer within 12 hours counts as a yes.
    The host settles disputes.
 5. The killer inherits the victim's mission. The last player alive wins.
+6. **Cutthroat call-outs:** if you work out who is hunting you, call them out. Right, and they're
+   rumbled: out, with the kill yours. Their hunter takes you over as a target, keeping their own
+   cards (yours has just seen the rumbled hunter's weapon). Wrong, and you can't call anyone out
+   for 24 hours; nobody else is told.
 
 **Stack:** React 18, TypeScript, Vite, TanStack Router (file-based) and Query, Supabase (Postgres,
 anonymous auth, RLS, Realtime, RPC functions, pg_cron), Tailwind CSS v4, Zod, Vitest + React
@@ -153,7 +157,7 @@ wrong PINs lock the seat for 15 minutes.
 - Every write is a `SECURITY DEFINER` RPC with `search_path = ''`. Each one checks `auth.uid()`
   and the game state:
   `create_game`, `join_game`, `reclaim_player`, `start_picking`, `submit_cards`, `start_game`,
-  `report_kill`, `respond_to_kill`, `resolve_dispute`, `remove_player`, `leave_game`, and the
+  `report_kill`, `respond_to_kill`, `resolve_dispute`, `call_out_hunter`, `remove_player`, `leave_game`, and the
   read helpers `game_preview` and `get_kill_claim`. Internal helpers live in a `private` schema,
   which the API does not expose.
 - Every RPC that changes a game first locks that game's row (`FOR UPDATE`), so changes to one

@@ -23,7 +23,39 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "cards": {
+            "callouts": {
+                  Row: {
+                    "accused_id": string,"accuser_id": string,"correct": boolean,"created_at": string,"game_id": string,"id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "accused_id": string,"accuser_id": string,"correct": boolean,"created_at"?: string,"game_id": string,"id"?: string
+                  }
+                  Update: {
+                    "accused_id"?: string,"accuser_id"?: string,"correct"?: boolean,"created_at"?: string,"game_id"?: string,"id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "callouts_accused_id_fkey"
+      columns: ["accused_id"]
+isOneToOne: false
+      referencedRelation: "players"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "callouts_accuser_id_fkey"
+      columns: ["accuser_id"]
+isOneToOne: false
+      referencedRelation: "players"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "callouts_game_id_fkey"
+      columns: ["game_id"]
+isOneToOne: false
+      referencedRelation: "games"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"cards": {
                   Row: {
                     "created_at": string,"game_id": string,"id": string,"kind": Database["public"]['Enums']["card_kind"],"submitted_by": string,"text": string
                   }
@@ -310,6 +342,9 @@ isOneToOne: false
                            },
 "avatar_paths":
 { Args: { "p_game_ids": (string)[] }; Returns: string[]
+                           },
+"call_out_hunter":
+{ Args: { "p_game_id": string,"p_suspect_id": string }; Returns: Json
                            },
 "create_game":
 { Args: { "p_colour": string,"p_game_name": string,"p_player_name": string }; Returns: Json
