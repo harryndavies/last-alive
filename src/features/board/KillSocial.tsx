@@ -139,7 +139,7 @@ export function KillSocial({ eventId, ctx }: { eventId: number; ctx: SocialConte
               onChange={(e) => setDraft(e.target.value)}
               maxLength={200}
               placeholder="Say something…"
-              className="min-h-11 min-w-0 flex-1 rounded-lg brut bg-paper px-3 text-sm font-medium focus:outline-none"
+              className="min-h-11 min-w-0 flex-1 rounded-lg brut bg-paper px-3 text-base font-medium focus:outline-none"
             />
             <button
               type="submit"
