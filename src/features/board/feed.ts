@@ -14,18 +14,31 @@ export const EventSchema = z.object({
 })
 export type GameEvent = z.infer<typeof EventSchema>
 
+const DetailsSchema = z
+  .object({ details: z.record(z.string(), z.unknown()) })
+  .nullable()
+  .default(null)
+
 export const eventsQuery = (gameId: string) =>
   queryOptions({
     queryKey: gameKeys.events(gameId),
     queryFn: async (): Promise<GameEvent[]> => {
       const { data, error } = await supabase
         .from('events')
-        .select('id, type, payload, created_at')
+        .select('id, type, payload, created_at, event_details(details)')
         .eq('game_id', gameId)
         .order('id', { ascending: false })
         .limit(200)
       if (error) throw toGameError(error)
-      return z.array(EventSchema).parse(data)
+      // Who did it sits in event_details, which the secret feed hides from
+      // living players. Merge it in where we're allowed to see it.
+      return z
+        .array(EventSchema.extend({ event_details: DetailsSchema }))
+        .parse(data)
+        .map(({ event_details, ...e }) => ({
+          ...e,
+          payload: { ...e.payload, ...(event_details?.details ?? {}) },
+        }))
     },
   })
 
@@ -66,11 +79,13 @@ export function describeEvent(e: GameEvent, opts: FeedOptions = {}): FeedItem | 
             ? 'Upheld by the host.'
             : undefined
       const note = typeof p.note === 'string' && p.note ? `“${p.note}”` : undefined
+      const victim = who(p.victim_id, p.victim_name)
       return {
         ...base,
         icon: '✕',
         tone: 'red',
-        text: `${who(p.killer_id, p.killer_name)} ${copy.killed} ${who(p.victim_id, p.victim_name)}${p.sudden_death ? ' ⚡' : ''}`,
+        // No killer means the secret feed is hiding it from you.
+        text: `${p.killer_id || p.killer_name ? `${who(p.killer_id, p.killer_name)} ${copy.killed} ${victim}` : `${victim} ${copy.isOut}`}${p.sudden_death ? ' ⚡' : ''}`,
         detail: [note, how].filter(Boolean).join(' ') || undefined,
         photoPath: typeof p.photo_path === 'string' ? p.photo_path : undefined,
       }
@@ -80,7 +95,10 @@ export function describeEvent(e: GameEvent, opts: FeedOptions = {}): FeedItem | 
         ...base,
         icon: '🕵️',
         tone: 'pink',
-        text: `${who(p.by_id, p.by_name)} ${copy.rumbled} ${who(p.hunter_id, p.hunter_name)}`,
+        text:
+          p.by_id || p.by_name
+            ? `${who(p.by_id, p.by_name)} ${copy.rumbled} ${who(p.hunter_id, p.hunter_name)}`
+            : `${who(p.hunter_id, p.hunter_name)} ${copy.wasRumbled}`,
         detail: 'Called out their hunter. They’re out.',
       }
     case 'player_left':
@@ -176,7 +194,8 @@ export function standings(players: Player[], winnerId?: string | null): Standing
       const diff = (b.died_at ?? '').localeCompare(a.died_at ?? '')
       if (diff !== 0) return diff
     }
-    if (a.kills_count !== b.kills_count) return b.kills_count - a.kills_count
+    const kills = (b.kills_count ?? 0) - (a.kills_count ?? 0)
+    if (kills !== 0) return kills
     return a.name.localeCompare(b.name)
   })
   return sorted.map((player, i) => ({

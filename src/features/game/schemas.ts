@@ -19,6 +19,7 @@ export const GameSchema = z.object({
   ends_at: z.string().nullable(),
   rematch_code: z.string().nullable(),
   theme: z.enum(['classic', 'spy']).default('classic'),
+  secret_feed: z.boolean().default(true),
 })
 export type Game = z.infer<typeof GameSchema>
 
@@ -31,13 +32,34 @@ export const PlayerSchema = z.object({
   is_host: z.boolean(),
   status: z.enum(['alive', 'dead']),
   cards_locked: z.boolean(),
-  kills_count: z.number().int(),
-  killed_by: z.uuid().nullable(),
   avatar_path: z.string().nullable(),
   died_at: z.string().nullable(),
   created_at: z.string(),
+  // Kills live in player_stats, which RLS hides from living players while the
+  // secret feed is on (except their own row). Hidden reads as null.
+  player_stats: z
+    .object({ kills_count: z.number().int(), killed_by: z.uuid().nullable() })
+    .nullable()
+    .default(null),
 })
-export type Player = z.infer<typeof PlayerSchema>
+
+export type Player = Omit<z.infer<typeof PlayerSchema>, 'player_stats'> & {
+  /** Null when the secret feed hides it from you. */
+  kills_count: number | null
+  /** Who got them. Null if they left, are alive, or it's hidden from you. */
+  killed_by: string | null
+}
+
+/** Parses a players row with its embedded stats into a flat Player. */
+export function toPlayer(row: unknown): Player {
+  const { player_stats: stats, ...player } = PlayerSchema.parse(row)
+  return { ...player, kills_count: stats?.kills_count ?? null, killed_by: stats?.killed_by ?? null }
+}
+
+/** False while the secret feed hides who got who from this player. */
+export function seesEverything(game: Pick<Game, 'status' | 'secret_feed'>, me?: Player): boolean {
+  return game.status === 'finished' || !game.secret_feed || me?.status === 'dead'
+}
 
 export const GamePreviewSchema = z
   .object({

@@ -10,7 +10,8 @@ export const MySeatSchema = z.object({
   name: z.string(),
   colour: z.string(),
   status: z.enum(['alive', 'dead']),
-  kills_count: z.number().int(),
+  // Your own stats row is always visible to you.
+  player_stats: z.object({ kills_count: z.number().int() }).nullable(),
   games: z.object({
     code: z.string(),
     name: z.string(),
@@ -37,7 +38,7 @@ function plural(n: number, word: string): string {
 }
 
 function summarise(seat: MySeat): string {
-  const kills = plural(seat.kills_count, 'kill')
+  const kills = plural(seat.player_stats?.kills_count ?? 0, 'kill')
   switch (seat.games.status) {
     case 'lobby':
       return 'Waiting to start'
@@ -78,7 +79,7 @@ export const myGamesQuery = (userId: string) =>
       const { data, error } = await supabase
         .from('players')
         .select(
-          'id, name, colour, status, kills_count, games!players_game_id_fkey!inner(code, name, status, winner_player_id, created_at)',
+          'id, name, colour, status, player_stats!player_stats_player_id_fkey(kills_count), games!players_game_id_fkey!inner(code, name, status, winner_player_id, created_at)',
         )
         .eq('user_id', userId)
       if (error) throw toGameError(error)

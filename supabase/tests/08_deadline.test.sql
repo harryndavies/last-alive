@@ -101,14 +101,14 @@ select is((select sudden_death from public.kills where id = pg_temp.v('sd')::uui
 select pg_temp.login(pg_temp.uid(pg_temp.letter(pg_temp.v('stranger')::uuid)));
 select public.respond_to_kill(pg_temp.v('sd')::uuid, true);
 
-select is((select kills_count from public.players where id = pg_temp.v('ana')::uuid), 1, 'the killer gets the credit');
+select is((select kills_count from public.player_stats where player_id = pg_temp.v('ana')::uuid), 1, 'the killer gets the credit');
 select is(pg_temp.target_of(pg_temp.v('ana')::uuid), pg_temp.v('ana_target')::uuid,
   'the killer keeps their own mission');
 select is(pg_temp.target_of(pg_temp.v('stranger_hunter')::uuid), pg_temp.v('stranger_target')::uuid,
   'whoever hunted the victim inherits the victim''s target, so the circle stays whole');
 select is((select count(*)::int from public.missions where game_id = pg_temp.game() and is_active), 5,
   'one active mission per survivor');
-select is((select payload->>'weapon' from public.events where game_id = pg_temp.game() and type = 'kill_confirmed'),
+select is((select d.details->>'weapon' from public.events e join public.event_details d on d.event_id = e.id where e.game_id = pg_temp.game() and e.type = 'kill_confirmed'),
   null, 'a sudden-death kill has no weapon on the record');
 
 -- A claim made before the deadline still gets answered after it.

@@ -6,6 +6,7 @@ import { eventsQuery, killFeed, standings } from '@/features/board/feed'
 import { FeedList } from '@/features/board/FeedList'
 import { StandingsList } from '@/features/board/StandingsList'
 import { useGameContext } from '@/features/game/queries'
+import { seesEverything } from '@/features/game/schemas'
 import { cn } from '@/lib/cn'
 import { useUserId } from '@/lib/useUserId'
 import { useCopy, useNames } from '@/lib/theme'
@@ -25,6 +26,7 @@ function Board() {
   const { game, players, me } = useGameContext(code, useUserId())
   const { data: events = [] } = useQuery(eventsQuery(game.id))
   const kills = killFeed(events, { copy, nameOf: names.of })
+  const secret = !seesEverything(game, me)
 
   return (
     <main className="flex flex-col gap-5 pt-4">
@@ -64,7 +66,12 @@ function Board() {
           />
         ) : (
           <div className="flex flex-col gap-4">
-            {kills.some((k) => k.type === 'kill_confirmed') && (
+            {secret && (
+              <p className="label-mono text-muted">
+                Secret feed: you'll see who got who once you're out or the game ends.
+              </p>
+            )}
+            {!secret && kills.some((k) => k.type === 'kill_confirmed') && (
               <Link
                 to="/g/$code/killcam"
                 params={{ code }}

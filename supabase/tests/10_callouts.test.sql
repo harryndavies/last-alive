@@ -97,10 +97,11 @@ select pg_temp.login_as(pg_temp.v('tom')::uuid);
 select is((public.call_out_hunter(pg_temp.v('game')::uuid, pg_temp.v('alex')::uuid))->>'correct', 'true',
   'naming your real hunter rumbles them');
 select results_eq(
-  $$ select status::text, killed_by from public.players where id = pg_temp.v('alex')::uuid $$,
+  $$ select p.status::text, st.killed_by from public.players p join public.player_stats st on st.player_id = p.id
+     where p.id = pg_temp.v('alex')::uuid $$,
   $$ values ('dead', pg_temp.v('tom')::uuid) $$,
   'the rumbled hunter is out, got by their target');
-select is((select kills_count from public.players where id = pg_temp.v('tom')::uuid), 1,
+select is((select kills_count from public.player_stats where player_id = pg_temp.v('tom')::uuid), 1,
   'the caller gets the kill');
 select is((select id from public.missions where hunter_id = pg_temp.v('tom')::uuid and is_active),
   pg_temp.v('tom_mission')::uuid, 'the caller keeps their own mission');
@@ -114,8 +115,8 @@ select isnt((select inherited_from from public.missions where hunter_id = pg_tem
   null, '...shown to them as a new mission');
 select is((select array_agg(k order by k) from public.events e, jsonb_object_keys(e.payload) k
   where e.game_id = pg_temp.v('game')::uuid and e.type = 'rumbled'),
-  array['by_id', 'by_name', 'hunter_id', 'hunter_name'],
-  'the feed says who rumbled whom, and never who hunts the caller now');
+  array['hunter_id', 'hunter_name'],
+  'the public feed only says who was exposed (who did it is a secret detail)');
 
 set constraints all immediate;
 create function pg_temp.pushed(p_title text, p_player uuid) returns boolean language sql stable as $$

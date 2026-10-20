@@ -39,6 +39,17 @@ describe('describeEvent', () => {
     expect(item?.detail).toMatch(/12h/)
   })
 
+  it('hides the killer when the secret feed holds back the details', () => {
+    const item = describeEvent(ev(1, 'kill_confirmed', { victim_id: 'b', victim_name: 'Ben' }))
+    expect(item?.text).toBe('Ben is out')
+    expect(item?.photoPath).toBeUndefined()
+  })
+
+  it('hides who rumbled whom', () => {
+    const item = describeEvent(ev(1, 'rumbled', { hunter_id: 'b', hunter_name: 'Ben' }))
+    expect(item?.text).toBe('Ben got rumbled')
+  })
+
   it('ignores unknown events', () => {
     expect(describeEvent(ev(1, 'secret_thing'))).toBeNull()
   })

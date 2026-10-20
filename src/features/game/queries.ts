@@ -9,8 +9,8 @@ import {
   GamePreviewSchema,
   GameSchema,
   JoinGameResult,
-  PlayerSchema,
   ReclaimResult,
+  toPlayer,
   type Game,
   type Player,
 } from './schemas'
@@ -42,11 +42,11 @@ export const playersQuery = (gameId: string) =>
     queryFn: async (): Promise<Player[]> => {
       const { data, error } = await supabase
         .from('players')
-        .select('*')
+        .select('*, player_stats!player_stats_player_id_fkey(kills_count, killed_by)')
         .eq('game_id', gameId)
         .order('created_at')
       if (error) throw toGameError(error)
-      return z.array(PlayerSchema).parse(data)
+      return z.array(z.unknown()).parse(data).map(toPlayer)
     },
   })
 

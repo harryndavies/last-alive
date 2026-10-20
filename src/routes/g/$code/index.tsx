@@ -46,7 +46,7 @@ function Home() {
 
       <div className="grid grid-cols-3 gap-2.5">
         <StatBox label={copy.statAlive} value={`${alive}/${players.length}`} tone="mint" />
-        <StatBox label={copy.statKills} value={me.kills_count} tone="yellow" />
+        <StatBox label={copy.statKills} value={me.kills_count ?? 0} tone="yellow" />
         <StatBox
           label={copy.statSurvived}
           value={survivedFor(game.started_at, me.died_at)}

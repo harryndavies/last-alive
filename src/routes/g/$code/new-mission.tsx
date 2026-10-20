@@ -1,7 +1,8 @@
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { buttonClasses, Card, Tag } from '@/components'
+import { eventsQuery } from '@/features/board/feed'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import { useGameContext } from '@/features/game/queries'
 import { markMissionSeen, missionChanges, missionHistoryQuery } from '@/features/missions/queries'
@@ -18,6 +19,7 @@ function NewMission() {
   const { code } = Route.useParams()
   const { game, players } = useGameContext(code, useUserId())
   const { data: history } = useSuspenseQuery(missionHistoryQuery(game.id))
+  const { data: events = [] } = useQuery(eventsQuery(game.id))
   const current = history.find((m) => m.is_active)
   const previous = history.find((m) => !m.is_active && m.id !== current?.id)
 
@@ -39,7 +41,12 @@ function NewMission() {
   const victim = players.find((p) => p.id === previous?.target_id)
   const target = players.find((p) => p.id === current.target_id)
   // Rumbled: your old target was called out by their target, who is now yours.
-  const rumbled = !!victim && victim.status === 'dead' && victim.killed_by === current.target_id
+  // Read from the public feed, since the secret feed hides who got who.
+  const rumbled =
+    !!victim && events.some((e) => e.type === 'rumbled' && e.payload.hunter_id === victim.id)
+  const left =
+    !!previous &&
+    events.some((e) => e.type === 'player_left' && e.payload.player_id === previous.target_id)
 
   return (
     <main className="flex flex-col gap-5 pt-4">
@@ -54,8 +61,8 @@ function NewMission() {
       <p className="font-medium">
         {rumbled
           ? `${target?.name ?? 'Their target'} called ${victim?.name ?? 'them'} out, so ${victim?.name ?? 'they'} is out. ${target?.name ?? 'They'} is your target now. Same weapon, place and phrase as before.`
-          : victim?.status === 'dead' && victim.killed_by === null
-            ? `${victim.name} left the game, so their target is now yours.`
+          : left
+            ? `${victim?.name ?? 'Your target'} left the game, so their target is now yours.`
             : `${victim?.name ?? 'Your target'} was hunting someone. Now you are.`}
       </p>
 

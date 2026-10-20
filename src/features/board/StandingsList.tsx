@@ -51,17 +51,23 @@ export function StandingsList({
                 <p className="label-mono text-muted">
                   {killedBy
                     ? `${copy.killed === 'got' ? 'Got' : 'Terminated'} by ${names.primary(killedBy)}`
-                    : 'Left the game'}
+                    : player.kills_count === null
+                      ? copy.hiddenBy
+                      : 'Left the game'}
                 </p>
               )}
             </div>
             {player.id === meId && <Tag tone="blue">You</Tag>}
-            <span className="text-right">
-              <span className="block font-display text-xl leading-none">{player.kills_count}</span>
-              <span className="label-mono">
-                {player.kills_count === 1 ? copy.kill : copy.kills}
+            {player.kills_count !== null && (
+              <span className="text-right">
+                <span className="block font-display text-xl leading-none">
+                  {player.kills_count}
+                </span>
+                <span className="label-mono">
+                  {player.kills_count === 1 ? copy.kill : copy.kills}
+                </span>
               </span>
-            </span>
+            )}
           </li>
         )
       })}

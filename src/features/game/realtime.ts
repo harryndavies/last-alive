@@ -24,6 +24,14 @@ export function useGameRealtime(gameId: string, code: string): void {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'players', filter }, () =>
         invalidate(gameKeys.players(gameId)),
       )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'player_stats', filter }, () =>
+        invalidate(gameKeys.players(gameId)),
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'event_details', filter },
+        () => invalidate(gameKeys.events(gameId)),
+      )
       .on('postgres_changes', { event: '*', schema: 'public', table: 'kills', filter }, () =>
         invalidate(gameKeys.kills(gameId), gameKeys.mission(gameId), ['kill-claim']),
       )

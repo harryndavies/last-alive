@@ -81,7 +81,7 @@ const results = await Promise.allSettled(
 
 const { data: players } = await killer.sb
   .from('players')
-  .select('name, status, kills_count')
+  .select('name, status, player_stats!player_stats_player_id_fkey(kills_count)')
   .eq('game_id', game.game_id)
 const { data: events } = await killer.sb
   .from('events')
@@ -100,7 +100,7 @@ const checks = [
     results.every((r) => r.status === 'fulfilled' && r.value === 'confirmed'),
   ],
   ['exactly 1 player died', deadCount === 1],
-  ['killer credited exactly once', killerRow.kills_count === 1],
+  ['killer credited exactly once', killerRow.player_stats?.kills_count === 1],
   ['exactly 1 feed event', events.length === 1],
   ['killer has exactly 1 active mission', killerMissions === 1],
 ]

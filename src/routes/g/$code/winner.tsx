@@ -19,7 +19,7 @@ function Winner() {
   const onTime = events.find((e) => e.type === 'game_finished')?.payload.reason === 'time'
   const winner = players.find((p) => p.id === game.winner_player_id)
   const rows = standings(players, game.winner_player_id)
-  const totalKills = players.reduce((n, p) => n + p.kills_count, 0)
+  const totalKills = players.reduce((n, p) => n + (p.kills_count ?? 0), 0)
   const days =
     game.started_at && game.finished_at
       ? Math.max(

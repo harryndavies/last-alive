@@ -7,14 +7,17 @@ function seat(
   code: string,
   status: MySeat['games']['status'],
   created_at: string,
-  extra: Partial<Omit<MySeat, 'games'>> & { winner?: string | null } = {},
+  extra: Partial<Omit<MySeat, 'games' | 'player_stats'>> & {
+    winner?: string | null
+    kills_count?: number
+  } = {},
 ): MySeat {
   return {
     id: extra.id ?? ME,
     name: extra.name ?? 'Harry',
     colour: extra.colour ?? 'yellow',
     status: extra.status ?? 'alive',
-    kills_count: extra.kills_count ?? 0,
+    player_stats: { kills_count: extra.kills_count ?? 0 },
     games: {
       code,
       name: `Game ${code}`,

@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router'
 import { eventsQuery } from '@/features/board/feed'
 import { KillCam, type Banter } from '@/features/board/KillCam'
 import { buildKillCam } from '@/features/board/killcamSlides'
 import { commentsQuery, reactionsQuery, REACTIONS } from '@/features/board/social'
 import { useGameContext } from '@/features/game/queries'
+import { seesEverything } from '@/features/game/schemas'
 import { useUserId } from '@/lib/useUserId'
 
 export const Route = createFileRoute('/g/$code/killcam')({
@@ -13,7 +14,7 @@ export const Route = createFileRoute('/g/$code/killcam')({
 
 function KillCamScreen() {
   const { code } = Route.useParams()
-  const { game, players } = useGameContext(code, useUserId())
+  const { game, players, me } = useGameContext(code, useUserId())
   const { data: events = [] } = useQuery(eventsQuery(game.id))
   const { data: reactions = [] } = useQuery(reactionsQuery(game.id))
   const { data: comments = [] } = useQuery(commentsQuery(game.id))
@@ -34,6 +35,11 @@ function KillCamScreen() {
     })
   }
   const navigate = useNavigate()
+
+  // The tape shows who got who, so it waits until you're allowed to know.
+  if (!seesEverything(game, me)) {
+    return <Navigate to="/g/$code/board" params={{ code }} search={{ tab: 'feed' }} replace />
+  }
 
   return (
     <KillCam

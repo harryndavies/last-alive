@@ -1,7 +1,7 @@
 -- Photo proof: who can upload where, who can see a photo and when.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(15);
 
 create function pg_temp.login(p_uid uuid) returns void language sql as $$
   select set_config('request.jwt.claims',
@@ -92,16 +92,25 @@ select ok(not pg_temp.can_see(pg_temp.letter(pg_temp.v('bystander')::uuid), pg_t
   'a bystander cannot see it before the kill is confirmed');
 select ok(not pg_temp.can_see('e', pg_temp.v('photo')), 'an outsider cannot see it');
 
--- Confirm, then everyone in the game can.
+-- Confirm. With the secret feed (the default), players still alive can't see
+-- it (it would show who got whom); the victim, now out, can.
 select pg_temp.login((select user_id from public.players where id = pg_temp.v('victim')::uuid));
 select public.respond_to_kill(pg_temp.v('k')::uuid, true);
+select ok(not pg_temp.can_see(pg_temp.letter(pg_temp.v('bystander')::uuid), pg_temp.v('photo')),
+  'with the secret feed, players still alive cannot see a confirmed kill''s photo');
+select ok(pg_temp.can_see(pg_temp.letter(pg_temp.v('victim')::uuid), pg_temp.v('photo')),
+  '...but players who are out can');
+update public.games set status = 'finished', finished_at = now() where id = pg_temp.v('game')::uuid;
 select ok(pg_temp.can_see(pg_temp.letter(pg_temp.v('bystander')::uuid), pg_temp.v('photo')),
-  'after confirmation every player can see it');
+  '...and everyone can once the game is over');
 select ok(not pg_temp.can_see('e', pg_temp.v('photo')), 'outsiders still cannot');
 
-select is((select payload->>'photo_path' from public.events
-  where game_id = pg_temp.v('game')::uuid and type = 'kill_confirmed'), pg_temp.v('photo'),
-  'the feed event carries the photo for the kill cam');
+select is((select d.details->>'photo_path' from public.events e join public.event_details d on d.event_id = e.id
+  where e.game_id = pg_temp.v('game')::uuid and e.type = 'kill_confirmed'), pg_temp.v('photo'),
+  'the kill''s details carry the photo for the kill cam');
+select ok((select not (payload ? 'photo_path') from public.events
+  where game_id = pg_temp.v('game')::uuid and type = 'kill_confirmed'),
+  'the public feed event does not');
 
 select * from finish();
 rollback;

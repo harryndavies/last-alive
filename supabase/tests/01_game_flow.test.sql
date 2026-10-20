@@ -134,7 +134,7 @@ select throws_ok($$ select * from private.player_secrets $$, '42501', NULL,
 select throws_ok($$ insert into public.kills (game_id, mission_id, killer_id, victim_id)
   select game_id, id, hunter_id, target_id from public.missions $$, '42501', NULL,
   'clients cannot insert kills directly');
-select throws_ok($$ update public.players set kills_count = 99 $$, '42501', NULL,
+select throws_ok($$ update public.player_stats set kills_count = 99 $$, '42501', NULL,
   'clients cannot update players directly');
 select throws_ok($$ delete from public.missions $$, '42501', NULL,
   'clients cannot delete missions');
@@ -184,8 +184,8 @@ select is(public.resolve_dispute(pg_temp.v('k1')::uuid, true)::text, 'confirmed'
 
 -- --- Inheritance ---------------------------------------------------------
 select is((select status::text from public.players where id = pg_temp.v('t1')::uuid), 'dead', 'victim is out');
-select is((select kills_count from public.players where id = pg_temp.pid('a')), 1, 'killer has 1 kill');
-select is((select killed_by from public.players where id = pg_temp.v('t1')::uuid), pg_temp.pid('a'),
+select is((select kills_count from public.player_stats where player_id = pg_temp.pid('a')), 1, 'killer has 1 kill');
+select is((select killed_by from public.player_stats where player_id = pg_temp.v('t1')::uuid), pg_temp.pid('a'),
   'victim records who got them');
 select ok((
   select m.target_id = v.target_id and m.inherited_from = v.id
@@ -207,7 +207,7 @@ select is((select count(*)::int from public.events where type = 'kill_confirmed'
   'kill appears in the feed');
 
 select is(public.resolve_dispute(pg_temp.v('k1')::uuid, true)::text, 'confirmed', 'confirming again is a no-op');
-select is((select kills_count from public.players where id = pg_temp.pid('a')), 1, '...and does not double count');
+select is((select kills_count from public.player_stats where player_id = pg_temp.pid('a')), 1, '...and does not double count');
 
 select pg_temp.login(pg_temp.uid(pg_temp.letter_of(pg_temp.v('t1')::uuid)));
 select throws_ok($$ select public.report_kill(pg_temp.v('game')::uuid, pg_temp.v('notarget')::uuid) $$,

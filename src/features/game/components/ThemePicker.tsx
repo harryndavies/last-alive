@@ -74,6 +74,48 @@ export function ThemePicker({ value, onChange }: { value: Theme; onChange: (t: T
   )
 }
 
+/** The host's secret feed switch. On: the living only see who's out, not who got them. */
+export function LobbySecretFeed({ game, isHost }: { game: Game; isHost: boolean }) {
+  const qc = useQueryClient()
+  const toggle = useMutation({
+    mutationFn: (on: boolean) => rpc('set_secret_feed', { p_game_id: game.id, p_on: on }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: gameKeys.game(game.code) }),
+  })
+  const blurb = game.secret_feed
+    ? "Players see who's out, but not who got them, until they're out themselves."
+    : 'Everyone sees who got who as it happens.'
+  if (!isHost) {
+    return (
+      <p className="text-sm">
+        <span className="label-mono">Secret feed: {game.secret_feed ? 'on' : 'off'}.</span> {blurb}
+      </p>
+    )
+  }
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl brut bg-paper p-3 shadow-hard-sm">
+        <span className="flex flex-col">
+          <span className="font-bold">Secret feed</span>
+          <span className="text-sm text-muted">{blurb}</span>
+        </span>
+        <input
+          type="checkbox"
+          role="switch"
+          checked={game.secret_feed}
+          disabled={toggle.isPending}
+          onChange={(e) => toggle.mutate(e.target.checked)}
+          className="size-6 shrink-0 accent-ink"
+        />
+      </label>
+      {toggle.isError && (
+        <p role="alert" className="font-bold text-red-ink">
+          {errorMessage(toggle.error)}
+        </p>
+      )}
+    </div>
+  )
+}
+
 /** The lobby's theme switch: the host changes it for everyone; others just see it. */
 export function LobbyTheme({ game, isHost }: { game: Game; isHost: boolean }) {
   const qc = useQueryClient()

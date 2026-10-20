@@ -13,7 +13,7 @@ import { useGameContext, useRemovePlayer, useStartPicking } from '@/features/gam
 import { errorMessage } from '@/lib/errors'
 import { useUserId } from '@/lib/useUserId'
 import { useCopy } from '@/lib/theme'
-import { LobbyTheme } from '@/features/game/components/ThemePicker'
+import { LobbySecretFeed, LobbyTheme } from '@/features/game/components/ThemePicker'
 
 export const Route = createFileRoute('/g/$code/lobby')({
   component: Lobby,
@@ -39,6 +39,7 @@ function Lobby() {
       <ShareCode code={game.code} gameName={game.name} />
       <DeadlineEditor game={game} me={me} />
       <LobbyTheme game={game} isHost={me.is_host} />
+      <LobbySecretFeed game={game} isHost={me.is_host} />
       <NotificationsCard />
 
       <section aria-labelledby="players-heading" className="flex flex-col gap-3">

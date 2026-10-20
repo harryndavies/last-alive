@@ -130,7 +130,10 @@ async function connectBots(code) {
 
 async function snapshot(bot) {
   const { data: game } = await bot.sb.from('games').select('*').eq('id', bot.gameId).single()
-  const { data: players } = await bot.sb.from('players').select('*').eq('game_id', bot.gameId)
+  const { data: players } = await bot.sb
+    .from('players')
+    .select('*, player_stats!player_stats_player_id_fkey(kills_count)')
+    .eq('game_id', bot.gameId)
   return { game, players }
 }
 
@@ -366,7 +369,9 @@ async function cmdStatus(code) {
   const { game, players } = await snapshot(bot)
   console.log(`${game.name} (${game.code}): ${game.status}`)
   for (const p of players)
-    console.log(`  ${p.status === 'alive' ? '●' : '✕'} ${p.name}  kills=${p.kills_count}`)
+    console.log(
+      `  ${p.status === 'alive' ? '●' : '✕'} ${p.name}  kills=${p.player_stats?.kills_count ?? '?'}`,
+    )
 }
 
 const [cmd, code, arg] = process.argv.slice(2)
