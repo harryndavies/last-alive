@@ -168,17 +168,17 @@ function JoinGame() {
             className="min-h-11 label-mono underline"
             onClick={() => setMode('reclaim')}
           >
-            Lost your phone? Reclaim your seat
+            Already in this game? Get your seat back
           </button>
         </form>
       ) : (
         <form onSubmit={onReclaim} className="flex flex-col gap-5" noValidate>
           <Card tone="yellow" tilt={-1}>
-            <h2 className="text-xl">Reclaim your seat</h2>
+            <h2 className="text-xl">Get your seat back</h2>
             <p className="mt-1 font-medium">
               {join.error instanceof GameError && join.error.code === 'name_taken'
                 ? 'That name is taken. If it is you, enter the PIN you were shown when you joined.'
-                : 'Enter the name you joined with and your 4-digit PIN.'}
+                : 'Enter the name you joined with and your 4-digit PIN. Lost the PIN? Get a new one below.'}
             </p>
           </Card>
           <TextField
@@ -209,7 +209,7 @@ function JoinGame() {
             loading={reclaim.isPending}
             disabled={pin.length !== 4}
           >
-            Reclaim seat
+            Get my seat back
           </Button>
           <button
             type="button"
