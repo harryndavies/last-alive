@@ -23,8 +23,8 @@ export function PinReveal({ pin, onDone, note }: PinRevealProps) {
         </p>
       </Card>
       <p className="font-medium">
-        Screenshot it or write it down. If you lose your phone, this PIN gets your seat back on a
-        new device. <strong>We will not show it again.</strong>
+        Screenshot it or write it down. If you switch phones, this PIN gets your seat back. Lost it?
+        You can get a new one with your name and the game code.
       </p>
       {note && <p className="font-bold text-red-ink">{note}</p>}
       <Button size="lg" block onClick={onDone}>

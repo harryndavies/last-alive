@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button, Card, NotificationsCard, PageHeader } from '@/components'
 import { ChangePhotoSheet } from '@/features/game/components/ChangePhotoSheet'
 import { DeadlineEditor } from '@/features/game/components/Deadline'
+import { HowToPlay } from '@/features/game/components/HowToPlay'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
 import { SwitchGameButton } from '@/features/game/components/SwitchGameButton'
 import { PlayerList } from '@/features/game/components/PlayerList'
@@ -48,6 +49,7 @@ function Lobby() {
         <LobbyTheme game={game} isHost={me.is_host} />
         <LobbySecretFeed game={game} isHost={me.is_host} />
       </section>
+      <HowToPlay />
       <NotificationsCard />
 
       <section aria-labelledby="players-heading" className="flex flex-col gap-3">

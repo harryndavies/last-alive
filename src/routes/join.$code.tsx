@@ -11,12 +11,14 @@ import {
   Tag,
   TextField,
 } from '@/components'
-import { previewQuery, useJoinGame, useReclaimPlayer } from '@/features/game/queries'
+import { previewQuery, useJoinGame, useReclaimPlayer, useResetPin } from '@/features/game/queries'
 import { NameForm, normaliseCode } from '@/features/game/schemas'
 import { uploadAvatar } from '@/lib/avatars'
 import type { AvatarColour } from '@/lib/colours'
 import { dataUrlToBlob } from '@/lib/image'
+import { InstallFirst } from '@/features/game/components/InstallFirst'
 import { loadProfile, saveProfile } from '@/lib/profile'
+import { isIos, isStandalone } from '@/lib/push'
 import { useUserId } from '@/lib/useUserId'
 import { errorMessage, GameError } from '@/lib/errors'
 
@@ -38,6 +40,7 @@ function JoinGame() {
   const { data: preview } = useQuery(previewQuery(code))
   const join = useJoinGame()
   const reclaim = useReclaimPlayer()
+  const resetPin = useResetPin()
 
   const [mode, setMode] = useState<Mode>('join')
   const userId = useUserId()
@@ -49,6 +52,7 @@ function JoinGame() {
   const [pin, setPin] = useState('')
   const [fieldError, setFieldError] = useState<string | null>(null)
   const [newPin, setNewPin] = useState<string | null>(null)
+  const [installFirst, setInstallFirst] = useState(() => isIos() && !isStandalone())
 
   const goToGame = () => void navigate({ to: '/g/$code', params: { code } })
 
@@ -132,7 +136,9 @@ function JoinGame() {
         )}
       </PageHeader>
 
-      {activeMode === 'join' ? (
+      {installFirst ? (
+        <InstallFirst onSkip={() => setInstallFirst(false)} />
+      ) : activeMode === 'join' ? (
         <form onSubmit={onJoin} className="flex flex-col gap-5" noValidate>
           <TextField
             label="Your name"
@@ -205,6 +211,28 @@ function JoinGame() {
           >
             Reclaim seat
           </Button>
+          <button
+            type="button"
+            className="min-h-11 label-mono underline disabled:opacity-60"
+            disabled={resetPin.isPending}
+            onClick={() => {
+              if (!name.trim()) {
+                setFieldError('Enter the name you joined with')
+                return
+              }
+              resetPin.mutate(
+                { code, name: name.trim() },
+                { onSuccess: (res) => setNewPin(res.pin) },
+              )
+            }}
+          >
+            Forgot your PIN? Get a new one
+          </button>
+          {resetPin.isError && (
+            <p role="alert" className="font-bold text-red-ink">
+              {errorMessage(resetPin.error)}
+            </p>
+          )}
           {canJoin && (
             <button
               type="button"

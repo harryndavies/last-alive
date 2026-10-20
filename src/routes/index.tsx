@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
-import { buttonClasses, Button, Card, Tag, TextField } from '@/components'
+import { buttonClasses, Button, Card, Sheet, Tag, TextField } from '@/components'
+import { HowToPlay } from '@/features/game/components/HowToPlay'
 import { YourGames } from '@/features/game/components/YourGames'
 import { CodeForm, normaliseCode } from '@/features/game/schemas'
 
@@ -11,6 +12,7 @@ export const Route = createFileRoute('/')({
 function Landing() {
   const navigate = useNavigate()
   const [joining, setJoining] = useState(false)
+  const [rules, setRules] = useState(false)
   const [code, setCode] = useState('')
   const [error, setError] = useState<string | null>(null)
 
@@ -91,12 +93,16 @@ function Landing() {
             Join with code
           </Button>
         )}
-        <a
-          href="https://last-alive-site.vercel.app/"
+        <button
+          type="button"
+          onClick={() => setRules(true)}
           className="inline-flex min-h-11 items-center justify-center label-mono underline"
         >
           New here? How to play →
-        </a>
+        </button>
+        <Sheet open={rules} onClose={() => setRules(false)} title="How to play">
+          <HowToPlay heading={false} />
+        </Sheet>
       </div>
     </main>
   )

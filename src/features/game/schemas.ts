@@ -87,6 +87,13 @@ export const JoinGameResult = z.object({
   rejoined: z.boolean(),
 })
 
+export const ResetPinResult = z.object({
+  game_id: z.uuid(),
+  code: z.string(),
+  player_id: z.uuid(),
+  pin: z.string().regex(/^\d{4}$/),
+})
+
 export const ReclaimResult = z.discriminatedUnion('ok', [
   z.object({ ok: z.literal(true), game_id: z.uuid(), code: z.string(), player_id: z.uuid() }),
   z.object({

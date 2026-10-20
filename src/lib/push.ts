@@ -11,11 +11,11 @@ export type PushState =
 
 const VAPID = env.VITE_VAPID_PUBLIC_KEY || ''
 
-function isIos(): boolean {
+export function isIos(): boolean {
   return /iPhone|iPad|iPod/.test(navigator.userAgent)
 }
 
-function isStandalone(): boolean {
+export function isStandalone(): boolean {
   const nav = navigator as Navigator & { standalone?: boolean }
   return nav.standalone === true || window.matchMedia('(display-mode: standalone)').matches
 }

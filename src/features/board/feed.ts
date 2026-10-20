@@ -108,6 +108,8 @@ export function describeEvent(e: GameEvent, opts: FeedOptions = {}): FeedItem | 
         tone: 'paper',
         text: p.removed ? `${str(p.name)} was removed` : `${str(p.name)} left the game`,
       }
+    case 'seat_moved':
+      return { ...base, icon: '🔑', tone: 'paper', text: `${str(p.name)} moved to a new phone` }
     case 'player_joined':
       return { ...base, icon: '+', tone: 'mint', text: `${str(p.name)} joined` }
     case 'game_created':

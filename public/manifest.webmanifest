@@ -2,7 +2,6 @@
   "name": "Last Alive",
   "short_name": "Last Alive",
   "description": "A real-life assassin game for you and your friends.",
-  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

@@ -10,6 +10,7 @@ import {
   GameSchema,
   JoinGameResult,
   ReclaimResult,
+  ResetPinResult,
   toPlayer,
   type Game,
   type Player,
@@ -111,6 +112,16 @@ export function useReclaimPlayer() {
     onSuccess: (res, input) => {
       if (res.ok) void qc.invalidateQueries({ queryKey: gameKeys.game(input.code) })
     },
+  })
+}
+
+/** Forgot your PIN: a fresh one, and the seat moves to this device. */
+export function useResetPin() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { code: string; name: string }) =>
+      rpcParsed('reset_pin', { p_code: input.code, p_name: input.name }, ResetPinResult),
+    onSuccess: (res) => qc.invalidateQueries({ queryKey: gameKeys.game(res.code) }),
   })
 }
 

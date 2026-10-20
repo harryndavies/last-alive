@@ -68,7 +68,8 @@ export function NotificationsCard({ compact = false }: { compact?: boolean }) {
             <li>Open Last Alive from your home screen and turn them on there.</li>
           </ol>
           <p className="text-sm">
-            Then reclaim your seat with your name and PIN (you&rsquo;ll be on a fresh session).
+            Then get your seat back with your name and PIN, or tap &ldquo;Forgot your PIN?&rdquo;
+            there.
           </p>
         </>
       ) : state === 'denied' ? (
