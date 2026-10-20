@@ -21,11 +21,13 @@ export function DeadlineField({
   onChange,
   min,
   label = 'End by (optional)',
+  hint = true,
 }: {
   value: string
   onChange: (value: string) => void
   min?: number
   label?: string
+  hint?: boolean
 }) {
   const [minValue] = useState(() => toLocalInput(min ?? Date.now() + HOUR))
   return (
@@ -38,10 +40,12 @@ export function DeadlineField({
         onChange={(e) => onChange(e.target.value)}
         className="min-h-12 rounded-xl brut bg-paper px-4 text-lg font-medium shadow-hard-sm focus:shadow-hard focus:outline-none"
       />
-      <span className="text-sm text-muted">
-        For holidays and trips. When time runs out, most kills among survivors wins, and the last 24
-        hours are sudden death.
-      </span>
+      {hint && (
+        <span className="text-sm text-muted">
+          For holidays and trips. When time runs out, most kills among survivors wins, and the last
+          24 hours are sudden death.
+        </span>
+      )}
     </label>
   )
 }
@@ -70,82 +74,99 @@ function useSetEnd(gameId: string) {
   return { save, busy, error }
 }
 
-/** Lobby and card picking: shows the end time; the host can set, change or clear it. */
+const PRESETS = [
+  { key: 'none', label: 'No limit', days: null },
+  { key: '1d', label: '1 day', days: 1 },
+  { key: '3d', label: '3 days', days: 3 },
+  { key: '1w', label: '1 week', days: 7 },
+] as const
+type Pick = (typeof PRESETS)[number]['key'] | 'custom'
+
+/** 8pm, N days from today: games finish at a sociable time, not mid-morning. */
+export function daysFromNow(days: number, now = Date.now()): string {
+  const end = new Date(now)
+  end.setDate(end.getDate() + days)
+  end.setHours(20, 0, 0, 0)
+  return end.toISOString()
+}
+
+const CHIP =
+  'min-h-11 rounded-full border-2 border-ink bg-paper px-3 text-sm font-bold shadow-hard-sm active:translate-x-[3px] active:translate-y-[3px] active:shadow-none aria-pressed:bg-yellow disabled:opacity-60'
+
+/** Lobby and card picking: how long the game runs. The host picks; others just see it. */
 export function DeadlineEditor({ game, me }: { game: Game; me: Player }) {
-  const [editing, setEditing] = useState(false)
-  const [value, setValue] = useState(
+  const [picked, setPicked] = useState<Pick>(game.ends_at ? 'custom' : 'none')
+  const [custom, setCustom] = useState(
     game.ends_at ? toLocalInput(new Date(game.ends_at).getTime()) : '',
   )
   const { save, busy, error } = useSetEnd(game.id)
+  const summary = game.ends_at
+    ? `Ends ${formatDeadline(game.ends_at)}. Most kills among survivors wins, with sudden death at the end.`
+    : 'Runs until one player is left.'
 
   if (!me.is_host) {
-    if (!game.ends_at) return null
     return (
-      <p className="text-center label-mono">
-        ⏱ Game ends {formatDeadline(game.ends_at)} · last 24h sudden death
+      <p className="text-sm">
+        <span className="label-mono">Game length:</span> {summary}
       </p>
     )
   }
 
-  if (!editing) {
-    return (
-      <div className="flex flex-wrap items-center justify-center gap-2 text-center">
-        <span className="label-mono">
-          {game.ends_at ? `⏱ Ends ${formatDeadline(game.ends_at)}` : '⏱ No end time'}
-        </span>
-        <button
-          type="button"
-          className="min-h-11 label-mono underline"
-          onClick={() => setEditing(true)}
-        >
-          {game.ends_at ? 'Change' : 'Set an end time'}
-        </button>
-      </div>
-    )
-  }
-
   return (
-    <Card tone="paper" className="flex flex-col gap-3">
-      <DeadlineField value={value} onChange={setValue} />
+    <fieldset className="flex flex-col gap-2">
+      <legend className="mb-1.5 label-mono">Game length</legend>
+      <ul className="flex flex-wrap gap-2">
+        {PRESETS.map((p) => (
+          <li key={p.key}>
+            <button
+              type="button"
+              aria-pressed={picked === p.key}
+              disabled={busy}
+              className={CHIP}
+              onClick={() =>
+                void save(p.days === null ? null : daysFromNow(p.days)).then(
+                  (ok) => ok && setPicked(p.key),
+                )
+              }
+            >
+              {p.label}
+            </button>
+          </li>
+        ))}
+        <li>
+          <button
+            type="button"
+            aria-pressed={picked === 'custom'}
+            disabled={busy}
+            className={CHIP}
+            onClick={() => setPicked('custom')}
+          >
+            Pick a date
+          </button>
+        </li>
+      </ul>
+      {picked === 'custom' && (
+        <div className="flex items-end gap-2">
+          <div className="flex-1">
+            <DeadlineField value={custom} onChange={setCustom} label="Ends at" hint={false} />
+          </div>
+          <Button
+            variant="yellow"
+            loading={busy}
+            disabled={!custom}
+            onClick={() => void save(fromLocalInput(custom))}
+          >
+            Set
+          </Button>
+        </div>
+      )}
+      <p className="text-sm text-muted">{summary}</p>
       {error && (
         <p role="alert" className="font-bold text-red-ink">
           {error}
         </p>
       )}
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant="yellow"
-          loading={busy}
-          disabled={!value}
-          onClick={() => void save(fromLocalInput(value)).then((ok) => ok && setEditing(false))}
-        >
-          Save
-        </Button>
-        {game.ends_at && (
-          <Button
-            variant="paper"
-            disabled={busy}
-            onClick={() =>
-              void save(null).then((ok) => {
-                if (ok) {
-                  setValue('')
-                  setEditing(false)
-                }
-              })
-            }
-          >
-            No end time
-          </Button>
-        )}
-        <button
-          type="button"
-          className="min-h-11 label-mono underline"
-          onClick={() => setEditing(false)}
-        >
-          Cancel
-        </button>
-      </div>
-    </Card>
+    </fieldset>
   )
 }
 

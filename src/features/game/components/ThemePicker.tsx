@@ -28,8 +28,8 @@ export function ThemePicker({ value, onChange }: { value: Theme; onChange: (t: T
           <label
             key={t}
             className={cn(
-              'flex cursor-pointer flex-col gap-2 rounded-xl brut bg-paper p-2 shadow-hard-sm',
-              value === t && 'outline-3 outline-offset-2 outline-blue',
+              'flex cursor-pointer flex-col gap-2 rounded-xl brut p-2 shadow-hard-sm has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink',
+              value === t ? 'bg-yellow' : 'bg-paper',
             )}
           >
             <input
@@ -65,8 +65,13 @@ export function ThemePicker({ value, onChange }: { value: Theme; onChange: (t: T
                 'Last Alive'
               )}
             </span>
-            <span className="leading-tight font-bold">{THEME_INFO[t].name}</span>
-            <span className="text-sm text-muted">{THEME_INFO[t].blurb}</span>
+            <span className="flex items-center justify-between gap-1 leading-tight font-bold">
+              {THEME_INFO[t].name}
+              {value === t && <span aria-hidden="true">✓</span>}
+            </span>
+            <span className={cn('text-sm', value !== t && 'text-muted')}>
+              {THEME_INFO[t].blurb}
+            </span>
           </label>
         ))}
       </div>
