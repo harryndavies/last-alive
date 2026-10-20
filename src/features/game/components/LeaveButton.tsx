@@ -1,13 +1,34 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Button, Sheet } from '@/components'
 import { errorMessage } from '@/lib/errors'
+import { gameKeys } from '../keys'
 import { useLeaveGame } from '../queries'
 
 export function LeaveButton({ gameId, active }: { gameId: string; active: boolean }) {
   const [open, setOpen] = useState(false)
   const leave = useLeaveGame(gameId)
   const navigate = useNavigate()
+  const qc = useQueryClient()
+
+  async function afterLeaving() {
+    setOpen(false)
+    if (active) {
+      // You stay in the game as a spectator, so just refresh it.
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ['game'] }),
+        qc.invalidateQueries({ queryKey: gameKeys.players(gameId) }),
+        qc.invalidateQueries({ queryKey: gameKeys.events(gameId) }),
+      ])
+      return
+    }
+    // Your seat is gone: get off the game's screens before forgetting it.
+    await navigate({ to: '/', replace: true })
+    qc.removeQueries({ queryKey: ['game'] })
+    qc.removeQueries({ queryKey: gameKeys.players(gameId) })
+    void qc.invalidateQueries({ queryKey: ['my-games'] })
+  }
 
   return (
     <>
@@ -34,14 +55,7 @@ export function LeaveButton({ gameId, active }: { gameId: string; active: boolea
             variant="red"
             block
             loading={leave.isPending}
-            onClick={() =>
-              leave.mutate(undefined, {
-                onSuccess: () => {
-                  setOpen(false)
-                  void navigate({ to: active ? '/g/$code' : '/', replace: true })
-                },
-              })
-            }
+            onClick={() => leave.mutate(undefined, { onSuccess: () => void afterLeaving() })}
           >
             {active ? 'Yes, I forfeit' : 'Leave'}
           </Button>

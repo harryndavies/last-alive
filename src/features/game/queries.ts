@@ -145,8 +145,14 @@ export const useStartPicking = (gameId: string) =>
 export const useStartGame = (gameId: string) =>
   useGameAction(gameId, () => rpc('start_game', { p_game_id: gameId }))
 
-export const useLeaveGame = (gameId: string) =>
-  useGameAction(gameId, () => rpc('leave_game', { p_game_id: gameId }))
+/**
+ * Leaving before the game starts deletes your seat, and RLS then hides the game
+ * from you. So the caller moves off the game's screens first and only then do
+ * we drop its cached data; refetching while still on them would throw.
+ */
+export function useLeaveGame(gameId: string) {
+  return useMutation({ mutationFn: () => rpc('leave_game', { p_game_id: gameId }) })
+}
 
 export const useRemovePlayer = (gameId: string) =>
   useGameAction(gameId, (playerId: string) =>
