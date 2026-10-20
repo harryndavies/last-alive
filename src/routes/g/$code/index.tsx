@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   Gravestone,
+  Moment,
   NotificationsCard,
   PageHeader,
   StatBox,
@@ -209,6 +210,7 @@ function Spectator({
   rumbled: boolean
   myKill?: GameEvent
 }) {
+  const copy = useCopy()
   const { players, me } = ctx
   const killer = players.find((p) => p.id === me.killed_by)
   const line = epitaph({
@@ -220,6 +222,18 @@ function Spectator({
   })
   return (
     <Card tone="ink" tilt={-1} className="flex flex-col gap-3">
+      <Moment
+        id={`dead:${me.id}`}
+        duration={2600}
+        className="bg-ink/60 backdrop-blur-[1px] backdrop-grayscale"
+      >
+        <Gravestone
+          name={me.name}
+          epitaph={line}
+          className="motion-safe:animate-[grave-drop_600ms_200ms_both]"
+        />
+        <span className="font-display text-4xl text-paper uppercase">{copy.deadStamp}</span>
+      </Moment>
       <Tag tone="red" className="self-start">
         Spectating
       </Tag>

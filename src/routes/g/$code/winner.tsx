@@ -1,6 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Avatar, buttonClasses, Card, Sprite, StatBox, Tag } from '@/components'
+import {
+  Avatar,
+  buttonClasses,
+  Card,
+  Moment,
+  PixelConfetti,
+  Sprite,
+  StatBox,
+  Tag,
+} from '@/components'
 import { eventsQuery, standings } from '@/features/board/feed'
 import { SeasonTable } from '@/features/board/SeasonTable'
 import { StandingsList } from '@/features/board/StandingsList'
@@ -34,6 +43,9 @@ function Winner() {
 
   return (
     <main className="flex flex-col gap-6 pt-4">
+      <Moment id={`winner:${game.id}`} duration={3200} className="pointer-events-none">
+        <PixelConfetti />
+      </Moment>
       <Tag tone="red" tilt className="self-start">
         Game over
       </Tag>

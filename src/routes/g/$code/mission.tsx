@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import { Button, buttonClasses, Card, PageHeader, Stamp, Tag } from '@/components'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import { useGameContext } from '@/features/game/queries'
@@ -21,6 +22,8 @@ function MissionScreen() {
   const { game, players, me } = useGameContext(code, useUserId())
   const { data: mission } = useSuspenseQuery(missionQuery(game.id))
   const [revealed, toggle] = useReveal()
+  // Bumped on each reveal so the cards flip over again (not on page load).
+  const [flips, setFlips] = useState(0)
   const hidden = !revealed
   const target = players.find((p) => p.id === mission?.target_id)
 
@@ -41,7 +44,10 @@ function MissionScreen() {
           <Button
             variant={hidden ? 'yellow' : 'paper'}
             block
-            onClick={toggle}
+            onClick={() => {
+              if (hidden) setFlips((n) => n + 1)
+              toggle()
+            }}
             aria-pressed={revealed}
           >
             {hidden ? '👁 Tap to reveal' : 'Hide mission'}
@@ -50,9 +56,16 @@ function MissionScreen() {
           <TargetCard target={target} hidden={hidden} />
 
           <div className="flex flex-col gap-4" aria-label="Mission cards">
-            <PlayingCard kind="weapon" text={mission.weapon.text} tilt={1} hidden={hidden} />
-            <PlayingCard kind="place" text={mission.place.text} tilt={-1} hidden={hidden} />
-            <PlayingCard kind="phrase" text={mission.phrase.text} tilt={2} hidden={hidden} />
+            {(['weapon', 'place', 'phrase'] as const).map((kind, i) => (
+              <PlayingCard
+                key={`${kind}-${flips}`}
+                kind={kind}
+                text={mission[kind].text}
+                tilt={([1, -1, 2] as const)[i]}
+                hidden={hidden}
+                flipDelay={flips > 0 && !hidden ? i * 140 : undefined}
+              />
+            ))}
           </div>
 
           <Card tone="paper" className="mt-1">

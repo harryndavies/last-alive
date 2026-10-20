@@ -17,13 +17,23 @@ export interface PlayingCardProps {
   tilt?: -2 | -1 | 0 | 1 | 2
   badge?: string
   hidden?: boolean
+  /** Flip the card over as it appears, after this many ms. */
+  flipDelay?: number
   className?: string
 }
 
 const TILT = { [-2]: '-rotate-2', [-1]: '-rotate-1', 0: '', 1: 'rotate-1', 2: 'rotate-2' } as const
 
 /** A weapon / place / phrase card. */
-export function PlayingCard({ kind, text, tilt = 0, badge, hidden, className }: PlayingCardProps) {
+export function PlayingCard({
+  kind,
+  text,
+  tilt = 0,
+  badge,
+  hidden,
+  flipDelay,
+  className,
+}: PlayingCardProps) {
   const copy = useCopy()
   // Spy games show cards as typed lines on the file: plain paper, no tilt.
   const spy = useTheme() === 'spy'
@@ -33,8 +43,10 @@ export function PlayingCard({ kind, text, tilt = 0, badge, hidden, className }: 
         'relative flex min-h-24 flex-col justify-between rounded-2xl brut p-3 text-ink shadow-hard',
         spy ? 'bg-paper' : TONE[kind],
         !spy && TILT[tilt],
+        flipDelay !== undefined && 'motion-safe:animate-[card-flip_450ms_ease-out_both]',
         className,
       )}
+      style={flipDelay !== undefined ? { animationDelay: `${flipDelay}ms` } : undefined}
     >
       <div className="flex items-center justify-between">
         <span className="label-mono">
