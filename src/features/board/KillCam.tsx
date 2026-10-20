@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Avatar, Tag } from '@/components'
+import { Avatar, Gravestone, Tag } from '@/components'
 import { KillPhoto } from '@/features/kills/KillPhoto'
 import { useKillPhotoUrl } from '@/features/kills/photos'
 import { cn } from '@/lib/cn'
+import { epitaph } from './epitaph'
 import { whenInGame, type Slide, type Who } from './killcamSlides'
 import { useCopy } from '@/lib/theme'
 
@@ -190,7 +191,12 @@ function SlideView({
         </div>
       )
 
-    case 'kill':
+    case 'kill': {
+      const line = epitaph({
+        id: String(slide.eventId),
+        weapon: slide.weapon,
+        place: slide.place,
+      })
       return (
         <article className="flex flex-1 flex-col gap-3" aria-label={`Kill ${slide.number}`}>
           <div className="flex items-center justify-between">
@@ -200,13 +206,21 @@ function SlideView({
             </span>
           </div>
 
-          <KillPhoto
-            eager
-            path={slide.photoPath}
-            alt={`${slide.killer.name} gets ${slide.victim.name}`}
-            className="max-h-[46dvh] w-full -rotate-1 rounded-2xl border-paper shadow-[6px_6px_0_#ffd23f]"
-            fallback={<NoPhoto victim={slide.victim} />}
-          />
+          <div className="relative">
+            <KillPhoto
+              eager
+              path={slide.photoPath}
+              alt={`${slide.killer.name} gets ${slide.victim.name}`}
+              className="max-h-[46dvh] w-full -rotate-1 rounded-2xl border-paper shadow-[6px_6px_0_#ffd23f]"
+              fallback={<NoPhoto victim={slide.victim} line={line} />}
+            />
+            {slide.photoPath && (
+              <Gravestone
+                size="sm"
+                className="absolute -right-2 -bottom-3 w-16 motion-safe:animate-[grave-drop_500ms_300ms_both]"
+              />
+            )}
+          </div>
 
           <h2 className="mt-1 text-4xl leading-none">
             <span className="text-yellow">{slide.killer.name}</span> got {slide.victim.name}
@@ -253,6 +267,7 @@ function SlideView({
           )}
         </article>
       )
+    }
   }
 }
 
@@ -266,10 +281,15 @@ function Chip({ tone, children }: { tone: string; children: React.ReactNode }) {
   )
 }
 
-function NoPhoto({ victim }: { victim: Who }) {
+function NoPhoto({ victim, line }: { victim: Who; line: string }) {
   return (
-    <div className="flex aspect-[4/3] w-full -rotate-1 flex-col items-center justify-center gap-3 rounded-2xl brut border-paper bg-red text-ink shadow-[6px_6px_0_#ffd23f]">
-      <Avatar name={victim.name} colour={victim.colour} photo={victim.photo} size="xl" dead />
+    <div className="flex aspect-[4/3] w-full -rotate-1 flex-col items-center justify-center gap-2 rounded-2xl brut border-paper bg-red text-ink shadow-[6px_6px_0_#ffd23f]">
+      <Gravestone
+        size="md"
+        name={victim.name}
+        epitaph={line}
+        className="motion-safe:animate-[grave-drop_500ms_200ms_both]"
+      />
       <span className="label-mono">No photo. You had to be there.</span>
     </div>
   )

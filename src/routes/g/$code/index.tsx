@@ -1,8 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
-import { Avatar, Button, Card, NotificationsCard, PageHeader, StatBox, Tag } from '@/components'
-import { eventsQuery, gameFeed, survivedFor } from '@/features/board/feed'
+import {
+  Avatar,
+  Button,
+  Card,
+  Gravestone,
+  NotificationsCard,
+  PageHeader,
+  StatBox,
+  Tag,
+} from '@/components'
+import { epitaph } from '@/features/board/epitaph'
+import { eventsQuery, gameFeed, survivedFor, type GameEvent } from '@/features/board/feed'
 import { FeedList } from '@/features/board/FeedList'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
 import { SwitchGameButton } from '@/features/game/components/SwitchGameButton'
@@ -67,6 +77,7 @@ function Home() {
         <Spectator
           ctx={ctx}
           rumbled={events.some((e) => e.type === 'rumbled' && e.payload.hunter_id === me.id)}
+          myKill={events.find((e) => e.type === 'kill_confirmed' && e.payload.victim_id === me.id)}
         />
       )}
 
@@ -189,14 +200,30 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
   )
 }
 
-function Spectator({ ctx, rumbled }: { ctx: GameContext; rumbled: boolean }) {
+function Spectator({
+  ctx,
+  rumbled,
+  myKill,
+}: {
+  ctx: GameContext
+  rumbled: boolean
+  myKill?: GameEvent
+}) {
   const { players, me } = ctx
   const killer = players.find((p) => p.id === me.killed_by)
+  const line = epitaph({
+    id: me.id,
+    weapon: typeof myKill?.payload.weapon === 'string' ? myKill.payload.weapon : null,
+    place: typeof myKill?.payload.place === 'string' ? myKill.payload.place : null,
+    rumbled,
+    left: !killer,
+  })
   return (
     <Card tone="ink" tilt={-1} className="flex flex-col gap-3">
       <Tag tone="red" className="self-start">
         Spectating
       </Tag>
+      <Gravestone name={me.name} epitaph={line} className="self-center" />
       {killer ? (
         <div className="flex items-center gap-3">
           <Avatar name={killer.name} colour={killer.colour} photo={killer.avatar_path} />

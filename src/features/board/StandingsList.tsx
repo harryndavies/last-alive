@@ -1,4 +1,4 @@
-import { Avatar, Tag } from '@/components'
+import { Avatar, Gravestone, Tag } from '@/components'
 import { cn } from '@/lib/cn'
 import type { Standing } from './feed'
 import { useCopy, useNames } from '@/lib/theme'
@@ -43,6 +43,7 @@ export function StandingsList({
               >
                 {names.primary(player)}
                 {player.id === meId && <span className="sr-only"> (you)</span>}
+                {dead && <Gravestone size="sm" className="ml-1.5 inline-block w-4 align-[-2px]" />}
               </p>
               {names.secondary(player) && (
                 <p className="truncate text-sm">{names.secondary(player)}</p>

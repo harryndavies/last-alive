@@ -136,3 +136,18 @@
     width: 100%;
   }
 }
+
+/* A gravestone thudding into place. */
+@keyframes grave-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-60%);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(4%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

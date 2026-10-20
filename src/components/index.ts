@@ -1,6 +1,7 @@
 export { Avatar } from './Avatar'
 export { AvatarPicker } from './AvatarPicker'
 export { Button, buttonClasses } from './Button'
+export { Gravestone } from './Gravestone'
 export { Card } from './Card'
 export { ColourPicker } from './ColourPicker'
 export { NotificationsCard } from './NotificationsCard'
