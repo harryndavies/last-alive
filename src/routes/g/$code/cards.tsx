@@ -1,7 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
-import { Button, Card, PageHeader, ProgressBar, TextField } from '@/components'
+import { Button, Card, PageHeader, ProgressBar, Sprite, TextField } from '@/components'
+import { CARD_SPRITE } from '@/features/cards/cardSprites'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import { CardsForm, myCardsQuery, useSubmitCards } from '@/features/cards/queries'
 import { CARD_COPY, CARD_KINDS, SUGGESTIONS, type CardKind } from '@/features/cards/suggestions'
@@ -178,7 +179,10 @@ function CardsFormView({ gameId }: { gameId: string }) {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-6" noValidate>
       {CARD_KINDS.map((kind) => (
-        <div key={kind} className="flex flex-col gap-2">
+        <div key={kind} className="relative flex flex-col gap-2">
+          {theme !== 'spy' && (
+            <Sprite name={CARD_SPRITE[kind].name} className="absolute top-0 right-1 h-5 w-auto" />
+          )}
           <TextField
             label={theme === 'spy' ? copy[kind] : CARD_COPY[kind].label}
             placeholder={CARD_COPY[kind].placeholder}

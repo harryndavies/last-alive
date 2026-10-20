@@ -1,4 +1,6 @@
+import { Sprite } from '@/components'
 import { cn } from '@/lib/cn'
+import { CARD_SPRITE } from './cardSprites'
 import { useCopy, useTheme } from '@/lib/theme'
 import type { CardKind } from './suggestions'
 
@@ -36,7 +38,7 @@ export function PlayingCard({ kind, text, tilt = 0, badge, hidden, className }: 
     >
       <div className="flex items-center justify-between">
         <span className="label-mono">
-          <span aria-hidden="true">{ICON[kind]} </span>
+          {spy && <span aria-hidden="true">{ICON[kind]} </span>}
           {copy[kind]}
         </span>
         {badge && (
@@ -45,9 +47,16 @@ export function PlayingCard({ kind, text, tilt = 0, badge, hidden, className }: 
           </span>
         )}
       </div>
+      {!spy && (
+        <Sprite
+          name={CARD_SPRITE[kind].name}
+          className={cn('absolute right-3 bottom-3', CARD_SPRITE[kind].width)}
+        />
+      )}
       <p
         className={cn(
           'font-display text-2xl leading-tight uppercase',
+          !spy && 'pr-18',
           hidden && 'tracking-widest select-none',
         )}
       >
