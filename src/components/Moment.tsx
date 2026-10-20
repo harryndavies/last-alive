@@ -11,22 +11,26 @@ function prefersReducedMotion(): boolean {
 
 /**
  * A full-screen celebration (or commiseration) that plays once per `id`, then
- * fades away by itself. Tapping skips it. Skipped entirely for reduced motion:
- * it is decoration, and the screen underneath already says what happened.
+ * fades away by itself. Tapping skips it. Skipped for reduced motion, since it
+ * is usually decoration; `essential` ones still show, just without the fade.
  */
 export function Moment({
   id,
   duration = 1800,
+  essential = false,
   className,
   children,
 }: {
   id: string
   duration?: number
+  /** Carries information players need, so it shows even with reduce motion on. */
+  essential?: boolean
   className?: string
   children: ReactNode
 }) {
   const key = `moment:${id}`
-  const [show, setShow] = useState(() => !prefersReducedMotion() && safeStorage.get(key) !== '1')
+  const [still] = useState(prefersReducedMotion)
+  const [show, setShow] = useState(() => (essential || !still) && safeStorage.get(key) !== '1')
 
   // Only mark it seen once it has played out, so a re-render mid-way doesn't eat it.
   useEffect(() => {
@@ -48,7 +52,8 @@ export function Moment({
         setShow(false)
       }}
       className={cn(
-        'fixed inset-0 z-50 flex animate-[moment-fade_var(--moment-ms)_ease-in_both] flex-col items-center justify-center gap-4',
+        'fixed inset-0 z-50 flex flex-col items-center justify-center gap-4',
+        !still && 'animate-[moment-fade_var(--moment-ms)_ease-in_both]',
         className,
       )}
       style={{ ['--moment-ms' as string]: `${duration}ms` }}

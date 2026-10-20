@@ -6,6 +6,7 @@ import { codeFromPath, guardRedirect, screenFromPath, screenPath } from '@/featu
 import { gameQuery, playersQuery, useGameContext } from '@/features/game/queries'
 import { useGameRealtime } from '@/features/game/realtime'
 import { normaliseCode } from '@/features/game/schemas'
+import { SuddenDeathAlert } from '@/features/game/components/Deadline'
 import { KillAlert } from '@/features/kills/KillAlert'
 import { hasSeenMission, missionQuery } from '@/features/missions/queries'
 import { usePrefetchAvatars } from '@/lib/avatars'
@@ -72,6 +73,7 @@ function GameLayout() {
       <Outlet />
       {game.status === 'active' && <TabBar code={code} spectator={!alive} />}
       {game.status === 'active' && alive && <KillAlert gameId={game.id} me={me} />}
+      {game.status === 'active' && <SuddenDeathAlert game={game} me={me} />}
     </GameTheme>
   )
 }

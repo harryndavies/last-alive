@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Button, Card, Sheet, Tag } from '@/components'
+import { Button, Card, Moment, Sheet, Tag } from '@/components'
+import { useCopy } from '@/lib/theme'
 import {
   deadlinePhase,
   formatDeadline,
@@ -350,5 +351,31 @@ export function CallTime({ game, me }: { game: Game; me: Player }) {
         </Sheet>
       )}
     </>
+  )
+}
+
+/**
+ * Sudden death changes the rules (anyone can get anyone), so every living
+ * player sees it once, whichever screen they open, even without notifications.
+ */
+export function SuddenDeathAlert({ game, me }: { game: Game; me: Player }) {
+  const now = useNow(30_000)
+  if (me.status !== 'alive' || deadlinePhase(game, now) !== 'sudden' || !game.ends_at) return null
+  return <SuddenDeathMoment game={game} endsAt={game.ends_at} now={now} />
+}
+
+function SuddenDeathMoment({ game, endsAt, now }: { game: Game; endsAt: string; now: number }) {
+  const copy = useCopy()
+  // Keyed on the end time: if the host extends out of sudden death and it comes round again, it shows again.
+  return (
+    <Moment id={`sudden:${game.id}:${endsAt}`} duration={4500} essential className="bg-ink/80">
+      <span className="mx-4 rounded-2xl border-4 border-ink bg-red px-5 py-3 text-center font-display text-4xl text-ink uppercase shadow-[8px_8px_0_#ffd23f] motion-safe:animate-[stamp-slam_700ms_ease-out_both]">
+        ⚡ {copy.suddenTitle}
+      </span>
+      <p className="max-w-xs text-center text-lg font-bold text-paper">{copy.suddenBody}</p>
+      <p className="label-mono text-paper/80">
+        {formatRemaining(new Date(endsAt).getTime() - now)} left · tap to close
+      </p>
+    </Moment>
   )
 }
