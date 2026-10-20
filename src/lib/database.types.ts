@@ -452,6 +452,9 @@ isOneToOne: false
 "save_push_subscription":
 { Args: { "p_auth": string,"p_endpoint": string,"p_p256dh": string,"p_user_agent"?: string }; Returns: undefined
                            },
+"season_standings":
+{ Args: { "p_game_id": string }; Returns: Json
+                           },
 "set_avatar":
 { Args: { "p_game_id": string,"p_path"?: string }; Returns: undefined
                            },

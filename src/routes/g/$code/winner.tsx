@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Avatar, buttonClasses, Card, StatBox, Tag } from '@/components'
 import { eventsQuery, standings } from '@/features/board/feed'
+import { SeasonTable } from '@/features/board/SeasonTable'
 import { StandingsList } from '@/features/board/StandingsList'
 import { RematchPanel } from '@/features/game/components/RematchPanel'
 import { useGameContext } from '@/features/game/queries'
@@ -57,6 +58,8 @@ function Winner() {
         <StatBox label="Kills" value={totalKills} tone="red" />
         <StatBox label={days === 1 ? 'Day' : 'Days'} value={days} tone="pink" />
       </div>
+
+      <SeasonTable gameId={game.id} userId={userId} />
 
       <RematchPanel game={game} userId={userId} />
 
