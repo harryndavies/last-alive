@@ -21,7 +21,7 @@ import { useGameContext, type GameContext } from '@/features/game/queries'
 import { DisputeCard } from '@/features/kills/DisputeCard'
 import { disputesFor, killsQuery, openClaimBy, type Kill } from '@/features/kills/queries'
 import { ReportKillSheet } from '@/features/kills/ReportKillSheet'
-import { DeadlineBanner } from '@/features/game/components/Deadline'
+import { CallTime, DeadlineBanner } from '@/features/game/components/Deadline'
 import { deadlinePhase, useNow } from '@/lib/deadline'
 import { CallOutCard } from '@/features/missions/CallOutCard'
 import { missionQuery } from '@/features/missions/queries'
@@ -66,6 +66,7 @@ function Home() {
       </div>
 
       <DeadlineBanner game={game} me={me} />
+      <CallTime game={game} me={me} />
       <NotificationsCard />
 
       {disputes.map((k) => (

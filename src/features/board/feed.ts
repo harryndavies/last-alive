@@ -4,6 +4,7 @@ import { gameKeys } from '@/features/game/keys'
 import type { Player } from '@/features/game/schemas'
 import { toGameError } from '@/lib/errors'
 import { supabase } from '@/lib/supabase'
+import { formatDeadline } from '@/lib/deadline'
 import { copyFor, type Copy } from '@/lib/themeCopy'
 
 export const EventSchema = z.object({
@@ -145,6 +146,17 @@ export function describeEvent(e: GameEvent, opts: FeedOptions = {}): FeedItem | 
       }
     case 'final_hour':
       return { ...base, icon: '⏱', tone: 'yellow', text: 'One hour left' }
+    case 'time_called':
+      return {
+        ...base,
+        icon: '⏱',
+        tone: 'yellow',
+        text: `${str(p.by_name)} called time`,
+        detail:
+          typeof p.ends_at === 'string'
+            ? `The game ends ${formatDeadline(p.ends_at)}. The last 24 hours are sudden death.`
+            : undefined,
+      }
     case 'deadline_extended':
       return { ...base, icon: '⏱', tone: 'blue', text: 'The host extended the game' }
     default:
@@ -160,6 +172,7 @@ const KILL_FEED_TYPES = new Set([
   'game_finished',
   'sudden_death_started',
   'final_hour',
+  'time_called',
 ])
 
 /** The board's kill feed: deaths (kills and rumbles), leavers, start and finish. */

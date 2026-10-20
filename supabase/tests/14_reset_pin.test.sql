@@ -37,7 +37,8 @@ select is((public.reclaim_player(pg_temp.v('code'), 'Ben', pg_temp.v('reset')::j
 
 -- Resetting your own seat just changes the PIN, with no feed noise.
 select public.reset_pin(pg_temp.v('code'), 'Ben');
-select is((select count(*)::int from public.events where type = 'seat_moved'), 1,
+select is((select count(*)::int from public.events
+  where game_id = pg_temp.v('game')::uuid and type = 'seat_moved'), 1,
   'resetting your own PIN does not announce a move');
 
 -- You cannot take a second seat in a game you are already in.

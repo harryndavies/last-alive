@@ -398,6 +398,9 @@ isOneToOne: false
 "call_out_hunter":
 { Args: { "p_game_id": string,"p_suspect_id": string }; Returns: Json
                            },
+"call_time":
+{ Args: { "p_ends_at": string,"p_game_id": string }; Returns: undefined
+                           },
 "create_game":
 { Args: { "p_colour": string,"p_game_name": string,"p_player_name": string }; Returns: Json
                            },

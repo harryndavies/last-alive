@@ -268,3 +268,87 @@ function ExtendSheet({ game, onClose }: { game: Game; onClose: () => void }) {
     </Sheet>
   )
 }
+
+const CALL_OPTIONS = [
+  { label: '48 hours', hours: 48 },
+  { label: '3 days', hours: 72 },
+  { label: '1 week', hours: 168 },
+] as const
+
+/** 8pm on the first evening at least `hours` away (the server insists on 48h). */
+export function eveningAfter(hours: number, now = Date.now()): string {
+  const earliest = now + hours * HOUR
+  const end = new Date(earliest)
+  end.setHours(20, 0, 0, 0)
+  if (end.getTime() < earliest) end.setDate(end.getDate() + 1)
+  return end.toISOString()
+}
+
+/** Host only, in a running game with no end time: set one, with fair warning. */
+export function CallTime({ game, me }: { game: Game; me: Player }) {
+  const qc = useQueryClient()
+  const [open, setOpen] = useState(false)
+  const [hours, setHours] = useState<number>(48)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  if (!me.is_host || game.status !== 'active' || game.ends_at) return null
+  const endsAt = eveningAfter(hours)
+
+  async function call() {
+    setBusy(true)
+    setError(null)
+    try {
+      await rpc('call_time', { p_game_id: game.id, p_ends_at: endsAt })
+      await qc.invalidateQueries({ queryKey: ['game'] })
+      setOpen(false)
+    } catch (err) {
+      setError(errorMessage(err))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <>
+      <Card tone="paper" className="flex items-center justify-between gap-3">
+        <p className="text-sm font-medium">Game dragging on? Give it an end.</p>
+        <Button variant="ink" className="shrink-0 whitespace-nowrap" onClick={() => setOpen(true)}>
+          ⏱ Call time
+        </Button>
+      </Card>
+      {open && (
+        <Sheet open onClose={() => setOpen(false)} title="Call time">
+          <div className="flex flex-col gap-4">
+            <p className="font-medium">
+              Everyone gets told you called it. The last 24 hours are sudden death: anyone can get
+              anyone. When time runs out, the survivor with the most kills wins.
+            </p>
+            <ul className="flex flex-wrap gap-2">
+              {CALL_OPTIONS.map((o) => (
+                <li key={o.hours}>
+                  <button
+                    type="button"
+                    aria-pressed={hours === o.hours}
+                    onClick={() => setHours(o.hours)}
+                    className="min-h-11 rounded-full border-2 border-ink bg-paper px-3 text-sm font-bold shadow-hard-sm active:translate-x-[3px] active:translate-y-[3px] active:shadow-none aria-pressed:bg-yellow"
+                  >
+                    {o.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <p className="label-mono">Ends {formatDeadline(endsAt)}</p>
+            {error && (
+              <p role="alert" className="font-bold text-red-ink">
+                {error}
+              </p>
+            )}
+            <Button block variant="red" loading={busy} onClick={() => void call()}>
+              Call time
+            </Button>
+          </div>
+        </Sheet>
+      )}
+    </>
+  )
+}
