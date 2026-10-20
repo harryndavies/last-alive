@@ -37,9 +37,17 @@ function Lobby() {
     <main className="flex flex-col gap-6 pt-4">
       <PageHeader kicker={copy.lobbyKicker} title={game.name} />
       <ShareCode code={game.code} gameName={game.name} />
-      <DeadlineEditor game={game} me={me} />
-      <LobbyTheme game={game} isHost={me.is_host} />
-      <LobbySecretFeed game={game} isHost={me.is_host} />
+      <section aria-labelledby="settings-heading" className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <h2 id="settings-heading" className="text-2xl">
+            Game settings
+          </h2>
+          {me.is_host && <p className="text-sm">Pick these while everyone joins.</p>}
+        </div>
+        <DeadlineEditor game={game} me={me} />
+        <LobbyTheme game={game} isHost={me.is_host} />
+        <LobbySecretFeed game={game} isHost={me.is_host} />
+      </section>
       <NotificationsCard />
 
       <section aria-labelledby="players-heading" className="flex flex-col gap-3">

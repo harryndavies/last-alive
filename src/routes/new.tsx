@@ -1,19 +1,14 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
 import { AvatarPicker, Button, ColourPicker, PageHeader, PinReveal, TextField } from '@/components'
-import { DeadlineField } from '@/features/game/components/Deadline'
 import { useCreateGame } from '@/features/game/queries'
 import { NameForm } from '@/features/game/schemas'
 import { uploadAvatar } from '@/lib/avatars'
 import type { AvatarColour } from '@/lib/colours'
-import { fromLocalInput } from '@/lib/deadline'
 import { dataUrlToBlob } from '@/lib/image'
-import { rpc } from '@/lib/rpc'
 import { loadProfile, saveProfile } from '@/lib/profile'
 import { useUserId } from '@/lib/useUserId'
 import { errorMessage } from '@/lib/errors'
-import { ThemePicker } from '@/features/game/components/ThemePicker'
-import type { Theme } from '@/lib/themeCopy'
 
 export const Route = createFileRoute('/new')({
   component: NewGame,
@@ -29,8 +24,6 @@ function NewGame() {
   const [colour, setColour] = useState<AvatarColour>(remembered?.colour ?? 'yellow')
   const [photo, setPhoto] = useState<string | null>(remembered?.photo ?? null)
   const [photoNote, setPhotoNote] = useState<string | null>(null)
-  const [endsAt, setEndsAt] = useState('')
-  const [theme, setTheme] = useState<Theme>('classic')
   const [fieldError, setFieldError] = useState<string | null>(null)
   const [created, setCreated] = useState<{ code: string; pin: string } | null>(null)
 
@@ -46,21 +39,6 @@ function NewGame() {
       {
         onSuccess: async (res) => {
           saveProfile({ name: parsed.data.name, colour: parsed.data.colour, photo })
-          if (theme !== 'classic') {
-            try {
-              await rpc('set_game_theme', { p_game_id: res.game_id, p_theme: theme })
-            } catch (err) {
-              setPhotoNote(`Theme not set: ${errorMessage(err)} You can pick it in the lobby.`)
-            }
-          }
-          const end = fromLocalInput(endsAt)
-          if (end) {
-            try {
-              await rpc('set_game_end', { p_game_id: res.game_id, p_ends_at: end })
-            } catch (err) {
-              setPhotoNote(`End time not set: ${errorMessage(err)} You can set it in the lobby.`)
-            }
-          }
           if (photo) {
             try {
               await uploadAvatar(res.game_id, userId, await dataUrlToBlob(photo))
@@ -112,8 +90,6 @@ function NewGame() {
         />
         <ColourPicker value={colour} onChange={setColour} />
         <AvatarPicker name={name} colour={colour} value={photo} onChange={setPhoto} />
-        <DeadlineField value={endsAt} onChange={setEndsAt} />
-        <ThemePicker value={theme} onChange={setTheme} />
         {create.isError && (
           <p role="alert" className="font-bold text-red-ink">
             {errorMessage(create.error)}
@@ -122,6 +98,9 @@ function NewGame() {
         <Button type="submit" size="lg" block loading={create.isPending}>
           Create game
         </Button>
+        <p className="text-center text-sm">
+          You&rsquo;ll set the theme, end time and secret feed in the lobby.
+        </p>
       </form>
     </main>
   )
