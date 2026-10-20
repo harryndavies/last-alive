@@ -1,4 +1,5 @@
 import { cn } from '@/lib/cn'
+import { Sprite } from './Sprite'
 
 // The small stone takes its width from the caller (an icon next to a name, a badge on a photo).
 const SIZE = { sm: '', md: 'w-44', lg: 'w-60' } as const
@@ -27,13 +28,7 @@ export function Gravestone({
       aria-label={text ? `Gravestone: ${name ?? ''}. ${epitaph ?? ''}` : undefined}
       aria-hidden={text ? undefined : true}
     >
-      <img
-        src="/gravestone.png"
-        alt=""
-        width={58}
-        height={56}
-        className="block h-auto w-full [image-rendering:pixelated]"
-      />
+      <Sprite name="gravestone" className="w-full" />
       {text && (
         <div
           aria-hidden="true"

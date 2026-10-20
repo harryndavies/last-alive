@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Avatar, Tag } from '@/components'
+import { Avatar, Sprite, Tag } from '@/components'
 import { cn } from '@/lib/cn'
 import { useNames, useTheme } from '@/lib/theme'
 import type { Player } from '@/features/game/schemas'
@@ -29,7 +29,12 @@ export function TargetCard({ target, hidden, badge, children, className }: Targe
         )}
       </div>
       <div className="flex items-center gap-4">
-        {hidden || !target ? (
+        {(hidden || !target) && theme !== 'spy' ? (
+          <Sprite
+            name="qblock"
+            className="w-16 shrink-0 motion-safe:animate-[qblock-bob_1.6s_ease-in-out_infinite]"
+          />
+        ) : hidden || !target ? (
           <span
             aria-hidden="true"
             className="inline-flex size-16 shrink-0 items-center justify-center rounded-full brut bg-ink font-display text-2xl text-paper shadow-hard-sm"
@@ -37,7 +42,14 @@ export function TargetCard({ target, hidden, badge, children, className }: Targe
             ?
           </span>
         ) : (
-          <Avatar name={target.name} colour={target.colour} photo={target.avatar_path} size="lg" />
+          <span className="shrink-0 motion-safe:animate-[qblock-bump_260ms_ease-out]">
+            <Avatar
+              name={target.name}
+              colour={target.colour}
+              photo={target.avatar_path}
+              size="lg"
+            />
+          </span>
         )}
         <div className="min-w-0">
           <p className="font-display text-4xl leading-none break-words uppercase">

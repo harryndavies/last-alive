@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Avatar, buttonClasses, Card, StatBox, Tag } from '@/components'
+import { Avatar, buttonClasses, Card, Sprite, StatBox, Tag } from '@/components'
 import { eventsQuery, standings } from '@/features/board/feed'
 import { SeasonTable } from '@/features/board/SeasonTable'
 import { StandingsList } from '@/features/board/StandingsList'
@@ -42,9 +42,7 @@ function Winner() {
         tilt={-2}
         className="flex flex-col items-center gap-3 py-8 text-center shadow-hard-lg"
       >
-        <span aria-hidden="true" className="font-display text-5xl">
-          ♛
-        </span>
+        <Sprite name="trophy" className="w-24 motion-safe:animate-[grave-drop_500ms_both]" />
         {winner && (
           <Avatar name={winner.name} colour={winner.colour} photo={winner.avatar_path} size="xl" />
         )}

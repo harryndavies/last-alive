@@ -1,6 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router'
-import { buttonClasses, Card } from '@/components'
+import { buttonClasses, Card, Sprite } from '@/components'
 import { ensureSession } from '@/lib/supabase'
 
 export interface RouterContext {
@@ -28,7 +28,11 @@ function RootLayout() {
 
 function Booting() {
   return (
-    <div className="flex min-h-dvh items-center justify-center">
+    <div className="flex min-h-dvh flex-col items-center justify-center gap-3">
+      <Sprite
+        name="duck"
+        className="w-20 motion-safe:animate-[waddle_700ms_ease-in-out_infinite]"
+      />
       <p className="animate-pulse label-mono">Loading…</p>
     </div>
   )
