@@ -50,6 +50,18 @@ describe('describeEvent', () => {
     expect(item?.text).toBe('Ben got rumbled')
   })
 
+  it('keeps the prize line, chosen just before the start', () => {
+    const events = [
+      ev(3, 'game_started', { player_count: 4 }),
+      ev(2, 'prize_chosen', { text: 'Loser buys pizza', coin_flip: true }),
+      ev(1, 'player_joined', { name: 'Ben' }),
+    ]
+    const feed = killFeed(events)
+    expect(feed.map((i) => i.type)).toEqual(['game_started', 'prize_chosen'])
+    expect(feed[1]?.text).toBe('Playing for: Loser buys pizza')
+    expect(feed[1]?.detail).toMatch(/coin flip/)
+  })
+
   it('ignores unknown events', () => {
     expect(describeEvent(ev(1, 'secret_thing'))).toBeNull()
   })

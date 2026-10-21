@@ -61,6 +61,7 @@ function Winner() {
         <p className="label-mono">{onTime ? 'Time’s up · most kills' : 'Last one alive'}</p>
         <h1 className="text-5xl break-words">{winner?.name ?? 'Nobody'}</h1>
         {winner?.id === me.id && <Tag tone="ink">That&rsquo;s you!</Tag>}
+        {game.prize && <p className="font-bold">🏆 Wins: {game.prize}</p>}
       </Card>
 
       <div className="grid grid-cols-3 gap-2.5">

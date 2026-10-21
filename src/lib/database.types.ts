@@ -129,14 +129,14 @@ isOneToOne: false
                   ]
                 },"games": {
                   Row: {
-                    "code": string,"created_at": string,"ends_at": string | null,"final_hour_announced_at": string | null,"finished_at": string | null,"host_player_id": string | null,"id": string,"name": string,"rematch_code": string | null,"rematch_game_id": string | null,"secret_feed": boolean,"started_at": string | null,"status": Database["public"]['Enums']["game_status"],"sudden_death_announced_at": string | null,"theme": string,"winner_player_id": string | null
+                    "code": string,"created_at": string,"ends_at": string | null,"final_hour_announced_at": string | null,"finished_at": string | null,"host_player_id": string | null,"id": string,"name": string,"prize": string | null,"rematch_code": string | null,"rematch_game_id": string | null,"secret_feed": boolean,"started_at": string | null,"status": Database["public"]['Enums']["game_status"],"sudden_death_announced_at": string | null,"theme": string,"winner_player_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "code": string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name": string,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"secret_feed"?: boolean,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"theme"?: string,"winner_player_id"?: string | null
+                    "code": string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name": string,"prize"?: string | null,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"secret_feed"?: boolean,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"theme"?: string,"winner_player_id"?: string | null
                   }
                   Update: {
-                    "code"?: string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name"?: string,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"secret_feed"?: boolean,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"theme"?: string,"winner_player_id"?: string | null
+                    "code"?: string,"created_at"?: string,"ends_at"?: string | null,"final_hour_announced_at"?: string | null,"finished_at"?: string | null,"host_player_id"?: string | null,"id"?: string,"name"?: string,"prize"?: string | null,"rematch_code"?: string | null,"rematch_game_id"?: string | null,"secret_feed"?: boolean,"started_at"?: string | null,"status"?: Database["public"]['Enums']["game_status"],"sudden_death_announced_at"?: string | null,"theme"?: string,"winner_player_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -369,6 +369,64 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"prize_ideas": {
+                  Row: {
+                    "created_at": string,"game_id": string,"id": string,"player_id": string,"text": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"game_id": string,"id"?: string,"player_id": string,"text": string
+                  }
+                  Update: {
+                    "created_at"?: string,"game_id"?: string,"id"?: string,"player_id"?: string,"text"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "prize_ideas_game_id_fkey"
+      columns: ["game_id"]
+isOneToOne: false
+      referencedRelation: "games"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "prize_ideas_player_id_fkey"
+      columns: ["player_id"]
+isOneToOne: false
+      referencedRelation: "players"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"prize_votes": {
+                  Row: {
+                    "game_id": string,"idea_id": string,"voter_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "game_id": string,"idea_id": string,"voter_id": string
+                  }
+                  Update: {
+                    "game_id"?: string,"idea_id"?: string,"voter_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "prize_votes_game_id_fkey"
+      columns: ["game_id"]
+isOneToOne: false
+      referencedRelation: "games"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "prize_votes_idea_id_fkey"
+      columns: ["idea_id"]
+isOneToOne: false
+      referencedRelation: "prize_ideas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "prize_votes_voter_id_fkey"
+      columns: ["voter_id"]
+isOneToOne: false
+      referencedRelation: "players"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"push_subscriptions": {
                   Row: {
                     "auth": string,"created_at": string,"endpoint": string,"p256dh": string,"updated_at": string,"user_agent": string | null,"user_id": string
@@ -482,8 +540,14 @@ isOneToOne: false
 "submit_cards":
 { Args: { "p_game_id": string,"p_phrase": string,"p_place": string,"p_weapon": string }; Returns: undefined
                            },
+"suggest_prize":
+{ Args: { "p_game_id": string,"p_text": string }; Returns: undefined
+                           },
 "toggle_reaction":
 { Args: { "p_emoji": string,"p_event_id": number }; Returns: boolean
+                           },
+"vote_prize":
+{ Args: { "p_game_id": string,"p_idea_id"?: string }; Returns: undefined
                            }
           }
           Enums: {

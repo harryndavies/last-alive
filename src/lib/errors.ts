@@ -35,6 +35,8 @@ const MESSAGES: Record<string, string> = {
   invalid_comment: 'Comments need 1 to 200 characters.',
   slow_down: 'Easy, tiger. Wait a few seconds between comments.',
   end_too_soon: 'The end time needs to be at least an hour from now.',
+  prize_too_long: 'Keep the prize to 60 characters.',
+  prize_not_found: 'That prize idea has gone. Pick another.',
   call_time_too_soon: 'Give everyone at least 48 hours’ warning.',
   already_has_end: 'This game already has an end time. You can extend it instead.',
   can_only_extend: 'Once the game has started you can only make it longer.',

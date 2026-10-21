@@ -65,6 +65,7 @@ function Home() {
         />
       </div>
 
+      {game.prize && <p className="text-center label-mono">🏆 Playing for: {game.prize}</p>}
       <DeadlineBanner game={game} me={me} />
       <CallTime game={game} me={me} />
       <NotificationsCard />

@@ -13,6 +13,7 @@ import { SwitchGameButton } from '@/features/game/components/SwitchGameButton'
 import { QrSheet } from '@/features/game/components/QrSheet'
 import { gameKeys } from '@/features/game/keys'
 import { PlayerList } from '@/features/game/components/PlayerList'
+import { PrizeVote } from '@/features/game/components/Prize'
 import { useGameContext, useStartGame } from '@/features/game/queries'
 import { errorMessage } from '@/lib/errors'
 import { useUserId } from '@/lib/useUserId'
@@ -53,6 +54,8 @@ function PickCards() {
       ) : (
         <CardsFormView gameId={game.id} />
       )}
+
+      <PrizeVote game={game} me={me} players={players} />
 
       {me.is_host ? (
         <div className="flex flex-col gap-2">

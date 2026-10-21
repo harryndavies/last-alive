@@ -146,6 +146,14 @@ export function describeEvent(e: GameEvent, opts: FeedOptions = {}): FeedItem | 
       }
     case 'final_hour':
       return { ...base, icon: '⏱', tone: 'yellow', text: 'One hour left' }
+    case 'prize_chosen':
+      return {
+        ...base,
+        icon: '🏆',
+        tone: 'yellow',
+        text: `Playing for: ${str(p.text, 'a prize')}`,
+        detail: p.coin_flip ? 'It was a tie, so a coin flip decided. 🎲' : undefined,
+      }
     case 'time_called':
       return {
         ...base,
@@ -173,6 +181,7 @@ const KILL_FEED_TYPES = new Set([
   'sudden_death_started',
   'final_hour',
   'time_called',
+  'prize_chosen',
 ])
 
 /** The board's kill feed: deaths (kills and rumbles), leavers, start and finish. */
@@ -183,7 +192,9 @@ export function killFeed(events: GameEvent[], opts: FeedOptions = {}): FeedItem[
 /** Only what happened once the game was running. */
 export function gameFeed(events: GameEvent[], opts: FeedOptions = {}): FeedItem[] {
   const startIdx = events.findIndex((e) => e.type === 'game_started')
-  const relevant = startIdx === -1 ? events : events.slice(0, startIdx + 1)
+  // The prize is chosen a moment before "the hunt is on", so let it through too.
+  const relevant =
+    startIdx === -1 ? events : events.filter((e, i) => i <= startIdx || e.type === 'prize_chosen')
   return relevant.map((e) => describeEvent(e, opts)).filter((x): x is FeedItem => x !== null)
 }
 

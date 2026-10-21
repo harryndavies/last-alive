@@ -10,4 +10,5 @@ export const gameKeys = {
   claim: (killId: string) => ['kill-claim', killId] as const,
   reactions: (gameId: string) => ['reactions', gameId] as const,
   comments: (gameId: string) => ['comments', gameId] as const,
+  prizes: (gameId: string) => ['prizes', gameId] as const,
 }
