@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
-import { buttonClasses, Button, Card, Sheet, Tag, TextField } from '@/components'
+import { buttonClasses, Button, Sheet, Sprite, Tag, TextField } from '@/components'
 import { HowToPlay } from '@/features/game/components/HowToPlay'
 import { YourGames } from '@/features/game/components/YourGames'
 import { CodeForm, normaliseCode } from '@/features/game/schemas'
@@ -28,35 +28,48 @@ function Landing() {
 
   return (
     <main className="flex flex-col gap-6 pt-6">
-      <div className="flex items-center gap-2">
-        <Tag tone="red" tilt>
-          Top secret
-        </Tag>
-        <Tag tone="mint">No sign-up</Tag>
+      <div className="flex justify-center gap-2">
+        <Tag tone="ink">Top secret</Tag>
+        <Tag tone="ink">No sign-up</Tag>
       </div>
 
-      <h1 className="text-[3.6rem] leading-[0.9]">
-        Last
-        <br />
-        <span className="inline-block -rotate-2 brut bg-yellow px-2 shadow-hard">Alive</span>
+      <h1 className="flex flex-col items-center leading-[0.85]">
+        <span className="text-[5.5rem]">Last</span>
+        <span className="relative -mt-3 flex items-center gap-3 self-end">
+          <Sprite name="duck" className="w-12" />
+          <span className="inline-block -rotate-3 rounded-2xl brut bg-paper px-4 pt-2 pb-1 text-[3.8rem] shadow-hard">
+            Alive
+          </span>
+        </span>
       </h1>
 
-      <Card tone="paper" tilt={1}>
-        <p className="text-lg font-medium">
-          The real-life assassin game. Get your target to take the right weapon from you, in the
-          right place. Don&rsquo;t get got.
-        </p>
-      </Card>
+      <img
+        src="/hero.webp"
+        width={842}
+        height={505}
+        alt="A grinning player hands a rubber duck to an unsuspecting friend, while someone peeks round the door, hunting her."
+        className="-mx-2 h-auto w-[calc(100%+1rem)] max-w-none"
+      />
 
-      <ol className="grid grid-cols-3 gap-2 text-center">
-        {[
-          ['1', 'Join with a code', 'bg-pink'],
-          ['2', 'Get a secret mission', 'bg-mint'],
-          ['3', 'Be the last alive', 'bg-blue'],
-        ].map(([n, text, bg]) => (
-          <li key={n} className={`rounded-xl brut p-2 shadow-hard-sm ${bg}`}>
-            <div className="font-display text-2xl">{n}</div>
-            <div className="text-sm leading-tight font-bold">{text}</div>
+      <p className="text-center font-mono text-base leading-snug">
+        The real-life assassin game. Get your target to take the right weapon from you, in the right
+        place. Don&rsquo;t get got.
+      </p>
+
+      <ol className="grid grid-cols-3 gap-2.5">
+        {(
+          [
+            ['1', 'Join with a code', 'bg-pink', '-rotate-2'],
+            ['2', 'Get a secret mission', 'bg-mint', ''],
+            ['3', 'Be the last alive', 'bg-blue', 'rotate-2'],
+          ] as const
+        ).map(([n, text, bg, tilt]) => (
+          <li
+            key={n}
+            className={`flex min-h-32 flex-col justify-center rounded-xl brut px-2 py-3 text-center shadow-hard ${bg} ${tilt}`}
+          >
+            <div className="font-display text-4xl leading-none">{n}</div>
+            <div className="mt-1 font-display text-sm leading-tight uppercase">{text}</div>
           </li>
         ))}
       </ol>
