@@ -24,17 +24,3 @@ export const CARD_COPY: Record<
     maxLength: 80,
   },
 }
-
-export const SUGGESTIONS: Record<CardKind, readonly string[]> = {
-  weapon: ['Pen', 'Biscuit', 'Cup of tea', 'Banana', 'Post-it note', 'Teaspoon', 'Sock'],
-  place: ['Kitchen', 'Lift', 'Car park', 'Staircase', 'Bus stop', 'Garden', 'Front door'],
-  phrase: [
-    'The eagle has landed',
-    'Nothing personal',
-    'You’ve been served',
-    'Sweet dreams',
-    'Checkmate',
-    'I’ll be back',
-    'You never saw me',
-  ],
-}

@@ -1,7 +1,7 @@
 -- Prizes: suggest, vote, and the winner is locked in at the start.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(9);
+select plan(10);
 
 create function pg_temp.login(p_uid uuid) returns void language sql as $$
   select set_config('request.jwt.claims',
@@ -52,6 +52,10 @@ select public.vote_prize(pg_temp.game(), pg_temp.idea('Winner picks the film'));
 select public.vote_prize(pg_temp.game(), pg_temp.idea('Winner picks the film'));
 select is((select count(*)::int from public.prize_votes where game_id = pg_temp.game()), 3,
   'one vote each');
+
+select pg_temp.login(pg_temp.uid('b'));
+select throws_ok($$ select public.vote_prize(pg_temp.game(), pg_temp.idea('Winner picks the film')) $$,
+  'own_prize', 'you cannot vote for your own idea');
 
 select pg_temp.login(pg_temp.uid('e'));
 select throws_ok($$ select public.vote_prize(pg_temp.game(), pg_temp.idea('Loser buys curry')) $$,

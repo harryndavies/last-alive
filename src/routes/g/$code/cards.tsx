@@ -5,9 +5,8 @@ import { Button, Card, PageHeader, ProgressBar, Sprite, TextField } from '@/comp
 import { CARD_SPRITE } from '@/features/cards/cardSprites'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import { CardsForm, myCardsQuery, useSubmitCards } from '@/features/cards/queries'
-import { CARD_COPY, CARD_KINDS, SUGGESTIONS, type CardKind } from '@/features/cards/suggestions'
+import { CARD_COPY, CARD_KINDS, type CardKind } from '@/features/cards/suggestions'
 import { ChangePhotoSheet } from '@/features/game/components/ChangePhotoSheet'
-import { DeadlineEditor } from '@/features/game/components/Deadline'
 import { LeaveButton } from '@/features/game/components/LeaveButton'
 import { SwitchGameButton } from '@/features/game/components/SwitchGameButton'
 import { QrSheet } from '@/features/game/components/QrSheet'
@@ -47,7 +46,6 @@ function PickCards() {
       </PageHeader>
 
       <ProgressBar value={locked} max={players.length} label="Locked in" />
-      <DeadlineEditor game={game} me={me} />
 
       {me.cards_locked ? (
         <LockedCards gameId={game.id} playerId={me.id} />
@@ -195,23 +193,6 @@ function CardsFormView({ gameId }: { gameId: string }) {
             onChange={(e) => set(kind, e.target.value)}
             error={errors[kind]}
           />
-          <ul
-            className="flex flex-wrap gap-2"
-            aria-label={`${theme === 'spy' ? copy[kind] : CARD_COPY[kind].label} ideas`}
-          >
-            {SUGGESTIONS[kind].map((s) => (
-              <li key={s}>
-                <button
-                  type="button"
-                  onClick={() => set(kind, s)}
-                  aria-pressed={values[kind] === s}
-                  className="min-h-11 rounded-full border-2 border-ink bg-paper px-3 text-sm font-bold shadow-hard-sm active:translate-x-[3px] active:translate-y-[3px] active:shadow-none aria-pressed:bg-yellow"
-                >
-                  {s}
-                </button>
-              </li>
-            ))}
-          </ul>
         </div>
       ))}
       {submit.isError && (

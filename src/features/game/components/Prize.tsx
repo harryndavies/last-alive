@@ -74,7 +74,8 @@ export function PrizeVote({ game, me, players }: { game: Game; me: Player; playe
       <div>
         <h2 className="text-2xl">🏆 Play for a prize?</h2>
         <p className="text-sm font-medium">
-          Suggest one and vote. Most votes when the game starts wins, and a tie is a coin flip.
+          Suggest one and vote for someone else&rsquo;s. Most votes when the game starts wins, and a
+          tie is a coin flip.
         </p>
       </div>
 
@@ -103,21 +104,27 @@ export function PrizeVote({ game, me, players }: { game: Game; me: Player; playe
           {ideas.map((idea) => {
             const count = votes.filter((v) => v.idea_id === idea.id).length
             const picked = myVote === idea.id
+            const own = idea.player_id === me.id
             return (
               <li key={idea.id}>
                 <button
                   type="button"
                   aria-pressed={picked}
-                  disabled={vote.isPending}
+                  disabled={vote.isPending || own}
                   onClick={() => vote.mutate(picked ? null : idea.id)}
                   className={cn(
-                    'flex min-h-12 w-full items-center gap-3 rounded-xl brut px-3 py-2 text-left shadow-hard-sm active:translate-x-[3px] active:translate-y-[3px] active:shadow-none',
-                    picked ? 'bg-ink text-paper' : 'bg-paper',
+                    'flex min-h-12 w-full items-center gap-3 rounded-xl brut px-3 py-2 text-left shadow-hard-sm',
+                    own
+                      ? 'cursor-default bg-ground'
+                      : 'active:translate-x-[3px] active:translate-y-[3px] active:shadow-none',
+                    !own && (picked ? 'bg-ink text-paper' : 'bg-paper'),
                   )}
                 >
                   <span className="min-w-0 flex-1">
                     <span className="block font-bold break-words">{idea.text}</span>
-                    <span className="label-mono opacity-70">{nameOf(idea.player_id)}</span>
+                    <span className="label-mono opacity-70">
+                      {own ? 'Your idea' : nameOf(idea.player_id)}
+                    </span>
                   </span>
                   <span className="shrink-0 text-right">
                     <span className="block font-display text-xl leading-none">{count}</span>
