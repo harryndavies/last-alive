@@ -71,7 +71,13 @@ function GameLayout() {
   return (
     <GameTheme theme={game.theme} gameId={game.id} playerIds={players.map((p) => p.id)}>
       <Outlet />
-      {game.status === 'active' && <TabBar code={code} spectator={!alive} />}
+      {game.status === 'active' && (
+        <>
+          {/* Room so the last thing on the page isn't hidden behind the tab bar. */}
+          <div aria-hidden="true" className="h-20" />
+          <TabBar code={code} spectator={!alive} />
+        </>
+      )}
       {game.status === 'active' && alive && <KillAlert gameId={game.id} me={me} />}
       {game.status === 'active' && <SuddenDeathAlert game={game} me={me} />}
     </GameTheme>
