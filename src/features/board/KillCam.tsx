@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Avatar, Gravestone, Tag } from '@/components'
+import { Avatar, FitText, Gravestone, Tag } from '@/components'
 import { KillPhoto } from '@/features/kills/KillPhoto'
 import { useKillPhotoUrl } from '@/features/kills/photos'
 import { cn } from '@/lib/cn'
@@ -184,7 +184,9 @@ function SlideView({
             />
           )}
           <p className="label-mono">{slide.onTime ? 'Time’s up · most kills' : 'Last one alive'}</p>
-          <h2 className="text-6xl break-words text-yellow">{slide.winner?.name ?? 'Nobody'}</h2>
+          <FitText as="h2" max={60} className="text-yellow">
+            {slide.winner?.name ?? 'Nobody'}
+          </FitText>
           <p className="font-bold">
             {slide.kills} {slide.kills === 1 ? copy.kill : copy.kills}
           </p>
@@ -222,9 +224,9 @@ function SlideView({
             )}
           </div>
 
-          <h2 className="mt-1 text-4xl leading-none">
+          <FitText as="h2" max={36} className="mt-1 leading-none">
             <span className="text-yellow">{slide.killer.name}</span> got {slide.victim.name}
-          </h2>
+          </FitText>
 
           {(slide.weapon || slide.place) && (
             <div className="flex flex-wrap gap-2">

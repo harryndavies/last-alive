@@ -5,6 +5,7 @@ import {
   Avatar,
   Button,
   Card,
+  FitText,
   Gravestone,
   Moment,
   NotificationsCard,
@@ -234,7 +235,9 @@ function Spectator({
           epitaph={line}
           className="motion-safe:animate-[grave-drop_600ms_200ms_both]"
         />
-        <span className="font-display text-4xl text-paper uppercase">{copy.deadStamp}</span>
+        <FitText max={36} className="block px-4 text-center font-display text-paper uppercase">
+          {copy.deadStamp}
+        </FitText>
       </Moment>
       <Tag tone="red" className="self-start">
         Spectating

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { FitText } from './FitText'
 import { Tag } from './Tag'
 
 export interface PageHeaderProps {
@@ -15,7 +16,9 @@ export function PageHeader({ kicker, title, children }: PageHeaderProps) {
           {kicker}
         </Tag>
       )}
-      <h1 className="text-4xl break-words">{title}</h1>
+      <FitText as="h1" max={36}>
+        {title}
+      </FitText>
       {children}
     </header>
   )

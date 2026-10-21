@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Card, Moment, Sheet, Tag } from '@/components'
+import { Button, Card, FitText, Moment, Sheet, Tag } from '@/components'
 import { useCopy } from '@/lib/theme'
 import {
   deadlinePhase,
@@ -369,8 +369,10 @@ function SuddenDeathMoment({ game, endsAt, now }: { game: Game; endsAt: string; 
   // Keyed on the end time: if the host extends out of sudden death and it comes round again, it shows again.
   return (
     <Moment id={`sudden:${game.id}:${endsAt}`} duration={4500} essential className="bg-ink/80">
-      <span className="mx-4 rounded-2xl border-4 border-ink bg-red px-5 py-3 text-center font-display text-4xl text-ink uppercase shadow-[8px_8px_0_#ffd23f] motion-safe:animate-[stamp-slam_700ms_ease-out_both]">
-        ⚡ {copy.suddenTitle}
+      <span className="mx-4 max-w-[calc(100vw-2rem)] rounded-2xl border-4 border-ink bg-red px-5 py-3 text-center font-display text-ink uppercase shadow-[8px_8px_0_#ffd23f] motion-safe:animate-[stamp-slam_700ms_ease-out_both]">
+        <FitText max={36} min={20} className="block">
+          ⚡ {copy.suddenTitle}
+        </FitText>
       </span>
       <p className="max-w-xs text-center text-lg font-bold text-paper">{copy.suddenBody}</p>
       <p className="label-mono text-paper/80">

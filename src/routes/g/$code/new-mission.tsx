@@ -1,7 +1,7 @@
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
-import { buttonClasses, Card, Moment, Tag } from '@/components'
+import { buttonClasses, Card, FitText, Moment, Tag } from '@/components'
 import { eventsQuery } from '@/features/board/feed'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import { useGameContext } from '@/features/game/queries'
@@ -54,8 +54,10 @@ function NewMission() {
     <main className="flex flex-col gap-5 pt-4">
       {gotThem && (
         <Moment id={`gotcha:${current.id}`} className="bg-ink/70">
-          <span className="rounded-2xl border-4 border-ink bg-yellow px-6 py-3 font-display text-6xl text-ink uppercase shadow-[8px_8px_0_#ff4b3e] motion-safe:animate-[stamp-slam_700ms_ease-out_both]">
-            {copy.gotchaStamp}
+          <span className="max-w-[calc(100vw-2rem)] rounded-2xl border-4 border-ink bg-yellow px-6 py-3 font-display text-ink uppercase shadow-[8px_8px_0_#ff4b3e] motion-safe:animate-[stamp-slam_700ms_ease-out_both]">
+            <FitText max={60} min={24} className="block">
+              {copy.gotchaStamp}
+            </FitText>
           </span>
           {victim && <p className="label-mono text-paper">You got {victim.name}</p>}
         </Moment>
@@ -63,11 +65,11 @@ function NewMission() {
       <Tag tone="mint" tilt className="self-start">
         {copy.newMissionTag}
       </Tag>
-      <h1 className="text-5xl leading-[0.95]">
+      <FitText as="h1" max={48} className="leading-[0.95]">
         {rumbled
           ? 'Your target got rumbled'
           : `You inherit ${victim ? `${victim.name}'s` : 'their'} mission`}
-      </h1>
+      </FitText>
       <p className="font-medium">
         {rumbled
           ? `${target?.name ?? 'Their target'} called ${victim?.name ?? 'them'} out, so ${victim?.name ?? 'they'} is out. ${target?.name ?? 'They'} is your target now. Same weapon, place and phrase as before.`

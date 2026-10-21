@@ -34,10 +34,10 @@ function Landing() {
       </div>
 
       <h1 className="flex flex-col items-center leading-[0.85]">
-        <span className="text-[5.5rem]">Last</span>
+        <span className="text-[min(5.5rem,26vw)]">Last</span>
         <span className="relative -mt-3 flex items-center gap-3 self-end">
-          <Sprite name="duck" className="w-12" />
-          <span className="inline-block -rotate-3 rounded-2xl brut bg-paper px-4 pt-2 pb-1 text-[3.8rem] shadow-hard">
+          <Sprite name="duck" className="w-[min(3rem,13vw)]" />
+          <span className="inline-block -rotate-3 rounded-2xl brut bg-paper px-4 pt-2 pb-1 text-[min(3.8rem,17vw)] shadow-hard">
             Alive
           </span>
         </span>
@@ -69,7 +69,9 @@ function Landing() {
             className={`flex min-h-32 flex-col justify-center rounded-xl brut px-2 py-3 text-center shadow-hard ${bg} ${tilt}`}
           >
             <div className="font-display text-4xl leading-none">{n}</div>
-            <div className="mt-1 font-display text-sm leading-tight uppercase">{text}</div>
+            <div className="mt-1 font-display text-[min(0.875rem,3.8vw)] leading-tight uppercase">
+              {text}
+            </div>
           </li>
         ))}
       </ol>

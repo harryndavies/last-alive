@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useId, useRef } from 'react'
-import { Avatar, Button, Tag } from '@/components'
+import { Avatar, Button, FitText, Tag } from '@/components'
 import { PlayingCard } from '@/features/cards/PlayingCard'
 import type { Player } from '@/features/game/schemas'
 import { errorMessage } from '@/lib/errors'
@@ -50,8 +50,10 @@ function ConfirmDeath({ gameId, killId }: { gameId: string; killId: string }) {
         <Tag tone="ink" tilt className="self-start">
           Incoming
         </Tag>
-        <h1 id={titleId} className="text-5xl leading-[0.95]">
-          Someone says they got you
+        <h1 id={titleId} className="leading-[0.95]">
+          <FitText max={48} className="block">
+            Someone says they got you
+          </FitText>
         </h1>
 
         {claim ? (

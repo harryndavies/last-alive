@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Avatar, Sprite, Tag } from '@/components'
+import { Avatar, FitText, Sprite, Tag } from '@/components'
 import { cn } from '@/lib/cn'
 import { useNames, useTheme } from '@/lib/theme'
 import type { Player } from '@/features/game/schemas'
@@ -52,7 +52,7 @@ export function TargetCard({ target, hidden, badge, children, className }: Targe
           </span>
         )}
         <div className="min-w-0">
-          <p className="font-display text-4xl leading-none break-words uppercase">
+          <FitText as="p" max={36} className="font-display leading-none uppercase">
             {hidden
               ? theme === 'spy'
                 ? 'Classified'
@@ -60,7 +60,7 @@ export function TargetCard({ target, hidden, badge, children, className }: Targe
               : target
                 ? names.primary(target)
                 : 'Unknown'}
-          </p>
+          </FitText>
           {!hidden && target && names.secondary(target) && (
             <p className="mt-1 text-lg font-bold">{names.secondary(target)}</p>
           )}

@@ -4,6 +4,7 @@ import {
   Avatar,
   buttonClasses,
   Card,
+  FitText,
   Moment,
   PixelConfetti,
   Sprite,
@@ -59,7 +60,9 @@ function Winner() {
           <Avatar name={winner.name} colour={winner.colour} photo={winner.avatar_path} size="xl" />
         )}
         <p className="label-mono">{onTime ? 'Time’s up · most kills' : 'Last one alive'}</p>
-        <h1 className="text-5xl break-words">{winner?.name ?? 'Nobody'}</h1>
+        <FitText as="h1" max={48}>
+          {winner?.name ?? 'Nobody'}
+        </FitText>
         {winner?.id === me.id && <Tag tone="ink">That&rsquo;s you!</Tag>}
         {game.prize && <p className="font-bold">🏆 Wins: {game.prize}</p>}
       </Card>

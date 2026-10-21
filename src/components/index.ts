@@ -1,6 +1,7 @@
 export { Avatar } from './Avatar'
 export { AvatarPicker } from './AvatarPicker'
 export { Button, buttonClasses } from './Button'
+export { FitText } from './FitText'
 export { Gravestone } from './Gravestone'
 export { Sprite } from './Sprite'
 export { Moment, PixelConfetti } from './Moment'
