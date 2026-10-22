@@ -450,6 +450,21 @@ isOneToOne: false
             "add_comment":
 { Args: { "p_body": string,"p_event_id": number }; Returns: string
                            },
+"admin_game":
+{ Args: { "p_code": string,"p_password": string }; Returns: Json
+                           },
+"admin_overview":
+{ Args: { "p_password": string }; Returns: Json
+                           },
+"admin_remove_player":
+{ Args: { "p_password": string,"p_player_id": string }; Returns: Json
+                           },
+"admin_set_card":
+{ Args: { "p_card_id": string,"p_password": string,"p_text": string }; Returns: Json
+                           },
+"admin_set_end":
+{ Args: { "p_ends_at"?: string,"p_game_id": string,"p_password": string }; Returns: Json
+                           },
 "avatar_paths":
 { Args: { "p_game_ids": (string)[] }; Returns: string[]
                            },
