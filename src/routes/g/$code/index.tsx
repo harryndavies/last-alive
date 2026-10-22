@@ -21,6 +21,7 @@ import { SwitchGameButton } from '@/features/game/components/SwitchGameButton'
 import { useGameContext, type GameContext } from '@/features/game/queries'
 import { DisputeCard } from '@/features/kills/DisputeCard'
 import { disputesFor, killsQuery, openClaimBy, type Kill } from '@/features/kills/queries'
+import { BeenGot } from '@/features/kills/BeenGotSheet'
 import { ReportKillSheet } from '@/features/kills/ReportKillSheet'
 import { CallTime, DeadlineBanner } from '@/features/game/components/Deadline'
 import { deadlinePhase, useNow } from '@/lib/deadline'
@@ -187,6 +188,12 @@ function Hunt({ ctx, kills }: { ctx: GameContext; kills: Kill[] }) {
           </Link>
         </div>
       </TargetCard>
+
+      <BeenGot
+        gameId={game.id}
+        suddenDeath={suddenDeath}
+        others={players.filter((p) => p.status === 'alive' && p.id !== me.id)}
+      />
 
       <CallOutCard gameId={game.id} me={me} players={players} />
 

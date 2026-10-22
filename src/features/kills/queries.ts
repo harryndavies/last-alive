@@ -101,6 +101,12 @@ function useKillAction<TArgs>(gameId: string, run: (args: TArgs) => Promise<unkn
   })
 }
 
+/** "I've been got": you confirm your own death; the kill goes to your hunter (or, in sudden death, whoever you name). */
+export const useReportOwnDeath = (gameId: string) =>
+  useKillAction(gameId, (killerId: string | null) =>
+    rpc('report_own_death', { p_game_id: gameId, ...(killerId ? { p_killer_id: killerId } : {}) }),
+  )
+
 export const useReportKill = (gameId: string) =>
   useKillAction(gameId, (input: { victimId: string; note: string; photoPath?: string }) =>
     rpc('report_kill', {

@@ -36,6 +36,7 @@ const MESSAGES: Record<string, string> = {
   slow_down: 'Easy, tiger. Wait a few seconds between comments.',
   end_too_soon: 'The end time needs to be at least an hour from now.',
   prize_too_long: 'Keep the prize to 60 characters.',
+  not_your_hunter: 'Only your hunter can have got you (until sudden death).',
   own_prize: 'You can’t vote for your own idea.',
   prize_not_found: 'That prize idea has gone. Pick another.',
   call_time_too_soon: 'Give everyone at least 48 hours’ warning.',

@@ -504,6 +504,9 @@ isOneToOne: false
 "report_kill":
 { Args: { "p_game_id": string,"p_note"?: string,"p_photo_path"?: string,"p_victim_id": string }; Returns: string
                            },
+"report_own_death":
+{ Args: { "p_game_id": string,"p_killer_id"?: string }; Returns: Database["public"]['Enums']["kill_status"]
+                           },
 "reset_pin":
 { Args: { "p_code": string,"p_name": string }; Returns: Json
                            },
