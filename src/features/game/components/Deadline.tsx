@@ -200,7 +200,7 @@ export function DeadlineBanner({
   return (
     <>
       {phase === 'sudden' ? (
-        <Card tone="red" tilt={-1} className="flex flex-col gap-1">
+        <Card tone="red" tilt={-1} className="flex basis-full flex-col gap-1">
           <Tag tone="ink" className="self-start">
             ⚡ Sudden death
           </Tag>
@@ -216,20 +216,23 @@ export function DeadlineBanner({
           {extend}
         </Card>
       ) : phase === 'over' ? (
-        <Card tone="yellow" className="flex flex-col gap-1">
+        <Card tone="yellow" className="flex basis-full flex-col gap-1">
           <p className="font-display text-2xl uppercase">⏱ Time&rsquo;s up</p>
           <p className="font-bold">
             Waiting for the last claims to be answered, then the winner is crowned.
           </p>
         </Card>
       ) : (
-        <div className="flex flex-wrap items-center justify-center gap-2 text-center">
-          <span className="label-mono">
-            ⏱ Ends in <b className="font-display text-base">{remaining}</b> ·{' '}
-            {formatDeadline(game.ends_at, now)}
+        <Card tone="blue" tilt={1} className="flex flex-col gap-0.5 p-3">
+          <span className="label-mono">⏱ Ends in</span>
+          <span className="font-display text-3xl leading-none" aria-live="off">
+            {remaining}
           </span>
-          {extend}
-        </div>
+          <span className="flex flex-wrap items-baseline justify-between gap-x-2 text-sm font-bold">
+            {formatDeadline(game.ends_at, now)}
+            {extend}
+          </span>
+        </Card>
       )}
       {extending && <ExtendSheet game={game} onClose={() => setExtending(false)} />}
     </>

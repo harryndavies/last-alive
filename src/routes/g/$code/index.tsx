@@ -10,6 +10,7 @@ import {
   Moment,
   NotificationsCard,
   PageHeader,
+  Sprite,
   StatBox,
   Tag,
 } from '@/components'
@@ -67,8 +68,19 @@ function Home() {
         />
       </div>
 
-      {game.prize && <p className="text-center label-mono">🏆 Playing for: {game.prize}</p>}
-      <DeadlineBanner game={game} me={me} />
+      {/* Prize and countdown side by side; either fills the row on its own. */}
+      <div className="flex flex-wrap gap-2.5 *:min-w-[calc(50%-0.625rem)] *:flex-1 empty:hidden">
+        {game.prize && (
+          <Card tone="yellow" tilt={-1} className="flex flex-col gap-1 p-3">
+            <span className="flex items-center gap-1.5 label-mono">
+              <Sprite name="trophy" className="w-5" />
+              Playing for
+            </span>
+            <span className="leading-tight font-bold break-words">{game.prize}</span>
+          </Card>
+        )}
+        <DeadlineBanner game={game} me={me} />
+      </div>
       <CallTime game={game} me={me} />
       <NotificationsCard />
 
